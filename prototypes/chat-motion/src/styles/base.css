@@ -1,0 +1,381 @@
+/* This file contains styles for recreations of VS Code product UI –– used for
+ * both interactive and static graphics across the site (but mainly on the 
+ * homepage). See `server/views/partials/vscode-ui/` for the associated HTML.
+ * 
+ * The markup and styles are written using a technique called "CSS Web Components,"
+ * where you style custom element tags (e.g. `<vscode-model-picker>`) directly in CSS,
+ * without needing to register them in JavaScript. Read more about it here:
+ * https://hawkticehurst.com/2024/11/css-web-components-for-marketing-sites/
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  display: grid;
+  place-items: center;
+  height: 100vh;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  font-family: -apple-system, "system-ui", BlinkMacSystemFont, "Segoe UI",
+    Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  background: #0b0b0b url('/bg.jpg') no-repeat center center;
+  background-size: cover;
+}
+
+vs-code {
+  display: block;
+  box-sizing: border-box;
+  width: 94%;
+  height: 90%;
+  background: transparent;
+  border-radius: 8px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+
+  & * {
+    display: block;
+    box-sizing: border-box;
+  }
+
+  /* Reset Monaco editor elements to their natural display values */
+  .monaco-editor,
+  .monaco-editor * {
+    display: revert;
+    box-sizing: revert;
+  }
+
+  /* --- Main Area / Layouts --- */
+  .main-area {
+    display: grid;
+    grid-template-columns: 20% 1fr 30%;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    align-items: stretch;
+  }
+  .main-area primary-side-bar {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 8px;
+  }
+  .main-area secondary-side-bar {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 8px;
+  }
+  &[layout="no-sidebars"] .main-area {
+    grid-template-columns: 1fr;
+  }
+  &[layout="no-sidebars"] .main-area primary-side-bar,
+  &[layout="no-sidebars"] .main-area secondary-side-bar {
+    display: none;
+  }
+  &[layout="no-sidebars"] .main-area editor-well {
+    border-left: solid 1px var(--vscode-border);
+    border-right: solid 1px var(--vscode-border);
+    border-bottom: solid 1px var(--vscode-border);
+  }
+  &[layout="no-sidebars"] .main-area editor-well,
+  &[layout="no-sidebars"] .main-area editor-well editor-area {
+    border-radius: 0 0 8px 8px;
+  }
+  &[layout="left-sidebar"] .main-area {
+    grid-template-columns: 20% 1fr;
+  }
+  &[layout="right-sidebar"] .main-area {
+    grid-template-columns: 1fr 30%;
+    border-radius: 0 0 0 8px;
+  }
+  &[layout="right-sidebar"] .main-area editor-well,
+  &[layout="right-sidebar"] .main-area editor-well editor-area {
+    border-radius: 0 0 0 8px;
+  }
+  &[layout="right-sidebar"] .main-area editor-well {
+    border-left: solid 1px var(--vscode-border);
+    border-bottom: solid 1px var(--vscode-border);
+  }
+
+  /* --- Sidebars --- */
+  primary-side-bar,
+  secondary-side-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+    gap: 4px;
+    border-right: solid 1px var(--vscode-border);
+    height: 100%;
+    flex-grow: 1;
+    min-height: 0;
+    min-width: 0;
+    background: var(--vscode-bg);
+  }
+  secondary-side-bar {
+    border-left: solid 1px var(--vscode-border);
+    border-right: solid 1px var(--vscode-border);
+    border-bottom: solid 1px var(--vscode-border);
+    border-bottom-right-radius: 8px;
+    position: relative;
+    background: var(--vscode-bg);
+  }
+
+  /* Resize handle for secondary sidebar */
+  secondary-side-bar::before {
+    content: "";
+    position: absolute;
+    left: -3px;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    cursor: ew-resize;
+    z-index: 10;
+    background-color: transparent;
+    transition: background-color 0.15s ease;
+  }
+
+  secondary-side-bar.resize-hover::before,
+  secondary-side-bar.resizing::before {
+    background-color: var(--vscode-accent);
+  }
+
+  secondary-side-bar.resizing {
+    user-select: none;
+  }
+
+  /* --- Tree View --- */
+  tree-view {
+    width: 100%;
+    padding: 0;
+    color: var(--vscode-foreground-secondary);
+    font-size: 14px;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    user-select: none;
+
+    tree-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 16px;
+      cursor: default;
+      min-width: 0;
+      overflow: hidden;
+
+      &:hover {
+        background: var(--vscode-tab-hover-bg);
+        color: var(--vscode-foreground);
+      }
+
+      &[active] {
+        background: var(--vscode-tab-active-bg);
+        color: var(--vscode-foreground);
+        font-weight: 500;
+      }
+
+      .folder-name,
+      .file-name {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      &[indent="1"] {
+        padding-left: 32px;
+      }
+      &[indent="2"] {
+        padding-left: 48px;
+      }
+
+      & > .file-icon {
+        --size: 16px;
+        width: var(--size);
+        height: var(--size);
+        fill: var(--vscode-foreground-secondary);
+        flex-shrink: 0;
+      }
+
+      > .folder-item {
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  /* --- Collapsible Panes --- */
+  collapsible-container {
+    display: grid;
+    grid-template-rows: 1fr 1.5fr 1.25fr;
+    height: 100%;
+    min-height: 0;
+    min-width: 0;
+    flex: 1 1 auto;
+
+    collapsible-pane {
+      display: flex;
+      flex-direction: column;
+      border-top: solid 1px var(--vscode-border);
+
+      &:first-child {
+        border-top: none;
+      }
+    }
+
+    collapsible-title {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--vscode-foreground);
+      padding: 8px 16px;
+      user-select: none;
+    }
+
+    agent-session-item-container {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 4px 0;
+
+      &:hover {
+        background: var(--vscode-icon-button-hover-bg);
+        cursor: pointer;
+      }
+    }
+
+    agent-session-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 4px;
+      color: var(--vscode-foreground);
+      padding: 0 16px;
+
+      span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      &[type="metadata"] {
+        padding: 0 16px;
+
+        > span:first-child {
+          color: var(--vscode-foreground-secondary);
+          padding: 0 8px 0 22px;
+        }
+
+        div {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+      }
+    }
+  }
+
+  /* --- Editor --- */
+  editor-well {
+    background: var(--vscode-editor-bg);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    min-width: 0;
+    flex: 1 1 auto;
+
+    editor-area {
+      flex-grow: 1;
+      flex-basis: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+      background: var(--vscode-editor-bg);
+      color: var(--vscode-editor-fg);
+      padding: 0;
+      overflow: hidden;
+
+      &:has(chat-container) {
+        white-space: normal;
+        overflow: auto;
+        padding: 16px 0 0 0;
+      }
+
+      editor-file {
+        display: block;
+        height: 100%;
+        width: 100%;
+        min-height: 0;
+        overflow: visible;
+        position: relative;
+      }
+    }
+  }
+
+}
+
+@media (max-width: 768px) {
+  vs-code {
+    width: 100%;
+    height: 500px;
+  }
+}
+
+[data-theme="light"] vs-code tree-view {
+  color: var(--vscode-foreground);
+}
+
+hash-mention {
+  background: var(--vscode-hash-mention-bg);
+  color: var(--vscode-hash-mention-fg);
+  padding: 1px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+vscode-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  height: 32px;
+  border: none;
+  border-radius: 2px;
+  background-color: var(--vscode-button-secondary-bg);
+  color: var(--vscode-button-secondary-fg);
+  font-size: 14px;
+  font-weight: 500;
+
+  &:has(a:focus-visible) {
+    outline: 2px solid var(--foreground-intense);
+    outline-offset: 2px;
+
+    a:focus-visible {
+      outline: none;
+    }
+  }
+
+  a {
+    color: inherit !important;
+    font-size: inherit !important;
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:focus {
+      text-decoration: none;
+    }
+  }
+}

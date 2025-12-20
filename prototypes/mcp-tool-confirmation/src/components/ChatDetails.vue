@@ -73,11 +73,11 @@ const onLeave = (el: Element, done: () => void) => {
 			</template>
 			<template v-if="$slots.disclaimer">
 				<div class="tool-executed-footer">
-					<span class="tool-execution-buttons">
-						<slot name="buttons"></slot>
-					</span>
 					<span class="tool-disclaimer">
 						<slot name="disclaimer"></slot>
+					</span>
+					<span class="tool-execution-buttons">
+						<slot name="buttons"></slot>
 					</span>
 				</div>
 			</template>

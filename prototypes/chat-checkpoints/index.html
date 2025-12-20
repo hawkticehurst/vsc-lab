@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Checkpoints</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body>
+    <div class="chat-container">
+        <header class="chat-header">
+            <h1 class="header-title">Chat</h1>
+            <div class="header-actions">
+                <button class="header-button">
+                    <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M14 7v1H8v6H7V8H1V7h6V1h1v6h6z"/></svg>
+                    New chat
+                </button>
+                <button class="header-button">
+                    <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.507 12.324a7 7 0 0 0 .065-8.56A7 7 0 0 0 2 4.393V2H1v3.5l.5.5H5V5H2.811a6.008 6.008 0 1 1-.135 5.77l-.887.462a7 7 0 0 0 11.718 1.092zm-3.361-.97l.708-.707L8 7.792V4H7v4l.146.354 3 3z"/></svg>
+                    History
+                </button>
+                <button class="header-button">
+                    <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm5 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm5 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                </button>
+                <button class="header-button">
+                    <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 8.707l3.646 3.647.708-.707L8.707 8l3.647-3.646-.707-.708L8 7.293 4.354 3.646l-.707.708L7.293 8l-3.646 3.646.707.708L8 8.707z"/></svg>
+                </button>
+            </div>
+        </header>
+        <main class="chat-content">
+					<div class="chat-item">
+						<p class="chat-contributor">VS Code</p>
+            <div class="chat-response">
+                <div class="chat-meta">
+                    <p class="chat-details">You have 2 open issues in your repository:</p>
+                    <p class="chat-details">Issue #4: "Create detailed flow for adding new entries"</p>
+										<ul>
+												<li class="chat-details">Created on March 21, 2025</li>
+												<li class="chat-details">Assigned to you</li>
+												<li class="chat-details">Description: Create a detailed user flow exploring all the options for adding a new journal entry.</li>
+										</ul>
+										<p class="chat-details">Issue #3: "Create simple version of the landing page"</p>
+										<ul>
+												<li class="chat-details">Created on March 21, 2025</li>
+												<li class="chat-details">Assigned to you</li>
+												<li class="chat-details">Description: Create a landing page using HTML, CSS, and JavaScript based on existing Figma designs</li>
+												<li class="chat-details">References a Figma design link for implementation guidance</li>
+										</ul>
+                    <p class="chat-details">Both issues are currently open and assigned to you. Would you like me to help you work on either of these issues?</p>
+                </div>
+						</div>
+						<div class="feedback-buttons">
+								<button class="feedback-button"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M12.959 6H9.526L9.99 3.68C10.122 3.019 9.953 2.342 9.526 1.82C9.099 1.299 8.467 1 7.794 1C7.35 1 6.955 1.298 6.843 1.693L6.379 2.979C5.861 4.415 5.145 5.766 4.248 7H2.5C1.673 7 1 7.673 1 8.5V13.5C1 14.327 1.673 15 2.5 15H11.397C12.277 15 13.044 14.436 13.306 13.596L14.868 8.596C15.06 7.982 14.951 7.333 14.571 6.815C14.191 6.297 13.602 6 12.959 6ZM2 13.5V8.5C2 8.224 2.224 8 2.5 8H4V14H2.5C2.224 14 2 13.776 2 13.5ZM13.915 8.298L12.353 13.298C12.222 13.717 11.838 14 11.398 14H5.001V7.664C5.979 6.333 6.759 4.872 7.32 3.319L7.795 2.001C8.168 2.001 8.518 2.167 8.754 2.455C8.991 2.744 9.085 3.119 9.011 3.484L8.428 6.402C8.399 6.549 8.437 6.701 8.532 6.817C8.627 6.933 8.769 7 8.919 7H12.962C13.284 7 13.578 7.148 13.768 7.408C13.958 7.668 14.013 7.991 13.917 8.299L13.915 8.298Z"/></svg></button>
+								<button class="feedback-button"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M13.4999 1H4.60292C3.72392 1 2.95692 1.564 2.69392 2.404L1.13192 7.404C0.940924 8.018 1.04892 8.667 1.42992 9.185C1.81092 9.703 2.39892 10 3.04092 10H6.47492L6.01092 12.32C5.87792 12.98 6.04792 13.658 6.47492 14.179C6.90192 14.7 7.53392 14.999 8.20692 14.999C8.65092 14.999 9.04692 14.701 9.15892 14.306L9.62292 13.02C10.1409 11.585 10.8559 10.234 11.7539 8.999H13.5009C14.3279 8.999 15.0009 8.326 15.0009 7.499V2.5C15.0009 1.673 14.3269 1 13.4999 1ZM8.68092 12.682L8.20592 14C7.83292 14 7.48292 13.834 7.24692 13.546C7.01092 13.258 6.91692 12.882 6.98992 12.517L7.57392 9.599C7.60292 9.452 7.56492 9.3 7.46992 9.184C7.37492 9.068 7.23292 9.001 7.08292 9.001H3.03892C2.71792 9.001 2.42392 8.853 2.23292 8.593C2.04292 8.334 1.98892 8.01 2.08492 7.702L3.64692 2.702C3.77792 2.282 4.16192 2 4.60092 2H10.9979V8.336C10.0199 9.668 9.23992 11.13 8.67892 12.682H8.68092ZM13.9999 7.5C13.9999 7.776 13.7749 8 13.4999 8H11.9999V2H13.4999C13.7749 2 13.9999 2.224 13.9999 2.5V7.5Z"/></svg></button>
+						</div>
+					</div>
+					<div class="chat-item">
+            <div class="chat-message">
+                <div class="chat-meta">
+                    <p class="chat-details">Can you please tell me what files are in my desktop folder?</p>
+                </div>
+						</div>
+						<div class="message-feedback-buttons">
+								<button class="feedback-button"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.681 3H2V2h3.5l.5.5V6H5V4a5 5 0 1 0 4.53-.761l.302-.954A6 6 0 1 1 4.681 3z"/></svg></button>
+								<button class="feedback-button"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M13.23 1h-1.46L3.52 9.25l-.16.22L1 13.59 2.41 15l4.12-2.36.22-.16L15 4.23V2.77L13.23 1zM2.41 13.59l1.51-3 1.45 1.45-2.96 1.55zm3.83-2.06L4.47 9.76l8-8 1.77 1.77-8 8z"/></svg></button>
+								<button class="feedback-button"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M4 9V3H12.0284L10.0931 5.70938C9.96896 5.88323 9.96896 6.11677 10.0931 6.29062L12.0284 9H4ZM4 10H13C13.4067 10 13.6432 9.54032 13.4069 9.20938L11.1145 6L13.4069 2.79062C13.6432 2.45968 13.4067 2 13 2H3.5C3.22386 2 3 2.22386 3 2.5V13.5C3 13.7761 3.22386 14 3.5 14C3.77614 14 4 13.7761 4 13.5V10Z"/></svg></button>
+						</div>
+					</div>
+					<div class="chat-item">
+						<p class="chat-contributor">VS Code</p>
+            <div class="chat-response">
+                <div class="chat-meta">
+                    <p class="chat-details">Of course, let me check what directories I have access to.</p>
+                </div>
+                <div class="chat-meta">
+                    <p class="chat-details">Of course, let me check what directories I have access to.</p>
+                </div>
+                <div class="chat-meta">
+                    <p class="chat-details">Of course, let me check what directories I have access to.</p>
+                </div>
+						</div>
+						<div class="feedback-buttons">
+								<button class="feedback-button"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M12.959 6H9.526L9.99 3.68C10.122 3.019 9.953 2.342 9.526 1.82C9.099 1.299 8.467 1 7.794 1C7.35 1 6.955 1.298 6.843 1.693L6.379 2.979C5.861 4.415 5.145 5.766 4.248 7H2.5C1.673 7 1 7.673 1 8.5V13.5C1 14.327 1.673 15 2.5 15H11.397C12.277 15 13.044 14.436 13.306 13.596L14.868 8.596C15.06 7.982 14.951 7.333 14.571 6.815C14.191 6.297 13.602 6 12.959 6ZM2 13.5V8.5C2 8.224 2.224 8 2.5 8H4V14H2.5C2.224 14 2 13.776 2 13.5ZM13.915 8.298L12.353 13.298C12.222 13.717 11.838 14 11.398 14H5.001V7.664C5.979 6.333 6.759 4.872 7.32 3.319L7.795 2.001C8.168 2.001 8.518 2.167 8.754 2.455C8.991 2.744 9.085 3.119 9.011 3.484L8.428 6.402C8.399 6.549 8.437 6.701 8.532 6.817C8.627 6.933 8.769 7 8.919 7H12.962C13.284 7 13.578 7.148 13.768 7.408C13.958 7.668 14.013 7.991 13.917 8.299L13.915 8.298Z"/></svg></button>
+								<button class="feedback-button"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M13.4999 1H4.60292C3.72392 1 2.95692 1.564 2.69392 2.404L1.13192 7.404C0.940924 8.018 1.04892 8.667 1.42992 9.185C1.81092 9.703 2.39892 10 3.04092 10H6.47492L6.01092 12.32C5.87792 12.98 6.04792 13.658 6.47492 14.179C6.90192 14.7 7.53392 14.999 8.20692 14.999C8.65092 14.999 9.04692 14.701 9.15892 14.306L9.62292 13.02C10.1409 11.585 10.8559 10.234 11.7539 8.999H13.5009C14.3279 8.999 15.0009 8.326 15.0009 7.499V2.5C15.0009 1.673 14.3269 1 13.4999 1ZM8.68092 12.682L8.20592 14C7.83292 14 7.48292 13.834 7.24692 13.546C7.01092 13.258 6.91692 12.882 6.98992 12.517L7.57392 9.599C7.60292 9.452 7.56492 9.3 7.46992 9.184C7.37492 9.068 7.23292 9.001 7.08292 9.001H3.03892C2.71792 9.001 2.42392 8.853 2.23292 8.593C2.04292 8.334 1.98892 8.01 2.08492 7.702L3.64692 2.702C3.77792 2.282 4.16192 2 4.60092 2H10.9979V8.336C10.0199 9.668 9.23992 11.13 8.67892 12.682H8.68092ZM13.9999 7.5C13.9999 7.776 13.7749 8 13.4999 8H11.9999V2H13.4999C13.7749 2 13.9999 2.224 13.9999 2.5V7.5Z"/></svg></button>
+						</div>
+					</div>
+        </main>
+				<div class="command-input-container">
+						<div class="command-input-wrapper">
+								<button class="context-button">
+									<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M8.25201 15H7.75201C6.8577 14.9646 6.01378 14.5765 5.40476 13.9207C4.79575 13.2648 4.47118 12.3945 4.50201 11.5V3.682C4.47985 2.99536 4.73035 2.32785 5.19878 1.82531C5.66722 1.32278 6.31551 1.02607 7.00201 1C7.68852 1.02607 8.33681 1.32278 8.80524 1.82531C9.27367 2.32785 9.52417 2.99536 9.50201 3.682V10.849C9.51306 11.2586 9.36146 11.6559 9.08037 11.9541C8.79928 12.2522 8.41156 12.4269 8.00201 12.44C7.59635 12.4275 7.21184 12.2561 6.93129 11.9628C6.65073 11.6695 6.49657 11.2778 6.50201 10.872V7H7.50201V10.849C7.49117 10.9934 7.53752 11.1363 7.63105 11.2468C7.72458 11.3574 7.85781 11.4268 8.00201 11.44C8.14622 11.4268 8.27945 11.3574 8.37298 11.2468C8.46651 11.1363 8.51285 10.9934 8.50201 10.849V3.682C8.52443 3.26046 8.37936 2.84714 8.0984 2.53209C7.81744 2.21704 7.42336 2.02579 7.00201 2C6.58067 2.02579 6.18658 2.21704 5.90562 2.53209C5.62466 2.84714 5.47959 3.26046 5.50201 3.682V11.5C5.47146 12.1292 5.69078 12.7451 6.11222 13.2133C6.53365 13.6816 7.12304 13.9643 7.75201 14H8.25201C8.88098 13.9643 9.47038 13.6816 9.89181 13.2133C10.3132 12.7451 10.5326 12.1292 10.502 11.5V5H11.502V11.5C11.5328 12.3945 11.2083 13.2648 10.5993 13.9207C9.99025 14.5765 9.14633 14.9646 8.25201 15V15Z"/></svg>
+									Add Context...
+								</button>
+								<input type="text" class="command-input" placeholder="Edit files in your workspace in agent mode">
+								<div class="command-actions">
+										<div class="command-buttons">
+											<button class="command-button">
+												Agent
+												<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.976 10.072l4.357-4.357.62.618L8.284 11h-.618L3 6.333l.619-.618 4.357 4.357z"/></svg>
+											</button>
+											<button class="command-button">
+													Claude Sonnet 4
+													<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.976 10.072l4.357-4.357.62.618L8.284 11h-.618L3 6.333l.619-.618 4.357 4.357z"/></svg>
+											</button>
+										</div>
+										<button class="command-button">
+												<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M1 1.91L1.78 1.5L15 7.44899V8.3999L1.78 14.33L1 13.91L2.58311 8L1 1.91ZM3.6118 8.5L2.33037 13.1295L13.5 7.8999L2.33037 2.83859L3.6118 7.43874L9 7.5V8.5H3.6118Z"/></svg>
+										</button>
+								</div>
+						</div>
+				</div>
+    </div>
+</body>
+</html>

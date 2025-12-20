@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Directories to exclude from the build process
-const EXCLUDED_DIRS = ['assets', 'scripts', 'node_modules', 'build', '.git'];
+const EXCLUDED_DIRS = ['assets', 'scripts', 'node_modules', 'build', '.git', '.vscode'];
 
 // Get all directories in the root folder
 function getDirectories(srcPath) {

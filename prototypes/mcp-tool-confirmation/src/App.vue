@@ -307,7 +307,7 @@ const listDirsOutput = `{
       </template>
       <template #disclaimer>
         <p>
-          <vscode-icon name="info"></vscode-icon> Carefully review the proposed action and input.
+          Carefully review the proposed action and input.
         </p>
       </template>
     </ChatDetails>
