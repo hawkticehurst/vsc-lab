@@ -1,3 +1,3 @@
-# VS Code UXE Playground
+# VS Code Lab
 
-A place for prototpying UX experiments for VS Code.
+A place for prototyping new UX/UI for VS Code.

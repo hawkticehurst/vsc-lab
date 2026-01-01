@@ -1,0 +1,88 @@
+vs-code[agent-mode-swimlane] {
+	cursor: default;
+	user-select: none;
+
+	activity-bar {
+		activity-icon {
+			cursor: default;
+
+			&:hover:not([active]) svg {
+				color: var(--vscode-foreground-secondary);
+			}
+		}
+	}
+
+	view-actions {
+		.actions {
+			action-icon {
+				cursor: default;
+				&:hover {
+					background: var(--vscode-model-picker-hover-bg);
+				}
+			}
+		}
+	}
+
+	tab-bar {
+		overflow-x: auto;
+		tab-item:hover {
+			color: var(--vscode-foreground-secondary);
+		}
+	}
+
+	chat-input {
+		.chat-pickers {
+			cursor: default;
+			user-select: none;
+			color: var(--vscode-foreground-secondary);
+
+			mode-picker,
+			model-picker {
+				cursor: default;
+				&:hover {
+					background: var(--vscode-model-picker-hover-bg);
+				}
+			}
+		}
+		.chat-actions {
+			cursor: default;
+			user-select: none;
+			color: var(--vscode-foreground-secondary);
+
+			& > * {
+				cursor: default;
+			}
+			& > *:hover {
+				background: var(--vscode-model-picker-hover-bg);
+			}
+		}
+	}
+}
+
+@media (max-width: 450px) {
+	vs-code[agent-mode-swimlane] {
+		&[layout="right-sidebar"] .main-area {
+			grid-template-columns: 1fr 70%;
+		}
+		tool-button {
+			display: none;
+		}
+	}
+}
+@media (max-width: 375px) {
+	vs-code[agent-mode-swimlane] {
+		&[layout="right-sidebar"] .main-area {
+			grid-template-columns: 0fr 100%;
+		}
+		editor-well {
+			visibility: hidden;
+		}
+		secondary-side-bar {
+			border-radius: 0 0 8px 8px;
+			/* Note: There's a weird visual bug where the sidebar content is shifted 1px to the right
+		on very small screens and this fixes it. There's probably a better solution but this 
+		will do for now. */
+			transform: translateX(-1px);
+		}
+	}
+}

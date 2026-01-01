@@ -1,0 +1,67 @@
+:root {
+	--vscode-font-size: 1rem;
+	--vscode-font-weight: 500;
+	--vscode-font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+	--monaco-monospace-font: "SF Mono", Monaco, Menlo, Courier, monospace;
+}
+
+:root.light-theme {
+	color-scheme: light;
+}
+
+:root.dark-theme {
+	color-scheme: dark;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+	line-height: 1.5rem;
+	font-weight: 500;
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	margin: 0;
+	display: flex;
+	place-content: center;
+	height: 100vh;
+	background-color: var(--vscode-panel-background);
+	color: var(--vscode-foreground);
+}
+
+p {
+	margin: 0;
+}
+
+/* Add vertical alignment for the vscode-icon */
+p vscode-icon {
+	vertical-align: middle;
+	position: relative;
+	top: -1px;
+	margin-right: 4px;
+}
+
+a {
+	color: var(--vscode-textLink-activeForeground);
+	text-decoration: underline;
+}
+
+code.snippet {
+	display: inline-block;
+	background-color: var(--vscode-textPreformat-background);
+	border-radius: 4px;
+	color: var(--vscode-textPreformat-foreground);
+	font-family: var(--monaco-monospace-font);
+	font-size: 15px;
+	padding: 1px 3px;
+	line-height: 1.2;
+	white-space: pre-wrap;
+}
+
+vscode-button {
+	padding: 4px 8px;
+}
