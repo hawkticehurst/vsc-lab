@@ -1,0 +1,997 @@
+:root {
+	--background-color: #181818;
+	--secondary-bg: #1f1f1f;
+	--text-color: #cccccc;
+	--secondary-text: #9d9d9d;
+	--border-color: #3c3c3c;
+	--button-hover-color: #2a2a2a;
+	--input-bg: #313131;
+	--font-size-base: 15px;
+	--accent-color: #0078d4;
+	--glow-color: rgba(0, 120, 212, 0.5);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	font-size: var(--font-size-base);
+	background-color: var(--background-color);
+	color: var(--text-color);
+	font-family:
+		-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: row;
+}
+
+/* Animation Controls Panel */
+.animation-controls {
+	width: 250px;
+	min-width: 250px;
+	max-height: 100vh;
+	overflow-y: auto;
+	padding: 16px;
+	background-color: var(--secondary-bg);
+	border-right: 1px solid var(--border-color);
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.animation-controls h3 {
+	margin: 0 0 8px 0;
+	font-size: var(--font-size-base);
+	color: var(--text-color);
+	text-transform: uppercase;
+	font-weight: normal;
+}
+
+.animation-buttons {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.animation-toggle {
+	background-color: var(--input-bg);
+	border: 1px solid var(--border-color);
+	color: var(--text-color);
+	padding: 8px 12px;
+	border-radius: 4px;
+	cursor: pointer;
+	text-align: left;
+	font-size: calc(var(--font-size-base) - 1px);
+	transition: all 0.15s ease;
+}
+
+.animation-toggle:hover {
+	background-color: var(--button-hover-color);
+	border-color: var(--accent-color);
+}
+
+.animation-toggle.active {
+	background-color: rgba(0, 120, 212, 0.2);
+	border-color: var(--accent-color);
+	color: #fff;
+}
+
+.restart-button {
+	position: fixed;
+	top: 16px;
+	right: 16px;
+	z-index: 1000;
+	background-color: var(--accent-color);
+	border: none;
+	color: #fff;
+	padding: 10px 16px;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: var(--font-size-base);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	transition: background-color 0.15s ease;
+}
+
+.restart-button:hover {
+	background-color: #106ebe;
+}
+
+.restart-button svg {
+	width: 16px;
+	height: 16px;
+}
+
+/* Chat Container */
+.chat-container {
+	flex: 1;
+	padding: 0 16px 16px 16px;
+	max-width: 800px;
+	height: 100vh;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Animation Description Banner */
+.animation-description {
+	background: linear-gradient(135deg, rgba(0, 120, 212, 0.1) 0%, rgba(0, 120, 212, 0.05) 100%);
+	border: 1px solid rgba(0, 120, 212, 0.2);
+	border-radius: 8px;
+	padding: 12px 16px;
+	margin: 12px 0;
+	font-size: calc(var(--font-size-base) - 1px);
+	line-height: 1.5;
+	color: var(--text-color);
+}
+
+.animation-description-title {
+	font-weight: 600;
+	color: #58a6ff;
+	margin-bottom: 4px;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.animation-description-text {
+	color: var(--secondary-text);
+	margin: 0;
+}
+
+.chat-header {
+	display: flex;
+	align-items: center;
+	padding: 0;
+	height: 48px;
+}
+
+.header-title {
+	font-size: var(--font-size-base);
+	font-weight: normal;
+	margin: 0;
+	text-transform: uppercase;
+}
+
+.header-actions {
+	display: flex;
+	align-items: center;
+	margin-left: auto;
+	gap: 8px;
+}
+
+.feedback-button,
+.header-button {
+	background: none;
+	border: none;
+	color: var(--text-color);
+	padding: 4px;
+	cursor: pointer;
+	opacity: 0.8;
+	border-radius: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+}
+
+.feedback-button:hover,
+.header-button:hover {
+	background-color: var(--button-hover-color);
+	opacity: 1;
+}
+
+.chat-content {
+	padding: 16px 0;
+	overflow-y: auto;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.chat-item {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.chat-item:has(:hover) .message-feedback-buttons,
+.chat-item:has(:hover) .feedback-buttons {
+	visibility: visible;
+	opacity: 1;
+}
+
+.chat-contributor {
+	margin: 0;
+	color: var(--secondary-text);
+	font-size: calc(var(--font-size-base) - 2px);
+}
+
+.chat-message {
+	background-color: rgba(38, 79, 120, 0.3);
+	border-radius: 8px;
+	padding: 16px;
+	display: flex;
+	flex-direction: column;
+	width: fit-content;
+	align-self: flex-end;
+	margin-bottom: 0;
+	color: var(--text-color);
+	font-size: var(--font-size-base);
+	text-align: right;
+	max-width: 80%;
+}
+
+.chat-response {
+	display: flex;
+	flex-direction: column;
+	gap: 0px;
+	width: 90%;
+}
+
+.chat-title {
+	font-size: var(--font-size-base);
+	margin: 0 0 4px 0;
+}
+
+.chat-details {
+	font-size: var(--font-size-base);
+	color: var(--text-color);
+	margin: 0;
+}
+
+.chat-description {
+	font-size: var(--font-size-base);
+	margin: 0 0 8px 0;
+}
+
+.message-feedback-buttons,
+.feedback-buttons {
+	display: flex;
+	margin: 8px 0 16px 0;
+	visibility: hidden;
+	opacity: 0;
+	transition:
+		opacity 0.2s ease-in-out,
+		visibility 0.2s ease-in-out;
+}
+
+.feedback-button {
+	background: none;
+	border: none;
+	color: var(--text-color);
+	padding: 4px;
+	cursor: pointer;
+	opacity: 0.6;
+	line-height: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.command-button svg,
+.header-button svg,
+.feedback-button svg {
+	--size: 18px;
+	width: var(--size);
+	height: var(--size);
+}
+
+.feedback-button:hover {
+	opacity: 1;
+}
+
+.command-input-container {
+	margin-top: auto;
+	padding: 8px 0;
+	background-color: transparent;
+}
+
+.command-input-wrapper {
+	display: flex;
+	align-items: flex-start;
+	flex-direction: column;
+	width: 100%;
+	background-color: var(--input-bg);
+	border-radius: 4px;
+	padding: 8px;
+	gap: 8px;
+}
+
+.context-button {
+	background: none;
+	border: solid 1px var(--border-color);
+	color: var(--text-color);
+	padding: 4px;
+	cursor: pointer;
+	opacity: 0.8;
+	border-radius: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+}
+
+.command-input {
+	flex: 1;
+	background: none;
+	border: none;
+	color: var(--text-color);
+	font-size: var(--font-size-base);
+	outline: none;
+	font-family: inherit;
+	width: 100%;
+}
+
+.command-actions {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	width: 100%;
+}
+
+.command-buttons {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.command-button {
+	background: none;
+	border: none;
+	color: var(--text-color);
+	font-size: calc(var(--font-size-base) - 2px);
+	padding: 2px 4px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.command-button:hover {
+	color: var(--text-color);
+}
+
+.send-button {
+	color: var(--text-color);
+}
+
+.chat-response .chat-meta {
+	background-color: transparent;
+	padding: 16px 0;
+	border-radius: 8px;
+	line-height: 1.6;
+}
+
+/* Spacing between sections (paragraphs, code blocks, lists) */
+.chat-meta .chat-details {
+	margin: 0;
+}
+
+.chat-meta .chat-details + .chat-details,
+.chat-meta .chat-details + .code-block,
+.chat-meta .code-block + .chat-details,
+.chat-meta .code-block + .code-block {
+	margin-top: 24px;
+}
+
+/* ========================================
+   ANIMATION STYLES
+   ======================================== */
+
+/* 1. Fade - Pure opacity transition */
+.animation-fade .token {
+	opacity: 0;
+	animation-name: fade;
+	animation-duration: 0.3s;
+	animation-timing-function: ease;
+	animation-fill-mode: forwards;
+}
+
+@keyframes fade {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+/* 2. Typewriter - handled by JS */
+
+/* 3. Rise - Upward entrance */
+.animation-rise .token {
+	opacity: 0;
+	transform: translateY(6px);
+	animation-name: rise;
+	animation-duration: 0.4s;
+	animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	animation-fill-mode: forwards;
+}
+
+@keyframes rise {
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* 4. Drop - Downward with bounce */
+.animation-drop .token {
+	opacity: 0;
+	transform: translateY(-4px) scale(1.03);
+	animation-name: drop;
+	animation-duration: 0.45s;
+	animation-timing-function: cubic-bezier(0.34, 1.2, 0.64, 1);
+	animation-fill-mode: forwards;
+}
+
+@keyframes drop {
+	0% {
+		opacity: 0;
+		transform: translateY(-4px) scale(1.03);
+	}
+	70% {
+		opacity: 1;
+		transform: translateY(1px) scale(0.99);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+/* 5. Blur - Focus effect */
+.animation-blur .token {
+	opacity: 0;
+	filter: blur(3px);
+	transform: scale(1.02);
+	animation-name: blur;
+	animation-duration: 0.45s;
+	animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	animation-fill-mode: forwards;
+}
+
+@keyframes blur {
+	0% {
+		opacity: 0;
+		filter: blur(3px);
+		transform: scale(1.02);
+	}
+	60% {
+		opacity: 1;
+		filter: blur(1px);
+	}
+	100% {
+		opacity: 1;
+		filter: blur(0);
+		transform: scale(1);
+	}
+}
+
+/* 6. Scale - Growth */
+.animation-scale .token {
+	opacity: 0;
+	transform: scale(0.7);
+	animation-name: scale;
+	animation-duration: 0.4s;
+	animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+	animation-fill-mode: forwards;
+}
+
+@keyframes scale {
+	from {
+		opacity: 0;
+		transform: scale(0.7);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+/* 7. Slide - Horizontal entrance */
+.animation-slide .token {
+	opacity: 0;
+	transform: translateX(-8px);
+	animation-name: slide;
+	animation-duration: 0.3s;
+	animation-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+	animation-fill-mode: forwards;
+}
+
+@keyframes slide {
+	from {
+		opacity: 0;
+		transform: translateX(-8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+/* 8. Reveal - Clip-path wipe (horizontal) */
+.animation-reveal .token {
+	opacity: 1;
+	clip-path: inset(0 100% 0 0);
+	animation-name: reveal;
+	animation-duration: 0.3s;
+	animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	animation-fill-mode: forwards;
+}
+
+@keyframes reveal {
+	from {
+		clip-path: inset(0 100% 0 0);
+	}
+	to {
+		clip-path: inset(0 0% 0 0);
+	}
+}
+
+/* 9. Unfold - Clip-path wipe (vertical, bottom-up) */
+.animation-unfold .token {
+	opacity: 1;
+	clip-path: inset(100% 0 0 0);
+	animation-name: unfold;
+	animation-duration: 0.4s;
+	animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	animation-fill-mode: forwards;
+}
+
+@keyframes unfold {
+	from {
+		clip-path: inset(100% 0 0 0);
+	}
+	to {
+		clip-path: inset(0 0 0 0);
+	}
+}
+
+/* 10. Drift - Float with rotation */
+.animation-drift .token {
+	opacity: 0;
+	transform: translateY(10px) rotate(-1deg);
+	animation-name: drift;
+	animation-duration: 0.6s;
+	animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+	animation-fill-mode: forwards;
+}
+
+@keyframes drift {
+	0% {
+		opacity: 0;
+		transform: translateY(10px) rotate(-1deg);
+	}
+	50% {
+		transform: translateY(-2px) rotate(0.5deg);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0) rotate(0deg);
+	}
+}
+
+/* 12. Expand - Letter-spacing animation */
+.animation-expand .token {
+	opacity: 0;
+	letter-spacing: -0.05em;
+	animation-name: expand;
+	animation-duration: 0.35s;
+	animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+	animation-fill-mode: forwards;
+}
+
+@keyframes expand {
+	from {
+		opacity: 0;
+		letter-spacing: -0.05em;
+	}
+	to {
+		opacity: 1;
+		letter-spacing: 0em;
+	}
+}
+
+/* Token base styles */
+.token {
+	display: inline-block;
+}
+
+/* Code block styling */
+.code-block {
+	background-color: #1f1f1f;
+	border-radius: 6px;
+	padding: 12px 16px;
+	margin: 12px 0;
+	font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace;
+	font-size: calc(var(--font-size-base) - 2px);
+	overflow: hidden;
+	border: 1px solid var(--border-color);
+	/* Smooth height animation for streaming content */
+	transition: height 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.code-block-content {
+	white-space: pre-wrap;
+}
+
+.code-block .token,
+.code-block-content .token {
+	display: inline;
+	white-space: pre-wrap;
+}
+
+/* Code tokens that need animations must be inline-block for transforms to work */
+.code-block .code-token-anim,
+.code-block-content .code-token-anim {
+	display: inline-block;
+	white-space: pre-wrap;
+}
+
+/* Whitespace tokens in code need to preserve their spaces */
+.code-block .code-token-anim:empty,
+.code-block-content .code-token-anim:empty {
+	display: none;
+}
+
+/* Code token animations - match parent animation type */
+.animation-fade .code-block .code-token-anim {
+	animation: fade 0.2s ease forwards;
+}
+
+.animation-rise .code-block .code-token-anim {
+	animation: rise 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.animation-drop .code-block .code-token-anim {
+	animation: drop 0.35s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+}
+
+.animation-blur .code-block .code-token-anim {
+	animation: blur 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animation-scale .code-block .code-token-anim {
+	animation: scale 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animation-slide .code-block .code-token-anim {
+	animation: slide 0.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+.animation-reveal .code-block .code-token-anim {
+	animation: reveal 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animation-unfold .code-block .code-token-anim {
+	animation: unfold 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animation-drift .code-block .code-token-anim {
+	animation: drift 0.45s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.animation-expand .code-block .code-token-anim {
+	animation: expand 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 13. Line - Full line animation with buffering */
+.animation-line .line-animate,
+.animation-line-rise .line-animate,
+.animation-line-slide .line-animate,
+.animation-line-blur .line-animate,
+.animation-line-scale .line-animate,
+.animation-line-expand .line-animate,
+.animation-line-reveal .line-animate {
+	display: block;
+}
+
+/* Base line fade animation */
+.line-animate.line-fade {
+	opacity: 0;
+	transform: translateY(4px);
+	animation: lineReveal 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Line Rise - upward slide */
+.line-animate.line-rise {
+	opacity: 0;
+	transform: translateY(8px);
+	animation: lineRise 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes lineRise {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Line Slide - horizontal slide from left */
+.line-animate.line-slide {
+	opacity: 0;
+	transform: translateX(-12px);
+	animation: lineSlide 0.25s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+@keyframes lineSlide {
+	from {
+		opacity: 0;
+		transform: translateX(-12px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+/* Line Blur - focus effect */
+.line-animate.line-blur {
+	opacity: 0;
+	filter: blur(4px);
+	transform: scale(1.01);
+	animation: lineBlur 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes lineBlur {
+	0% {
+		opacity: 0;
+		filter: blur(4px);
+		transform: scale(1.01);
+	}
+	60% {
+		opacity: 1;
+		filter: blur(1px);
+	}
+	100% {
+		opacity: 1;
+		filter: blur(0);
+		transform: scale(1);
+	}
+}
+
+/* Line Scale - grow from smaller */
+.line-animate.line-scale {
+	opacity: 0;
+	transform: scale(0.85);
+	transform-origin: left center;
+	animation: lineScale 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes lineScale {
+	from {
+		opacity: 0;
+		transform: scale(0.85);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+/* Line Expand - letter-spacing animation */
+.line-animate.line-expand {
+	opacity: 0;
+	letter-spacing: -0.03em;
+	animation: lineExpand 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes lineExpand {
+	from {
+		opacity: 0;
+		letter-spacing: -0.03em;
+	}
+	to {
+		opacity: 1;
+		letter-spacing: 0em;
+	}
+}
+
+/* Line Reveal - clip-path wipe */
+.line-animate.line-reveal {
+	opacity: 1;
+	clip-path: inset(0 100% 0 0);
+	animation: lineRevealClip 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes lineRevealClip {
+	from {
+		clip-path: inset(0 100% 0 0);
+	}
+	to {
+		clip-path: inset(0 0% 0 0);
+	}
+}
+
+/* Code block line animations - inline-block for transform support */
+.animation-line .code-block .line-animate,
+.animation-line-rise .code-block .line-animate,
+.animation-line-slide .code-block .line-animate,
+.animation-line-blur .code-block .line-animate,
+.animation-line-scale .code-block .line-animate,
+.animation-line-expand .code-block .line-animate,
+.animation-line-reveal .code-block .line-animate {
+	display: inline;
+}
+
+.animation-line .line-code-block .line-animate,
+.animation-line-rise .line-code-block .line-animate,
+.animation-line-slide .line-code-block .line-animate,
+.animation-line-blur .line-code-block .line-animate,
+.animation-line-scale .line-code-block .line-animate,
+.animation-line-expand .line-code-block .line-animate,
+.animation-line-reveal .line-code-block .line-animate {
+	display: inline-block;
+	width: 100%;
+	transform-origin: left center;
+}
+
+/* Code block specific animations */
+.line-code-block .line-animate.line-fade {
+	opacity: 0;
+	animation: lineCodeReveal 0.2s ease forwards;
+}
+
+.line-code-block .line-animate.line-rise {
+	opacity: 0;
+	transform: translateY(6px);
+	animation: lineCodeRise 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes lineCodeRise {
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.line-code-block .line-animate.line-slide {
+	opacity: 0;
+	transform: translateX(-10px);
+	animation: lineCodeSlide 0.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+@keyframes lineCodeSlide {
+	from {
+		opacity: 0;
+		transform: translateX(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+.line-code-block .line-animate.line-blur {
+	opacity: 0;
+	filter: blur(3px);
+	animation: lineCodeBlur 0.25s ease forwards;
+}
+
+@keyframes lineCodeBlur {
+	from {
+		opacity: 0;
+		filter: blur(3px);
+	}
+	to {
+		opacity: 1;
+		filter: blur(0);
+	}
+}
+
+.line-code-block .line-animate.line-scale {
+	opacity: 0;
+	transform: scale(0.9);
+	animation: lineCodeScale 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes lineCodeScale {
+	from {
+		opacity: 0;
+		transform: scale(0.9);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+.line-code-block .line-animate.line-expand {
+	opacity: 0;
+	letter-spacing: -0.02em;
+	animation: lineCodeExpand 0.25s ease forwards;
+}
+
+@keyframes lineCodeExpand {
+	from {
+		opacity: 0;
+		letter-spacing: -0.02em;
+	}
+	to {
+		opacity: 1;
+		letter-spacing: 0em;
+	}
+}
+
+.line-code-block .line-animate.line-reveal {
+	clip-path: inset(0 100% 0 0);
+	animation: lineRevealClip 0.2s ease forwards;
+}
+
+@keyframes lineReveal {
+	from {
+		opacity: 0;
+		transform: translateY(4px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes lineCodeReveal {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+/* Code syntax highlighting */
+.code-keyword { color: #c586c0; }
+.code-function { color: #dcdcaa; }
+.code-string { color: #ce9178; }
+.code-comment { color: #6a9955; }
+.code-number { color: #b5cea8; }
+.code-type { color: #4ec9b0; }
+.code-bracket { color: #ffd700; }
+.code-operator { color: #d4d4d4; }
+
+/* Loading indicator for active streaming */
+.streaming-indicator {
+	display: inline-flex;
+	gap: 3px;
+	margin-left: 8px;
+	align-items: center;
+}
+
+.streaming-dot {
+	width: 4px;
+	height: 4px;
+	background-color: var(--accent-color);
+	border-radius: 50%;
+	animation: streamingPulse 1.4s infinite ease-in-out;
+}
+
+.streaming-dot:nth-child(1) { animation-delay: 0s; }
+.streaming-dot:nth-child(2) { animation-delay: 0.2s; }
+.streaming-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes streamingPulse {
+	0%, 80%, 100% {
+		opacity: 0.3;
+		transform: scale(0.8);
+	}
+	40% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
