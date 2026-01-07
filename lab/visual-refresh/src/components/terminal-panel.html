@@ -1,0 +1,272 @@
+<terminal-panel>
+	<panel-tab-bar>
+		<panel-tab active>
+			<span class="tab-name">TERMINAL</span>
+		</panel-tab>
+		<panel-tab>
+			<span class="tab-name">PROBLEMS</span>
+		</panel-tab>
+		<panel-tab>
+			<span class="tab-name">OUTPUT</span>
+		</panel-tab>
+		<panel-tab>
+			<span class="tab-name">DEBUG CONSOLE</span>
+		</panel-tab>
+		<panel-tab type="fill-end"></panel-tab>
+		<panel-actions>
+			<action-icon icon="plus">
+				<svg
+					width="16"
+					height="16"
+					viewBox="0 0 16 16"
+					xmlns="http://www.w3.org/2000/svg"
+					fill="currentColor"
+				>
+					<path
+						d="M14 7v1H8v6H7V8H1V7h6V1h1v6h6z"
+					/>
+				</svg>
+			</action-icon>
+			<action-icon icon="split">
+				<svg
+					width="16"
+					height="16"
+					viewBox="0 0 16 16"
+					xmlns="http://www.w3.org/2000/svg"
+					fill="currentColor"
+				>
+					<path
+						fill-rule="evenodd"
+						clip-rule="evenodd"
+						d="M14.5 2H6.5L6 2.5V6H2.5L2 6.5V13.5L2.5 14H9.5L10 13.5V10H13.5L14 9.5V2.5L14.5 2ZM9 13H3V7H6V9.5L6.5 10H9V13ZM13 9H7V6.5L7 6H7.5H10V3H13V9Z"
+					/>
+				</svg>
+			</action-icon>
+			<action-icon icon="trash">
+				<svg
+					width="16"
+					height="16"
+					viewBox="0 0 16 16"
+					xmlns="http://www.w3.org/2000/svg"
+					fill="currentColor"
+				>
+					<path
+						fill-rule="evenodd"
+						clip-rule="evenodd"
+						d="M10 3H12H13V4H12V14L11 15H5L4 14V4H3V3H6V2.5L6.5 2H9.5L10 2.5V3ZM5 4V14H11V4H5ZM6 5H7V13H6V5ZM9 5H10V13H9V5ZM9 3H7V2H9V3Z"
+					/>
+				</svg>
+			</action-icon>
+			<action-icon icon="chevron-up">
+				<svg
+					width="16"
+					height="16"
+					viewBox="0 0 16 16"
+					xmlns="http://www.w3.org/2000/svg"
+					fill="currentColor"
+				>
+					<path
+						fill-rule="evenodd"
+						clip-rule="evenodd"
+						d="M7.97602 10.0719L12.3333 5.7146L12.952 6.33332L8.28538 11L7.66666 11L3 6.33332L3.61872 5.71459L7.97602 10.0719Z"
+					/>
+				</svg>
+			</action-icon>
+			<action-icon icon="close">
+				<svg
+					width="16"
+					height="16"
+					viewBox="0 0 16 16"
+					xmlns="http://www.w3.org/2000/svg"
+					fill="currentColor"
+				>
+					<path
+						fill-rule="evenodd"
+						clip-rule="evenodd"
+						d="M8.00001 8.70711L11.6465 12.3536L12.3536 11.6465L8.70711 8.00001L12.3536 4.35356L11.6465 3.64645L8.00001 7.2929L4.35356 3.64645L3.64645 4.35356L7.2929 8.00001L3.64645 11.6465L4.35356 12.3536L8.00001 8.70711Z"
+					/>
+				</svg>
+			</action-icon>
+		</panel-actions>
+	</panel-tab-bar>
+	<terminal-content>
+		<terminal-line>
+			<span class="prompt">~/projects/image-processor</span>
+			<span class="command">go test ./...</span>
+		</terminal-line>
+		<terminal-line type="output">
+			<span>ok  	image-processor/internal/batch	0.012s</span>
+		</terminal-line>
+		<terminal-line type="output">
+			<span>ok  	image-processor/internal/processor	0.008s</span>
+		</terminal-line>
+		<terminal-line type="output">
+			<span>ok  	image-processor/internal/server	0.015s</span>
+		</terminal-line>
+		<terminal-line>
+			<span class="prompt">~/projects/image-processor</span>
+			<span class="cursor">|</span>
+		</terminal-line>
+	</terminal-content>
+</terminal-panel>
+
+<style>
+	terminal-panel {
+		display: flex;
+		flex-direction: column;
+		background: var(--vscode-bg);
+		border-top: solid 1px var(--vscode-border);
+		height: 180px;
+		min-height: 100px;
+		max-height: 60vh;
+		flex: 0 0 auto;
+		position: relative;
+
+		/* Resize handle at the top */
+		&::before {
+			content: "";
+			position: absolute;
+			top: -3px;
+			left: 0;
+			width: 100%;
+			height: 4px;
+			cursor: ns-resize;
+			z-index: 10;
+			background-color: transparent;
+			transition: background-color 0.15s ease;
+		}
+
+		&.resize-hover::before,
+		&.resizing::before {
+			background-color: var(--vscode-accent);
+		}
+
+		&.resizing {
+			user-select: none;
+		}
+
+		panel-tab-bar {
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			padding: 0 8px;
+			gap: 0;
+			height: 35px;
+			border-bottom: solid 1px var(--vscode-border);
+			width: 100%;
+			min-width: 0;
+			flex: 0 0 auto;
+			user-select: none;
+
+			panel-tab {
+				display: flex;
+				align-items: center;
+				padding: 6px 10px;
+				color: var(--vscode-foreground-secondary);
+				cursor: pointer;
+				height: 100%;
+				border-bottom: 1px solid transparent;
+				margin-bottom: -1px;
+
+				&:hover {
+					color: var(--vscode-foreground);
+				}
+
+				&[active] {
+					color: var(--vscode-foreground);
+					border-bottom-color: var(--vscode-foreground);
+				}
+
+				&[type="fill-end"] {
+					flex: 1 1 auto;
+					border-color: transparent;
+					cursor: default;
+					min-width: 0;
+					padding: 0;
+				}
+
+				.tab-name {
+					font-size: 11px;
+					font-weight: 400;
+					text-transform: uppercase;
+					letter-spacing: 0.02em;
+					white-space: nowrap;
+				}
+			}
+
+			panel-actions {
+				display: flex;
+				align-items: center;
+				gap: 2px;
+
+				action-icon {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					padding: 4px;
+					border-radius: 4px;
+					color: var(--vscode-foreground-secondary);
+					cursor: pointer;
+
+					&:hover {
+						background: var(--vscode-icon-button-hover-bg);
+						color: var(--vscode-foreground);
+					}
+
+					svg {
+						width: 16px;
+						height: 16px;
+					}
+				}
+			}
+		}
+
+		terminal-content {
+			display: flex;
+			flex-direction: column;
+			padding: 8px 12px;
+			font-family: "SF Mono", Monaco, "Cascadia Code", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Mono", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
+			font-size: 13px;
+			line-height: 1.4;
+			overflow: auto;
+			flex: 1 1 auto;
+			min-height: 0;
+			background: var(--vscode-editor-bg);
+
+			terminal-line {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				color: var(--vscode-foreground);
+				white-space: nowrap;
+
+				.prompt {
+					color: var(--vscode-accent);
+				}
+
+				.command {
+					color: var(--vscode-foreground);
+				}
+
+				.cursor {
+					color: var(--vscode-foreground);
+					animation: blink 1s step-end infinite;
+				}
+
+				&[type="output"] {
+					color: var(--vscode-foreground-secondary);
+					padding-left: 0;
+				}
+			}
+		}
+	}
+
+	@keyframes blink {
+		0%, 100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0;
+		}
+	}
+</style>

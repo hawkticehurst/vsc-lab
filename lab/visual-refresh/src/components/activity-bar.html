@@ -1,0 +1,75 @@
+<activity-bar role="navigation" aria-label="Agent chat activity bar" tabindex="0">
+	<slot></slot>
+</activity-bar>
+
+<style>
+	activity-bar {
+		width: 100%;
+		height: var(--vscode-tab-strip-height);
+		flex: 0 0 var(--vscode-tab-strip-height);
+		flex-shrink: 0;
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		gap: 6px;
+		overflow-x: auto;
+		scrollbar-width: none; /* Firefox */
+		-ms-overflow-style: none; /* Internet Explorer 10+ */
+		padding: 0 8px;
+		border-bottom: solid 1px var(--vscode-border);
+
+		activity-icon {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 4px;
+			padding: 6px 2px;
+			white-space: nowrap;
+			cursor: default;
+
+			&[active] {
+				color: var(--vscode-foreground);
+				border-bottom: solid 1px var(--vscode-tab-active-border);
+			}
+
+			& > a {
+				text-decoration: none;
+				color: var(--vscode-foreground-secondary) !important;
+				font-weight: 400 !important;
+				font-size: inherit !important;
+				display: flex;
+				align-items: center;
+				gap: 4px;
+				text-wrap: nowrap;
+			}
+
+			& > a:hover {
+				color: var(--vscode-foreground) !important;
+				text-decoration: none;
+			}
+			& > a:focus-visible {
+				color: var(--vscode-foreground) !important;
+				text-decoration: none;
+			}
+			& > a:active {
+				color: var(--vscode-foreground) !important;
+				text-decoration: none;
+			}
+
+			svg {
+				--size: 16px;
+				width: var(--size);
+				height: var(--size);
+				color: var(--vscode-foreground-secondary);
+			}
+
+			&:hover svg {
+				color: var(--vscode-foreground);
+			}
+
+			&[active] svg {
+				color: var(--vscode-foreground);
+			}
+		}
+	}
+</style>
