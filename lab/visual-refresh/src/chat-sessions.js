@@ -902,10 +902,14 @@ function showEmptyState(container) {
 	// Exit split view mode
 	exitSplitView(container);
 
-	// Hide results panel
+	// Hide results panel and clear its content
 	const resultsPanel = container.querySelector("results-panel");
 	if (resultsPanel) {
 		resultsPanel.setAttribute("hidden", "");
+		const resultsPanelContent = resultsPanel.querySelector("results-panel-content");
+		if (resultsPanelContent) {
+			resultsPanelContent.innerHTML = "";
+		}
 	}
 
 	// Render empty state in chat thread

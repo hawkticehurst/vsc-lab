@@ -1,5 +1,5 @@
 import chatSessionsData from "./chat-sessions-data.json";
-import { initChatSessions, hideChatSessions } from "./chat-sessions.js";
+import { initChatSessions, hideChatSessions, showChatSessions } from "./chat-sessions.js";
 import { fileCodeExamples } from "./code.js";
 import { initMonacoEditor, setEditorContent } from "./monaco.js";
 import { initPickerMenus } from "./picker-menus.js";
@@ -1048,6 +1048,23 @@ function initSessionListToggle() {
 	});
 }
 
+// Initialize toggle for chat-sessions visibility via chat-sessions top bar icon
+function initChatSessionsToggle() {
+	const chatSessionsIcon = document.querySelector("top-bar-icon.chat-sessions");
+	const chatSessions = document.querySelector("chat-sessions");
+
+	if (!chatSessionsIcon || !chatSessions) return;
+
+	chatSessionsIcon.addEventListener("click", () => {
+		const isHidden = chatSessions.hasAttribute("hidden");
+		if (isHidden) {
+			showChatSessions();
+		} else {
+			hideChatSessions();
+		}
+	});
+}
+
 // Initialize handler for "Open in Editor" events from chat-sessions
 function initOpenInEditorHandler() {
 	document.addEventListener("open-file-in-editor", (e) => {
@@ -1134,6 +1151,7 @@ initTabBarInteraction();
 initPickerMenus();
 initChatSessions();
 initSessionListToggle();
+initChatSessionsToggle();
 initOpenInEditorHandler();
 initProjectSwitchHandler();
 
