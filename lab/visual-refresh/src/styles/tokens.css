@@ -1,90 +1,152 @@
 :root {
-	--vscode-tab-strip-height: 34px;
+	/* Layout dimensions */
+	--vscode-tab-strip-height: 38px;
 	--vscode-indent-width: 32px;
-	--vscode-line-number-gutter-width: 50px;
+	--vscode-line-number-gutter-width: 54px;
+	
+	/* Modern 2025 spacing scale */
+	--space-1: 4px;
+	--space-2: 8px;
+	--space-3: 12px;
+	--space-4: 16px;
+	--space-5: 20px;
+	--space-6: 24px;
+	
+	/* Modern border radius scale */
+	--radius-sm: 6px;
+	--radius-md: 10px;
+	--radius-lg: 14px;
+	--radius-xl: 18px;
+	
+	/* Refined transitions */
+	--transition-fast: 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+	--transition-smooth: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+	--transition-spring: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 
-	--vscode-bg: #0d0d0d;
-	--vscode-foreground: #e4e4e4;
-	--vscode-foreground-secondary: #8a8a8a;
-	--vscode-accent: #6ec8e5;
-	--vscode-accent-fg: #0d0d0d;
+	/* Core colors - Rich dark theme */
+	--vscode-bg: #0a0a0b;
+	--vscode-bg-elevated: #111113;
+	--vscode-bg-surface: #161618;
+	--vscode-foreground: #ebebec;
+	--vscode-foreground-secondary: #7c7c82;
+	--vscode-foreground-muted: #545458;
+	--vscode-accent: #5eb8d4;
+	--vscode-accent-hover: #7ac8e0;
+	--vscode-accent-subtle: rgba(94, 184, 212, 0.12);
+	--vscode-accent-fg: #0a0a0b;
 
-	--vscode-border: #1e1e1e;
-	--vscode-model-picker-border: #363636;
-	--vscode-chat-border: rgba(255, 255, 255, 0.08);
+	/* Borders - Subtle layered approach */
+	--vscode-border: rgba(255, 255, 255, 0.06);
+	--vscode-border-subtle: rgba(255, 255, 255, 0.04);
+	--vscode-border-strong: rgba(255, 255, 255, 0.1);
+	--vscode-model-picker-border: rgba(255, 255, 255, 0.12);
+	--vscode-chat-border: rgba(255, 255, 255, 0.06);
 
-	--vscode-editor-bg: #121212;
-	--vscode-editor-fg: #d8d8d8;
-	--vscode-editor-selection-bg: rgba(110, 200, 229, 0.18);
-	--vscode-line-number-color: #4a4a4a;
+	/* Editor */
+	--vscode-editor-bg: #0e0e10;
+	--vscode-editor-fg: #dcdcde;
+	--vscode-editor-selection-bg: rgba(94, 184, 212, 0.15);
+	--vscode-line-number-color: #3d3d42;
 
-	--vscode-input-bg: rgba(255, 255, 255, 0.04);
+	/* Inputs */
+	--vscode-input-bg: rgba(255, 255, 255, 0.03);
+	--vscode-input-bg-hover: rgba(255, 255, 255, 0.05);
 	--vscode-input-border: rgba(255, 255, 255, 0.08);
-	--vscode-input-bg-expert-codebase-swimlane: #0f0f0f;
-	--vscode-input-border-expert-codebase-swimlane: #1e1e1e;
+	--vscode-input-border-focus: rgba(94, 184, 212, 0.5);
+	--vscode-input-bg-expert-codebase-swimlane: #0c0c0e;
+	--vscode-input-border-expert-codebase-swimlane: rgba(255, 255, 255, 0.06);
 
-	--vscode-menu-bg: #141414;
+	/* Menu & Dropdown */
+	--vscode-menu-bg: #131315;
+	--vscode-menu-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
 
-	--vscode-tab-hover-bg: #1a1a1a;
-	--vscode-tab-active-bg: #121212;
-	--vscode-tab-active-border: #6ec8e5;
+	/* Tabs */
+	--vscode-tab-hover-bg: rgba(255, 255, 255, 0.04);
+	--vscode-tab-active-bg: #0e0e10;
+	--vscode-tab-active-border: #5eb8d4;
 
-	--vscode-icon-button-hover-bg: rgba(255, 255, 255, 0.08);
+	/* Interactive states */
+	--vscode-icon-button-hover-bg: rgba(255, 255, 255, 0.06);
+	--vscode-icon-button-active-bg: rgba(255, 255, 255, 0.1);
 
-	--code-annotation-selected: rgba(110, 200, 229, 0.25);
-	--code-annotation-red: rgba(227, 70, 113, 0.35);
-	--code-annotation-green: rgba(63, 162, 102, 0.35);
-	--code-suggest-old-bg: rgba(227, 70, 113, 0.12);
-	--code-suggest-old-border: rgba(227, 70, 113, 0.3);
-	--code-suggest-new-bg: rgba(63, 162, 102, 0.12);
-	--code-suggest-new-border: rgba(63, 162, 102, 0.3);
+	/* Code annotations */
+	--code-annotation-selected: rgba(94, 184, 212, 0.2);
+	--code-annotation-red: rgba(240, 85, 120, 0.3);
+	--code-annotation-green: rgba(72, 180, 120, 0.3);
+	--code-suggest-old-bg: rgba(240, 85, 120, 0.1);
+	--code-suggest-old-border: rgba(240, 85, 120, 0.25);
+	--code-suggest-new-bg: rgba(72, 180, 120, 0.1);
+	--code-suggest-new-border: rgba(72, 180, 120, 0.25);
 
-	--vscode-hash-mention-bg: rgba(110, 200, 229, 0.15);
-	--vscode-hash-mention-fg: #6ec8e5;
+	/* Hash mentions */
+	--vscode-hash-mention-bg: rgba(94, 184, 212, 0.12);
+	--vscode-hash-mention-fg: #5eb8d4;
 
-	--vscode-skeleton-bg: rgba(255, 255, 255, 0.02);
+	/* Loading states */
+	--vscode-skeleton-bg: rgba(255, 255, 255, 0.03);
 
-	--vscode-chat-prompt-bg: rgba(110, 200, 229, 0.08);
-	--vscode-chat-response-check-bg: #3fa266;
+	/* Chat */
+	--vscode-chat-prompt-bg: rgba(94, 184, 212, 0.08);
+	--vscode-chat-response-check-bg: #48b478;
 
-	--vscode-git-added-fg: #70b489;
-	--vscode-git-removed-fg: #fc6b83;
+	/* Git colors */
+	--vscode-git-added-fg: #48b478;
+	--vscode-git-removed-fg: #f05578;
 
-	--code-patch-add-bg: rgba(63, 162, 102, 0.2);
-	--code-patch-remove-bg: rgba(227, 70, 113, 0.15);
+	/* Patch highlights */
+	--code-patch-add-bg: rgba(72, 180, 120, 0.15);
+	--code-patch-remove-bg: rgba(240, 85, 120, 0.12);
 
-	--vscode-button-secondary-bg: #262626;
-	--vscode-button-secondary-fg: #e4e4e4;
+	/* Buttons */
+	--vscode-button-secondary-bg: rgba(255, 255, 255, 0.06);
+	--vscode-button-secondary-fg: #ebebec;
+	--vscode-button-secondary-hover-bg: rgba(255, 255, 255, 0.1);
+	
+	/* Surface shadows */
+	--shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+	--shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+	--shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
 [data-theme="light"] {
 	--vscode-bg: #fafafa;
+	--vscode-bg-elevated: #ffffff;
+	--vscode-bg-surface: #f5f5f5;
 	--vscode-foreground: #1a1a1a;
 	--vscode-foreground-secondary: #606060;
+	--vscode-foreground-muted: #909090;
 	--vscode-accent: #0891b2;
+	--vscode-accent-hover: #0a9fc5;
+	--vscode-accent-subtle: rgba(8, 145, 178, 0.1);
 	--vscode-accent-fg: #ffffff;
 
-	--vscode-border: #e8e8e8;
-	--vscode-model-picker-border: #d0d0d0;
+	--vscode-border: rgba(0, 0, 0, 0.08);
+	--vscode-border-subtle: rgba(0, 0, 0, 0.05);
+	--vscode-border-strong: rgba(0, 0, 0, 0.12);
+	--vscode-model-picker-border: rgba(0, 0, 0, 0.15);
 	--vscode-chat-border: rgba(0, 0, 0, 0.08);
 
 	--vscode-editor-bg: #ffffff;
 	--vscode-editor-fg: #1a1a1a;
 	--vscode-editor-selection-bg: rgba(8, 145, 178, 0.15);
-	--vscode-line-number-color: #a0a0a0;
+	--vscode-line-number-color: #b0b0b0;
 
-	--vscode-input-bg: #ffffff;
-	--vscode-input-border: #d8d8d8;
+	--vscode-input-bg: rgba(0, 0, 0, 0.02);
+	--vscode-input-bg-hover: rgba(0, 0, 0, 0.04);
+	--vscode-input-border: rgba(0, 0, 0, 0.1);
+	--vscode-input-border-focus: rgba(8, 145, 178, 0.5);
 	--vscode-input-bg-expert-codebase-swimlane: #ffffff;
-	--vscode-input-border-expert-codebase-swimlane: #d8d8d8;
+	--vscode-input-border-expert-codebase-swimlane: rgba(0, 0, 0, 0.08);
 
 	--vscode-menu-bg: #ffffff;
+	--vscode-menu-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
 
-	--vscode-tab-hover-bg: #f5f5f5;
+	--vscode-tab-hover-bg: rgba(0, 0, 0, 0.04);
 	--vscode-tab-active-bg: #ffffff;
 	--vscode-tab-active-border: #0891b2;
 
 	--vscode-icon-button-hover-bg: rgba(0, 0, 0, 0.06);
+	--vscode-icon-button-active-bg: rgba(0, 0, 0, 0.1);
 
 	--code-annotation-selected: rgba(8, 145, 178, 0.2);
 	--code-annotation-red: rgba(220, 38, 38, 0.2);
@@ -108,6 +170,11 @@
 	--code-patch-add-bg: rgba(22, 163, 74, 0.12);
 	--code-patch-remove-bg: rgba(220, 38, 38, 0.1);
 
-	--vscode-button-secondary-bg: #f0f0f0;
+	--vscode-button-secondary-bg: rgba(0, 0, 0, 0.06);
 	--vscode-button-secondary-fg: #1a1a1a;
+	--vscode-button-secondary-hover-bg: rgba(0, 0, 0, 0.1);
+	
+	--shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+	--shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+	--shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
 }

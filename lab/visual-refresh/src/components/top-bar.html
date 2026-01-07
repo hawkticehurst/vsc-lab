@@ -73,29 +73,36 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 6px 8px;
-		border: solid 1px var(--vscode-border);
-		border-top-left-radius: 8px;
-		border-top-right-radius: 8px;
+		padding: 8px 12px;
+		background: linear-gradient(to bottom, rgba(255, 255, 255, 0.02), transparent);
+		border-bottom: solid 1px var(--vscode-border);
+		border-top-left-radius: var(--radius-lg);
+		border-top-right-radius: var(--radius-lg);
 		user-select: none;
+		backdrop-filter: blur(8px);
 
 		h1 {
 			margin: 0;
-			font-size: 14px;
+			font-size: 13px;
 			font-weight: 600;
 			color: var(--vscode-foreground);
 		}
 
 		window-buttons {
 			display: flex;
-			gap: 6px;
+			gap: 8px;
 
 			window-button {
-				--size: 11px;
+				--size: 12px;
 				width: var(--size);
 				height: var(--size);
 				border-radius: 50%;
 				background: var(--vscode-border);
+				transition: transform var(--transition-fast), opacity var(--transition-fast);
+
+				&:hover {
+					transform: scale(1.1);
+				}
 
 				&[type="close"] {
 					background: #FF5F57;
@@ -112,44 +119,45 @@
 		.top-bar-fullscreen-tabs {
 			display: none;
 			align-items: center;
-			gap: 2px;
-			margin-left: 12px;
+			gap: 6px;
+			margin-left: 16px;
 		}
 
 		fullscreen-tab {
 			display: flex;
 			align-items: center;
-			gap: 4px;
-			padding: 2px 5px;
-			border-radius: 4px;
-			border: solid 1px var(--vscode-border);
+			gap: 6px;
+			padding: 5px 10px;
+			border-radius: var(--radius-sm);
+			background: transparent;
+			border: 1px solid transparent;
 			color: var(--vscode-foreground-secondary);
 			cursor: pointer;
-			font-size: 14px;
+			font-size: 13px;
+			transition: all var(--transition-fast);
 
 			&:hover {
 				background: var(--vscode-tab-hover-bg);
 				color: var(--vscode-foreground);
 
 				.close-icon svg {
-					opacity: 1;
+					opacity: 0.7;
 				}
 			}
 
 			&:focus-visible {
 				outline: none;
-				border-color: var(--vscode-accent);
+				box-shadow: 0 0 0 2px var(--vscode-accent-subtle);
 			}
 
 			&[active] {
-				border: solid 1px var(--vscode-accent);
-				background: var(--vscode-editor-bg);
-				color: var(--vscode-foreground);
+				background: var(--vscode-accent-subtle);
+				color: var(--vscode-accent);
 				font-weight: 500;
 
 				.close-icon svg {
-					opacity: 1;
-					fill: var(--vscode-foreground);
+					opacity: 0.8;
+					fill: var(--vscode-accent);
 				}
 			}
 
@@ -164,13 +172,19 @@
 				width: 16px;
 				height: 16px;
 				cursor: pointer;
+				border-radius: var(--radius-sm);
+				transition: background-color var(--transition-fast);
+
+				&:hover {
+					background: rgba(255, 255, 255, 0.1);
+				}
 
 				svg {
-					width: 16px;
-					height: 16px;
+					width: 14px;
+					height: 14px;
 					fill: var(--vscode-foreground-secondary);
 					opacity: 0;
-					transition: opacity 0.2s;
+					transition: opacity var(--transition-fast);
 					pointer-events: none;
 				}
 			}
@@ -180,11 +194,12 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			padding: 4px;
-			border-radius: 4px;
+			padding: 6px;
+			border-radius: var(--radius-sm);
 			color: var(--vscode-foreground-secondary);
 			cursor: pointer;
 			flex-shrink: 0;
+			transition: all var(--transition-fast);
 
 			&:hover {
 				background: var(--vscode-icon-button-hover-bg);
@@ -192,8 +207,8 @@
 			}
 
 			svg {
-				width: 16px;
-				height: 16px;
+				width: 14px;
+				height: 14px;
 			}
 		}
 
@@ -203,34 +218,48 @@
 			justify-content: center;
 			flex: 1;
 			transform: translateX(-50px);
-			gap: 8px;
-			color: var(--vscode-foreground);
+			gap: 12px;
+			color: var(--vscode-foreground-secondary);
+
+			& > svg {
+				opacity: 0.5;
+				transition: opacity var(--transition-fast);
+				cursor: pointer;
+				
+				&:hover {
+					opacity: 1;
+					color: var(--vscode-foreground);
+				}
+			}
 
 			cmd-palette-button {
-				background: rgba(255, 255, 255, 0.05);
-				border: solid 1px rgba(255, 255, 255, 0.15);
-				color: var(--vscode-foreground);
-				font-size: 14px;
-				font-weight: 600;
+				background: var(--vscode-input-bg);
+				border: solid 1px var(--vscode-input-border);
+				color: var(--vscode-foreground-secondary);
+				font-size: 13px;
+				font-weight: 500;
 				cursor: pointer;
-				padding: 4px 8px;
-				border-radius: 4px;
-				width: 300px;
+				padding: 6px 14px;
+				border-radius: var(--radius-md);
+				width: 320px;
 				text-align: center;
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				gap: 6px;
+				gap: 8px;
+				transition: all var(--transition-fast);
+				box-shadow: var(--shadow-sm);
 
 				&:hover {
-					border: solid 1px rgba(255, 255, 255, 0.2);
-					background: rgba(255, 255, 255, 0.1);
+					border-color: var(--vscode-border-strong);
+					background: var(--vscode-input-bg-hover);
+					color: var(--vscode-foreground);
 				}
 			}
 
 			svg {
-				width: 16px;
-				height: 16px;
+				width: 15px;
+				height: 15px;
 				fill: currentColor;
 			}
 		}
@@ -239,19 +268,25 @@
 			display: flex;
 			align-items: center;
 			justify-content: flex-end;
-			gap: 8px;
+			gap: 4px;
 
 			avatar-icon {
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				width: 19px;
-				height: 19px;
+				width: 24px;
+				height: 24px;
 				border-radius: 50%;
-				border: solid 1px var(--vscode-border);
+				border: solid 2px transparent;
 				overflow: hidden;
-				background: var(--vscode-button-background);
+				background: var(--vscode-accent-subtle);
+				transition: border-color var(--transition-fast);
+				cursor: pointer;
 	
+				&:hover {
+					border-color: var(--vscode-accent);
+				}
+
 				img {
 					width: 100%;
 					height: 100%;
@@ -262,19 +297,22 @@
 			top-bar-icon {
 				display: flex;
 				align-items: center;
-				justify-content: flex-end;
+				justify-content: center;
 				cursor: pointer;
-				padding: 2px;
-				border-radius: 4px;
+				padding: 6px;
+				border-radius: var(--radius-sm);
+				color: var(--vscode-foreground-secondary);
+				transition: all var(--transition-fast);
 
 				&:hover {
 					background: var(--vscode-icon-button-hover-bg);
+					color: var(--vscode-foreground);
 				}
 	
 				svg {
 					width: 16px;
 					height: 16px;
-					fill: var(--vscode-foreground);
+					fill: currentColor;
 				}
 			}
 		}

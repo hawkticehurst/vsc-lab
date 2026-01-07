@@ -304,9 +304,9 @@
 <style>
 	tree-view {
 		width: 100%;
-		padding: 0;
+		padding: 4px 0;
 		color: var(--vscode-foreground-secondary);
-		font-size: 14px;
+		font-size: 13px;
 		flex: 1 1 auto;
 		min-height: 0;
 		overflow: auto;
@@ -315,11 +315,15 @@
 		tree-item {
 			display: flex;
 			align-items: center;
-			gap: 6px;
-			padding: 4px 16px;
+			gap: 8px;
+			padding: 6px 16px;
 			cursor: pointer;
 			min-width: 0;
 			overflow: hidden;
+			border-radius: 0;
+			margin: 0 8px;
+			border-radius: var(--radius-sm);
+			transition: all var(--transition-fast);
 
 			&:hover {
 				background: var(--vscode-tab-hover-bg);
@@ -327,9 +331,14 @@
 			}
 
 			&[active] {
-				background: var(--vscode-tab-active-bg);
-				color: var(--vscode-foreground);
+				background: var(--vscode-accent-subtle);
+				color: var(--vscode-accent);
 				font-weight: 500;
+
+				& > .file-icon,
+				& > .chevron-icon {
+					fill: var(--vscode-accent);
+				}
 			}
 
 			&[hidden] {
@@ -343,13 +352,14 @@
 				overflow: hidden;
 				text-overflow: ellipsis;
 				white-space: nowrap;
+				letter-spacing: 0.01em;
 			}
 
 			&[indent="1"] {
-				padding-left: 32px;
+				padding-left: 28px;
 			}
 			&[indent="2"] {
-				padding-left: 48px;
+				padding-left: 44px;
 			}
 
 			& > .file-icon {
@@ -358,17 +368,28 @@
 				height: var(--size);
 				fill: var(--vscode-foreground-secondary);
 				flex-shrink: 0;
+				opacity: 0.8;
+				transition: opacity var(--transition-fast);
+			}
+
+			&:hover > .file-icon {
+				opacity: 1;
 			}
 
 			& > .chevron-icon {
-				--size: 16px;
+				--size: 14px;
 				width: var(--size);
 				height: var(--size);
 				fill: var(--vscode-foreground-secondary);
 				flex-shrink: 0;
-				transition: transform 0.15s ease;
+				transition: transform var(--transition-fast), opacity var(--transition-fast);
 				transform: rotate(0deg);
 				pointer-events: none;
+				opacity: 0.7;
+			}
+
+			&:hover > .chevron-icon {
+				opacity: 1;
 			}
 
 			&[folder][open] > .chevron-icon {
@@ -380,7 +401,7 @@
 			}
 
 			&:not([folder]) > .file-icon {
-				margin-left: 22px; /* chevron width (16px) + gap (8px) */
+				margin-left: 22px; /* chevron width (14px) + gap (8px) */
 			}
 
 			> .folder-item {

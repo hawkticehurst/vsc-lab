@@ -20,12 +20,14 @@ body {
 	height: 100vh;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 	overflow: hidden;
 	font-family:
 		-apple-system, "system-ui", BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
 		"Open Sans", "Helvetica Neue", sans-serif;
-	background: #0b0b0b url("/bg.jpg") no-repeat center center;
+	background: #050506 url("/bg.jpg") no-repeat center center;
 	background-size: cover;
+	letter-spacing: -0.01em;
 }
 
 vs-code {
@@ -34,11 +36,16 @@ vs-code {
 	width: 92%;
 	height: 92%;
 	background: var(--vscode-bg);
-	border-radius: 8px;
+	border-radius: var(--radius-lg);
 	margin: auto;
 	display: flex;
 	flex-direction: column;
 	min-height: 0;
+	box-shadow: 
+		0 0 0 1px var(--vscode-border),
+		0 24px 80px rgba(0, 0, 0, 0.65),
+		0 8px 24px rgba(0, 0, 0, 0.4);
+	overflow: hidden;
 
 	& * {
 		display: block;
@@ -55,7 +62,7 @@ vs-code {
 	/* --- Main Area / Layouts --- */
 	.main-area {
 		display: grid;
-		grid-template-columns: 20% 1fr 30%;
+		grid-template-columns: 18% 1fr 32%;
 		flex: 1 1 auto;
 		min-height: 0;
 		height: 100%;
@@ -63,7 +70,7 @@ vs-code {
 	}
 	/* Adjust grid when secondary sidebar is not present */
 	.main-area:not(:has(secondary-side-bar)) {
-		grid-template-columns: 20% 1fr;
+		grid-template-columns: 18% 1fr;
 	}
 	.main-area:not(:has(secondary-side-bar)) editor-well {
 		border-right: solid 1px var(--vscode-border);
@@ -85,10 +92,10 @@ vs-code {
 	}
 	&[layout="no-sidebars"] .main-area editor-well,
 	&[layout="no-sidebars"] .main-area editor-well editor-area {
-		border-radius: 0 0 8px 8px;
+		border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 	}
 	&[layout="left-sidebar"] .main-area {
-		grid-template-columns: 20% 1fr;
+		grid-template-columns: 18% 1fr;
 	}
 	&[layout="left-sidebar"] .main-area editor-well {
 		border-right: solid 1px var(--vscode-border);
@@ -96,14 +103,14 @@ vs-code {
 	}
 	&[layout="left-sidebar"] .main-area editor-well,
 	&[layout="left-sidebar"] .main-area editor-well editor-area {
-		border-radius: 0 0 8px 0;
+		border-radius: 0 0 var(--radius-lg) 0;
 	}
 	&[layout="right-sidebar"] .main-area {
-		grid-template-columns: 1fr 30%;
+		grid-template-columns: 1fr 32%;
 	}
 	&[layout="right-sidebar"] .main-area editor-well,
 	&[layout="right-sidebar"] .main-area editor-well editor-area {
-		border-radius: 0 0 0 8px;
+		border-radius: 0 0 0 var(--radius-lg);
 	}
 	&[layout="right-sidebar"] .main-area editor-well {
 		border-left: solid 1px var(--vscode-border);
@@ -117,7 +124,7 @@ vs-code {
 		flex-direction: column;
 		align-items: stretch;
 		padding: 0;
-		gap: 4px;
+		gap: var(--space-1);
 		border-right: solid 1px var(--vscode-border);
 		height: 100%;
 		flex-grow: 1;
@@ -144,7 +151,7 @@ vs-code {
 		cursor: ew-resize;
 		z-index: 10;
 		background-color: transparent;
-		transition: background-color 0.15s ease;
+		transition: background-color var(--transition-smooth);
 	}
 
 	secondary-side-bar.resize-hover::before,
@@ -171,7 +178,7 @@ vs-code {
 		cursor: ew-resize;
 		z-index: 10;
 		background-color: transparent;
-		transition: background-color 0.15s ease;
+		transition: background-color var(--transition-smooth);
 	}
 
 	primary-side-bar.resize-hover::after,
@@ -205,20 +212,24 @@ vs-code {
 		collapsible-title {
 			display: flex;
 			align-items: center;
-			gap: 4px;
-			font-size: 12px;
+			gap: var(--space-1);
+			font-size: 11px;
 			font-weight: 600;
 			text-transform: uppercase;
-			color: var(--vscode-foreground);
-			padding: 8px 16px;
+			letter-spacing: 0.04em;
+			color: var(--vscode-foreground-secondary);
+			padding: var(--space-2) var(--space-4);
 			user-select: none;
 		}
 
 		agent-session-item-container {
 			display: flex;
 			flex-direction: column;
-			gap: 4px;
-			padding: 4px 0;
+			gap: var(--space-1);
+			padding: var(--space-1) 0;
+			border-radius: var(--radius-sm);
+			margin: 0 var(--space-2);
+			transition: background-color var(--transition-fast);
 
 			&:hover {
 				background: var(--vscode-icon-button-hover-bg);
@@ -230,9 +241,9 @@ vs-code {
 			display: grid;
 			grid-template-columns: auto 1fr auto;
 			align-items: center;
-			gap: 4px;
+			gap: var(--space-1);
 			color: var(--vscode-foreground);
-			padding: 0 16px;
+			padding: 0 var(--space-3);
 
 			span {
 				overflow: hidden;
@@ -241,17 +252,17 @@ vs-code {
 			}
 
 			&[type="metadata"] {
-				padding: 0 16px;
+				padding: 0 var(--space-3);
 
 				> span:first-child {
 					color: var(--vscode-foreground-secondary);
-					padding: 0 8px 0 22px;
+					padding: 0 var(--space-2) 0 22px;
 				}
 
 				div {
 					display: flex;
 					align-items: center;
-					gap: 4px;
+					gap: var(--space-1);
 				}
 			}
 		}
@@ -282,7 +293,7 @@ vs-code {
 			&:has(chat-container) {
 				white-space: normal;
 				overflow: auto;
-				padding: 16px 0 0 0;
+				padding: var(--space-4) 0 0 0;
 			}
 
 			editor-file {
@@ -307,23 +318,29 @@ vs-code {
 hash-mention {
 	background: var(--vscode-hash-mention-bg);
 	color: var(--vscode-hash-mention-fg);
-	padding: 1px;
-	border-radius: 4px;
+	padding: 2px 6px;
+	border-radius: var(--radius-sm);
 	font-weight: 500;
+	font-size: 0.9em;
 }
 
 vscode-button {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	padding: 4px 12px;
-	height: 32px;
+	padding: var(--space-2) var(--space-4);
+	height: 34px;
 	border: none;
-	border-radius: 2px;
+	border-radius: var(--radius-sm);
 	background-color: var(--vscode-button-secondary-bg);
 	color: var(--vscode-button-secondary-fg);
-	font-size: 14px;
+	font-size: 13px;
 	font-weight: 500;
+	transition: background-color var(--transition-fast);
+
+	&:hover {
+		background-color: var(--vscode-button-secondary-hover-bg);
+	}
 
 	&:has(a:focus-visible) {
 		outline: 2px solid var(--foreground-intense);
