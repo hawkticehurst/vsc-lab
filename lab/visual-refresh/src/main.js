@@ -3,6 +3,7 @@ import { initChatSessions, hideChatSessions, showChatSessions } from "./chat-ses
 import { fileCodeExamples } from "./code.js";
 import { initMonacoEditor, setEditorContent } from "./monaco.js";
 import { initPickerMenus } from "./picker-menus.js";
+import { projectData, getActiveFile, getFileCode } from "./projects.js";
 // Import component styles via virtual module - Vite processes CSS nesting
 import "virtual:html-components.css";
 
@@ -244,6 +245,8 @@ function initSecondarySidebarResize() {
 function initPrimarySidebarResize() {
 	const primarySidebar = document.querySelector("primary-side-bar");
 	const mainArea = document.querySelector(".main-area");
+	const vsCode = document.querySelector("vs-code");
+	const floatingChatInput = document.querySelector("floating-chat-input");
 
 	if (!primarySidebar || !mainArea) return;
 
@@ -294,23 +297,27 @@ function initPrimarySidebarResize() {
 		const deltaX = e.clientX - startX;
 		const newWidth = startWidth + deltaX;
 
+		// Check if we're in State 4 (expanded chat mode)
+		const isState4 = floatingChatInput && floatingChatInput.getAttribute("data-state") === "4" && !floatingChatInput.hidden;
+
 		// Set min and max width constraints
-		const minWidth = 150;
-		const maxWidth = window.innerWidth * 0.4;
+		const minWidth = isState4 ? 48 : 150;
+		const maxWidth = isState4 ? 300 : window.innerWidth * 0.4;
+		const expandThreshold = 100; // Width threshold to show sidebar content
 
 		if (newWidth >= minWidth && newWidth <= maxWidth) {
-			// Update the grid template columns to reflect the new width
-			const vsCode = document.querySelector("vs-code");
-			const layout = vsCode?.getAttribute("layout");
-			const secondarySidebar = document.querySelector("secondary-side-bar");
-			const secondaryWidth = secondarySidebar ? secondarySidebar.getBoundingClientRect().width : 0;
-
-			if (layout === "left-sidebar") {
-				mainArea.style.gridTemplateColumns = `${newWidth}px 1fr`;
-			} else {
-				// Default layout with both sidebars
-				mainArea.style.gridTemplateColumns = `${newWidth}px 1fr ${secondaryWidth}px`;
+			// In State 4, use CSS custom property for grid template
+			if (isState4) {
+				vsCode.style.setProperty("--state4-sidebar-width", `${newWidth}px`);
+				// Show/hide sidebar content based on width
+				if (newWidth > expandThreshold) {
+					primarySidebar.classList.add("expanded");
+				} else {
+					primarySidebar.classList.remove("expanded");
+				}
 			}
+			// Update the sidebar width directly
+			primarySidebar.style.width = `${newWidth}px`;
 		}
 	});
 
@@ -1031,20 +1038,15 @@ function initCollapseAllButton() {
 	});
 }
 
-// Initialize toggle for session-list visibility via layout-left top bar icon
+// Initialize toggle for primary sidebar visibility via layout-left top bar icon
 function initSessionListToggle() {
 	const layoutLeftIcon = document.querySelector("top-bar-icon.layout-left");
-	const sessionList = document.querySelector("chat-sessions session-list");
+	const primarySidebar = document.querySelector("primary-side-bar");
 
-	if (!layoutLeftIcon || !sessionList) return;
+	if (!layoutLeftIcon || !primarySidebar) return;
 
 	layoutLeftIcon.addEventListener("click", () => {
-		const isHidden = sessionList.hasAttribute("hidden");
-		if (isHidden) {
-			sessionList.removeAttribute("hidden");
-		} else {
-			sessionList.setAttribute("hidden", "");
-		}
+		primarySidebar.classList.toggle("collapsed");
 	});
 }
 
@@ -1138,6 +1140,911 @@ function clearAllTabs() {
 	allTabs.forEach((tab) => tab.remove());
 }
 
+function formatCountLabel(count, singular, plural) {
+	return `${count} ${count === 1 ? singular : plural}`;
+}
+
+function updateFloatingChatWorkspaceCounts() {
+	const floatingChatInput = document.querySelector("floating-chat-input");
+	const sessionsIndicator = document.getElementById("sessions-indicator");
+	if (!floatingChatInput || !sessionsIndicator) return;
+
+	const workspacePills = Array.from(floatingChatInput.querySelectorAll("workspace-pill"));
+	const projectCounts = new Map(
+		chatSessionsData.projects.map((project) => [project.id, project.sessions?.length ?? 0]),
+	);
+
+	workspacePills.forEach((pill) => {
+		const workspaceId = pill.getAttribute("data-workspace") || "";
+		const sessionCount = projectCounts.get(workspaceId) ?? 0;
+
+		let badge = pill.querySelector(".session-badge");
+		if (sessionCount === 0) {
+			if (badge) badge.remove();
+			return;
+		}
+
+		if (!badge) {
+			badge = document.createElement("span");
+			badge.className = "session-badge";
+			const workspaceName = pill.querySelector(".workspace-name");
+			if (workspaceName) {
+				workspaceName.insertAdjacentElement("afterend", badge);
+			} else {
+				pill.appendChild(badge);
+			}
+		}
+
+		badge.textContent = String(sessionCount);
+	});
+
+	const totalSessions = chatSessionsData.projects.reduce(
+		(total, project) => total + (project.sessions?.length ?? 0),
+		0,
+	);
+	const workspaceCount = workspacePills.length;
+	const sessionCountEl = sessionsIndicator.querySelector(".session-count");
+	if (sessionCountEl) {
+		const sessionLabel = formatCountLabel(totalSessions, "active session", "active sessions");
+		const workspaceLabel = formatCountLabel(workspaceCount, "workspace", "workspaces");
+		sessionCountEl.textContent = `${sessionLabel} · ${workspaceLabel}`;
+	}
+}
+
+// Initialize floating chat input toggle and workspace switching
+function initFloatingChatInput() {
+	const sessionsIndicator = document.getElementById("sessions-indicator");
+	const floatingChatInput = document.querySelector("floating-chat-input");
+
+	if (!sessionsIndicator || !floatingChatInput) return;
+
+	updateFloatingChatWorkspaceCounts();
+
+	// Helper: Get current state
+	const getState = () => parseInt(floatingChatInput.getAttribute("data-state") || "1", 10);
+
+	// Helper: Set state
+	const setState = (state) => {
+		floatingChatInput.setAttribute("data-state", String(state));
+	};
+
+	// Helper: Close floating chat and reset state
+	const closeFloatingChat = () => {
+		// Add closing class to trigger slide-down + fade animation
+		floatingChatInput.classList.add("closing");
+		sessionsIndicator.removeAttribute("expanded");
+
+		// Wait for animation to complete before hiding
+		setTimeout(() => {
+			floatingChatInput.setAttribute("hidden", "");
+			floatingChatInput.classList.remove("closing");
+			// Reset to State 1 after close animation
+			setState(1);
+		}, 250);
+	};
+
+	// Helper: Render session picker list for a workspace
+	const renderSessionPicker = (workspaceId) => {
+		const sessionPickerList = floatingChatInput.querySelector("session-picker-list");
+		const pickerTitle = floatingChatInput.querySelector(".picker-title");
+		if (!sessionPickerList) return;
+
+		const project = chatSessionsData.projects.find((p) => p.id === workspaceId);
+		if (!project || !project.sessions) {
+			sessionPickerList.innerHTML =
+				'<div style="padding: 16px; color: var(--vscode-foreground-secondary); font-size: 13px;">No active sessions</div>';
+			return;
+		}
+
+		// Update title
+		if (pickerTitle) {
+			pickerTitle.textContent = "Workspace Chat Sessions";
+		}
+
+		sessionPickerList.innerHTML = project.sessions
+			.map(
+				(session) => `
+			<picker-session-item data-session-id="${session.id}" data-workspace-id="${workspaceId}">
+				<span class="session-icon">
+					<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+						<path d="M1 2.75C1 1.784 1.784 1 2.75 1H10.25C10.664 1 11 1.336 11 1.75C11 2.164 10.664 2.5 10.25 2.5H2.75C2.612 2.5 2.5 2.612 2.5 2.75V10.25C2.5 10.664 2.164 11 1.75 11C1.336 11 1 10.664 1 10.25V2.75ZM4 5.75C4 4.784 4.784 4 5.75 4H13.25C14.216 4 15 4.784 15 5.75V13.25C15 14.216 14.216 15 13.25 15H5.75C4.784 15 4 14.216 4 13.25V5.75ZM5.75 5.5C5.612 5.5 5.5 5.612 5.5 5.75V13.25C5.5 13.388 5.612 13.5 5.75 13.5H13.25C13.388 13.5 13.5 13.388 13.5 13.25V5.75C13.5 5.612 13.388 5.5 13.25 5.5H5.75Z"/>
+					</svg>
+				</span>
+				<span class="session-info">
+					<span class="session-title">${session.title}</span>
+					<span class="session-meta">
+						<span class="time-ago">${session.meta.timeAgo}</span>
+						<span class="stats">
+							<span class="additions">+${session.meta.additions}</span>
+							<span class="deletions">-${session.meta.deletions}</span>
+						</span>
+					</span>
+				</span>
+			</picker-session-item>
+		`,
+			)
+			.join("");
+	};
+
+	// Helper: Render session detail
+	const renderSessionDetail = (workspaceId, sessionId) => {
+		const detailContent = floatingChatInput.querySelector("session-detail-content");
+		const detailTitle = floatingChatInput.querySelector(".detail-title");
+		if (!detailContent) return;
+
+		const project = chatSessionsData.projects.find((p) => p.id === workspaceId);
+		if (!project) return;
+
+		const session = project.sessions?.find((s) => s.id === sessionId);
+		if (!session) return;
+
+		// Update title
+		if (detailTitle) {
+			detailTitle.textContent = session.title;
+		}
+
+		// Build thread preview HTML (limited items)
+		let html = `<detail-prompt>${session.prompt}</detail-prompt>`;
+
+		const threadItems = session.thread || [];
+		const maxItems = 6; // Limit displayed items
+
+		threadItems.slice(0, maxItems).forEach((item) => {
+			switch (item.type) {
+				case "response":
+					html += `<detail-response>${item.content}</detail-response>`;
+					break;
+				case "status":
+					html += `
+						<detail-status>
+							<svg width="14" height="14" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+								<path d="M8 1C4.13401 1 1 4.13401 1 8C1 11.866 4.13401 15 8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1ZM7.25 4.75C7.25 4.33579 7.58579 4 8 4C8.41421 4 8.75 4.33579 8.75 4.75V8.25C8.75 8.66421 8.41421 9 8 9C7.58579 9 7.25 8.66421 7.25 8.25V4.75ZM8 11.5C7.44772 11.5 7 11.0523 7 10.5C7 9.94772 7.44772 9.5 8 9.5C8.55228 9.5 9 9.94772 9 10.5C9 11.0523 8.55228 11.5 8 11.5Z"/>
+							</svg>
+							${item.content}
+						</detail-status>
+					`;
+					break;
+				case "file-edit":
+					html += `
+						<detail-file-change>
+							<span class="file-name">${item.fileName}</span>
+							<span class="file-stats">
+								<span class="additions">+${item.additions}</span>
+								<span class="deletions">-${item.deletions}</span>
+							</span>
+						</detail-file-change>
+					`;
+					break;
+			}
+		});
+
+		if (threadItems.length > maxItems) {
+			html += `<div style="padding: 6px 0; font-size: 12px; color: var(--vscode-foreground-secondary);">+ ${threadItems.length - maxItems} more items...</div>`;
+		}
+
+		detailContent.innerHTML = html;
+	};
+
+	// Helper: Render embedded session list for State 4
+	const renderEmbeddedSessionList = (workspaceId) => {
+		const sessionListItems = floatingChatInput.querySelector(
+			"embedded-session-list session-list-items",
+		);
+		if (!sessionListItems) return;
+
+		const project = chatSessionsData.projects.find((p) => p.id === workspaceId);
+		if (!project || !project.sessions) {
+			sessionListItems.innerHTML =
+				'<div style="padding: 16px; color: var(--vscode-foreground-secondary); font-size: 13px;">No active sessions</div>';
+			return;
+		}
+
+		sessionListItems.innerHTML = project.sessions
+			.map(
+				(session, index) => `
+			<session-item data-session-id="${session.id}" data-workspace-id="${workspaceId}" ${index === 0 ? "active" : ""}>
+				<session-item-icon>
+					<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+						<path d="M1 2.75C1 1.784 1.784 1 2.75 1H10.25C10.664 1 11 1.336 11 1.75C11 2.164 10.664 2.5 10.25 2.5H2.75C2.612 2.5 2.5 2.612 2.5 2.75V10.25C2.5 10.664 2.164 11 1.75 11C1.336 11 1 10.664 1 10.25V2.75ZM4 5.75C4 4.784 4.784 4 5.75 4H13.25C14.216 4 15 4.784 15 5.75V13.25C15 14.216 14.216 15 13.25 15H5.75C4.784 15 4 14.216 4 13.25V5.75ZM5.75 5.5C5.612 5.5 5.5 5.612 5.5 5.75V13.25C5.5 13.388 5.612 13.5 5.75 13.5H13.25C13.388 13.5 13.5 13.388 13.5 13.25V5.75C13.5 5.612 13.388 5.5 13.25 5.5H5.75Z"/>
+					</svg>
+				</session-item-icon>
+				<session-item-content>
+					<session-item-title>${session.title}</session-item-title>
+					<session-item-meta>
+						<span class="time-ago">${session.meta.timeAgo}</span>
+						<span class="additions">+${session.meta.additions}</span>
+						<span class="deletions">-${session.meta.deletions}</span>
+					</session-item-meta>
+				</session-item-content>
+			</session-item>
+		`,
+			)
+			.join("");
+
+		// Render first session's thread by default
+		if (project.sessions.length > 0) {
+			renderEmbeddedChatThread(workspaceId, project.sessions[0].id);
+		}
+	};
+
+	// SVG Icons for chat thread
+	const ICONS = {
+		checkmark: `<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+			<path d="M13.6572 3.13573C13.8583 2.9465 14.175 2.95614 14.3643 3.15722C14.5535 3.35831 14.5438 3.675 14.3428 3.86425L5.84277 11.8642C5.64597 12.0494 5.33756 12.0446 5.14648 11.8535L1.64648 8.35351C1.45121 8.15824 1.45121 7.84174 1.64648 7.64647C1.84174 7.45121 2.15825 7.45121 2.35351 7.64647L5.50976 10.8027L13.6572 3.13573Z"/>
+		</svg>`,
+		expandIcon: `<svg class="expand-icon" width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+			<path d="M5.64645 3.14645C5.45118 3.34171 5.45118 3.65829 5.64645 3.85355L9.79289 8L5.64645 12.1464C5.45118 12.3417 5.45118 12.6583 5.64645 12.8536C5.84171 13.0488 6.15829 13.0488 6.35355 12.8536L10.8536 8.35355C11.0488 8.15829 11.0488 7.84171 10.8536 7.64645L6.35355 3.14645C6.15829 2.95118 5.84171 2.95118 5.64645 3.14645Z"/>
+		</svg>`,
+		fileIcon: `<svg class="file-icon" width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+			<path d="M5 1C3.89543 1 3 1.89543 3 3V13C3 14.1046 3.89543 15 5 15H11C12.1046 15 13 14.1046 13 13V5.41421C13 5.01639 12.842 4.63486 12.5607 4.35355L9.64645 1.43934C9.36514 1.15804 8.98361 1 8.58579 1H5ZM4 3C4 2.44772 4.44772 2 5 2H8V4.5C8 5.32843 8.67157 6 9.5 6H12V13C12 13.5523 11.5523 14 11 14H5C4.44772 14 4 13.5523 4 13V3ZM11.7929 5H9.5C9.22386 5 9 4.77614 9 4.5V2.20711L11.7929 5Z"/>
+		</svg>`,
+	};
+
+	// Helper: Render a thread item with proper chat elements
+	const renderThreadItem = (item) => {
+		switch (item.type) {
+			case "response":
+				return `<chat-response>${item.content}</chat-response>`;
+			case "status":
+				return `<chat-response-status>${ICONS.checkmark}${item.content}</chat-response-status>`;
+			case "file-edit":
+				return `<chat-response-file>
+					${ICONS.checkmark}
+					Edited 
+					<span>
+						${item.fileName} <apply-patch-number type="add">+${item.additions}</apply-patch-number>
+						<apply-patch-number type="remove">-${item.deletions}</apply-patch-number>
+					</span>
+				</chat-response-file>`;
+			case "response-list":
+				let listHtml = "<chat-response><ul>";
+				item.items.forEach((listItem) => {
+					if (listItem.file) {
+						listHtml += `<li><chat-response-file><span>${listItem.file}</span></chat-response-file>: ${listItem.description}</li>`;
+					} else if (listItem.text) {
+						listHtml += `<li>${listItem.text}</li>`;
+					}
+				});
+				listHtml += "</ul></chat-response>";
+				return listHtml;
+			default:
+				return "";
+		}
+	};
+
+	// Helper: Render embedded chat thread for State 4
+	const renderEmbeddedChatThread = (workspaceId, sessionId) => {
+		const threadContent = floatingChatInput.querySelector("embedded-thread-content");
+		if (!threadContent) return;
+
+		const project = chatSessionsData.projects.find((p) => p.id === workspaceId);
+		if (!project) return;
+
+		const session = project.sessions?.find((s) => s.id === sessionId);
+		if (!session) return;
+
+		// Build full thread HTML using proper chat elements
+		let html = "";
+
+		// Check if session uses the new multi-prompt format
+		if (session.prompts && Array.isArray(session.prompts)) {
+			session.prompts.forEach((promptData) => {
+				html += `<chat-prompt>${promptData.prompt}</chat-prompt>`;
+				promptData.thread.forEach((item) => {
+					html += renderThreadItem(item);
+				});
+			});
+		} else {
+			// Handle legacy single-prompt format
+			html += `<chat-prompt>${session.prompt}</chat-prompt>`;
+			const threadItems = session.thread || [];
+			threadItems.forEach((item) => {
+				html += renderThreadItem(item);
+			});
+		}
+
+		threadContent.innerHTML = html;
+
+		// Also render the results panel
+		renderEmbeddedResultsPanel(workspaceId, sessionId);
+	};
+
+	// Helper: Render embedded results panel for State 4
+	const renderEmbeddedResultsPanel = (workspaceId, sessionId) => {
+		const resultsPanelContent = floatingChatInput.querySelector("results-panel-content");
+		if (!resultsPanelContent) return;
+
+		const project = chatSessionsData.projects.find((p) => p.id === workspaceId);
+		if (!project) return;
+
+		const session = project.sessions?.find((s) => s.id === sessionId);
+		if (!session || !session.changedFiles) return;
+
+		let html = "";
+
+		session.changedFiles.forEach((file) => {
+			const hasCodeFile = file.codeFile ? `data-code-file="${file.codeFile}"` : "";
+			html += `
+				<results-file-item expanded ${hasCodeFile}>
+					<results-file-header>
+						${ICONS.expandIcon}
+						${ICONS.fileIcon}
+						<span class="file-path">${file.filePath}</span>
+						<span class="file-stats">
+							<span class="additions">+${file.additions}</span>
+							<span class="deletions">-${file.deletions}</span>
+						</span>
+					</results-file-header>
+					<results-file-diff>
+						${file.diff
+							.map(
+								(line) =>
+									`<diff-line type="${line.type}"><line-number>${line.lineNumber}</line-number><line-content>${escapeHtml(line.content)}</line-content></diff-line>`,
+							)
+							.join("")}
+					</results-file-diff>
+				</results-file-item>
+			`;
+		});
+
+		resultsPanelContent.innerHTML = html;
+	};
+
+	// Helper: Escape HTML entities
+	const escapeHtml = (text) => {
+		const div = document.createElement("div");
+		div.textContent = text;
+		return div.innerHTML;
+	};
+
+	// Toggle floating chat input when clicking sessions indicator
+	sessionsIndicator.addEventListener("click", (e) => {
+		e.stopPropagation();
+		const isHidden = floatingChatInput.hasAttribute("hidden");
+
+		if (isHidden) {
+			floatingChatInput.removeAttribute("hidden");
+			sessionsIndicator.setAttribute("expanded", "");
+			setState(1);
+		} else {
+			closeFloatingChat();
+		}
+	});
+
+	// Close on Escape key
+	document.addEventListener("keydown", (e) => {
+		if (e.key === "Escape" && !floatingChatInput.hasAttribute("hidden")) {
+			const currentState = getState();
+
+			if (currentState === 4) {
+				// Go back to State 2 from full canvas
+				const workspaceId = floatingChatInput.getAttribute("data-current-workspace");
+				if (workspaceId) {
+					renderSessionPicker(workspaceId);
+				}
+				setState(2);
+			} else if (currentState === 3) {
+				// Go back to State 2
+				setState(2);
+			} else if (currentState === 2) {
+				// Go back to State 1
+				setState(1);
+			} else {
+				// Close completely from State 1
+				closeFloatingChat();
+			}
+		}
+	});
+
+	// Handle clicks inside floating chat input
+	floatingChatInput.addEventListener("click", (e) => {
+		const target = e.target instanceof Element ? e.target : null;
+		if (!target) return;
+
+		// Handle view-sessions-icon click (chevron) - shows session list without switching workspace
+		const viewSessionsIcon = target.closest(".view-sessions-icon");
+		if (viewSessionsIcon) {
+			e.stopPropagation();
+
+			const workspacePill = viewSessionsIcon.closest("workspace-pill");
+			if (workspacePill) {
+				// Update active state
+				const allPills = floatingChatInput.querySelectorAll("workspace-pill");
+				allPills.forEach((p) => p.removeAttribute("active"));
+				workspacePill.setAttribute("active", "");
+
+				const workspaceId = workspacePill.getAttribute("data-workspace");
+				if (workspaceId) {
+					floatingChatInput.setAttribute("data-current-workspace", workspaceId);
+
+					// Update cmd-palette-button text in top-bar
+					const workspaceName = workspacePill.querySelector(".workspace-name")?.textContent || workspaceId;
+					const cmdPaletteButton = document.querySelector("cmd-palette-button");
+					if (cmdPaletteButton) {
+						// Preserve the search icon SVG and update only the text
+						const svgIcon = cmdPaletteButton.querySelector("svg");
+						cmdPaletteButton.textContent = "";
+						if (svgIcon) {
+							cmdPaletteButton.appendChild(svgIcon);
+						}
+						cmdPaletteButton.appendChild(document.createTextNode(workspaceName));
+					}
+
+					renderSessionPicker(workspaceId);
+					setState(2);
+				}
+			}
+			return;
+		}
+
+		// Handle workspace pill click (body only, not chevron) - switches workspace only
+		const workspacePill = target.closest("workspace-pill");
+		if (workspacePill && !target.closest(".view-sessions-icon")) {
+			e.stopPropagation();
+
+			// Update active state
+			const allPills = floatingChatInput.querySelectorAll("workspace-pill");
+			allPills.forEach((p) => p.removeAttribute("active"));
+			workspacePill.setAttribute("active", "");
+
+			// Get workspace ID
+			const workspaceId = workspacePill.getAttribute("data-workspace");
+			if (workspaceId) {
+				// Store current workspace
+				floatingChatInput.setAttribute("data-current-workspace", workspaceId);
+
+				// Update cmd-palette-button text in top-bar
+				const workspaceName = workspacePill.querySelector(".workspace-name")?.textContent || workspaceId;
+				const cmdPaletteButton = document.querySelector("cmd-palette-button");
+				if (cmdPaletteButton) {
+					// Preserve the search icon SVG and update only the text
+					const svgIcon = cmdPaletteButton.querySelector("svg");
+					cmdPaletteButton.textContent = "";
+					if (svgIcon) {
+						cmdPaletteButton.appendChild(svgIcon);
+					}
+					cmdPaletteButton.appendChild(document.createTextNode(workspaceName));
+				}
+
+				// Trigger project switch for code editor (but don't open session picker)
+				const project = chatSessionsData.projects.find((p) => p.id === workspaceId);
+				if (project) {
+					document.dispatchEvent(
+						new CustomEvent("project-switched", { detail: { projectId: workspaceId } }),
+					);
+					renderTreeView(workspaceId);
+				}
+			}
+			return;
+		}
+
+		// Handle session item click in State 2 - transitions to State 3
+		const sessionItem = target.closest("picker-session-item");
+		if (sessionItem) {
+			e.stopPropagation();
+
+			const sessionId = sessionItem.getAttribute("data-session-id");
+			const workspaceId = sessionItem.getAttribute("data-workspace-id");
+
+			if (sessionId && workspaceId) {
+				floatingChatInput.setAttribute("data-current-session", sessionId);
+				renderSessionDetail(workspaceId, sessionId);
+				setState(3);
+			}
+			return;
+		}
+
+		// Handle embedded session item click in State 4
+		const embeddedSessionItem = target.closest("embedded-session-list session-item");
+		if (embeddedSessionItem) {
+			e.stopPropagation();
+
+			// Update active state
+			const allItems = floatingChatInput.querySelectorAll("embedded-session-list session-item");
+			allItems.forEach((item) => item.removeAttribute("active"));
+			embeddedSessionItem.setAttribute("active", "");
+
+			const sessionId = embeddedSessionItem.getAttribute("data-session-id");
+			const workspaceId = embeddedSessionItem.getAttribute("data-workspace-id");
+
+			if (sessionId && workspaceId) {
+				floatingChatInput.setAttribute("data-current-session", sessionId);
+				renderEmbeddedChatThread(workspaceId, sessionId);
+			}
+			return;
+		}
+
+		// Handle embedded results panel file item toggle
+		const embeddedResultsFileHeader = target.closest("embedded-results-panel results-file-header");
+		const embeddedExpandIcon = target.closest("embedded-results-panel .expand-icon");
+		if (embeddedResultsFileHeader || embeddedExpandIcon) {
+			e.stopPropagation();
+			const fileItem = (embeddedResultsFileHeader || embeddedExpandIcon)?.closest(
+				"results-file-item",
+			);
+			if (fileItem instanceof HTMLElement) {
+				const isExpanded = fileItem.hasAttribute("expanded");
+				if (isExpanded) {
+					fileItem.removeAttribute("expanded");
+				} else {
+					fileItem.setAttribute("expanded", "");
+				}
+			}
+			return;
+		}
+
+		// Handle session picker back button - go to State 1
+		const pickerBackButton = target.closest(".session-picker-back");
+		if (pickerBackButton) {
+			e.stopPropagation();
+			setState(1);
+			return;
+		}
+
+		// Handle session detail back button - go to State 2
+		const detailBackButton = target.closest(".session-detail-back");
+		if (detailBackButton) {
+			e.stopPropagation();
+			const workspaceId = floatingChatInput.getAttribute("data-current-workspace");
+			if (workspaceId) {
+				renderSessionPicker(workspaceId);
+			}
+			setState(2);
+			return;
+		}
+
+		// Handle expand to canvas button - State 4 with animation
+		const expandButton = target.closest("expand-canvas-button");
+		if (expandButton) {
+			e.stopPropagation();
+			const workspaceId = floatingChatInput.getAttribute("data-current-workspace");
+			if (workspaceId) {
+				// Get the current bounding rect before state change
+				const container = floatingChatInput.querySelector("floating-chat-container");
+				const startRect = container.getBoundingClientRect();
+				const vsCode = document.querySelector("vs-code");
+				const vsCodeRect = vsCode.getBoundingClientRect();
+
+				// Calculate start position relative to vs-code container
+				const startTop = startRect.top - vsCodeRect.top;
+				const startLeft = startRect.left - vsCodeRect.left;
+				const startWidth = startRect.width;
+				const startHeight = startRect.height;
+
+				// Set CSS custom properties for animation start position
+				floatingChatInput.style.setProperty("--expand-start-top", `${startTop}px`);
+				floatingChatInput.style.setProperty("--expand-start-left", `${startLeft}px`);
+				floatingChatInput.style.setProperty("--expand-start-width", `${startWidth}px`);
+				floatingChatInput.style.setProperty("--expand-start-height", `${startHeight}px`);
+
+				// Add expanding class for animation
+				floatingChatInput.classList.add("expanding-to-canvas");
+
+				// Render content
+				renderEmbeddedSessionList(workspaceId);
+
+				// Trigger state change
+				setState(4);
+
+				// Remove animation class after transition completes
+				setTimeout(() => {
+					floatingChatInput.classList.remove("expanding-to-canvas");
+				}, 450);
+			}
+			return;
+		}
+
+		// Handle collapse canvas button - return to State 2 with animation
+		const collapseButton = target.closest("collapse-canvas-button");
+		if (collapseButton) {
+			e.stopPropagation();
+			const workspaceId = floatingChatInput.getAttribute("data-current-workspace");
+			if (workspaceId) {
+				// Add collapsing class for animation
+				floatingChatInput.classList.add("collapsing-from-canvas");
+
+				// Wait for collapse animation to mostly complete, then change state
+				setTimeout(() => {
+					setState(2);
+					// Render session picker for the new state
+					renderSessionPicker(workspaceId);
+
+					// Clean up animation class after state change
+					setTimeout(() => {
+						floatingChatInput.classList.remove("collapsing-from-canvas");
+					}, 50);
+				}, 250);
+			}
+			return;
+		}
+
+		// Handle new session button - opens workspace picker
+		const newSessionBtn = target.closest("new-session-button");
+		if (newSessionBtn) {
+			e.stopPropagation();
+			// Open the workspace picker instead of going to State 4
+			showWorkspacePicker();
+			return;
+		}
+	});
+
+	// Initialize resize functionality for embedded panels in State 4
+	initEmbeddedPanelsResize();
+
+	function initEmbeddedPanelsResize() {
+		const sessionList = floatingChatInput.querySelector("embedded-session-list");
+		const chatThread = floatingChatInput.querySelector("embedded-chat-thread");
+		const resultsPanel = floatingChatInput.querySelector("embedded-results-panel");
+
+		if (!sessionList || !chatThread || !resultsPanel) return;
+
+		const RESIZE_HANDLE_WIDTH = 6;
+
+		// --- Embedded Session List Resize (right edge) ---
+		let isResizingSessionList = false;
+		let sessionListStartX = 0;
+		let sessionListStartWidth = 0;
+
+		sessionList.addEventListener("mousemove", (e) => {
+			if (isResizingSessionList) return;
+			const rect = sessionList.getBoundingClientRect();
+			const offsetX = rect.right - e.clientX;
+
+			if (offsetX <= RESIZE_HANDLE_WIDTH) {
+				sessionList.classList.add("resize-hover");
+			} else {
+				sessionList.classList.remove("resize-hover");
+			}
+		});
+
+		sessionList.addEventListener("mouseleave", () => {
+			if (!isResizingSessionList) {
+				sessionList.classList.remove("resize-hover");
+			}
+		});
+
+		sessionList.addEventListener("mousedown", (e) => {
+			const rect = sessionList.getBoundingClientRect();
+			const offsetX = rect.right - e.clientX;
+
+			if (offsetX <= RESIZE_HANDLE_WIDTH) {
+				isResizingSessionList = true;
+				sessionListStartX = e.clientX;
+				sessionListStartWidth = rect.width;
+				sessionList.classList.add("resizing");
+				document.body.style.cursor = "ew-resize";
+				document.body.style.userSelect = "none";
+				e.preventDefault();
+			}
+		});
+
+		// --- Embedded Results Panel Resize (left edge) ---
+		let isResizingResultsPanel = false;
+		let resultsPanelStartX = 0;
+		let resultsPanelStartWidth = 0;
+
+		resultsPanel.addEventListener("mousemove", (e) => {
+			if (isResizingResultsPanel) return;
+			const rect = resultsPanel.getBoundingClientRect();
+			const offsetX = e.clientX - rect.left;
+
+			if (offsetX <= RESIZE_HANDLE_WIDTH) {
+				resultsPanel.classList.add("resize-hover");
+			} else {
+				resultsPanel.classList.remove("resize-hover");
+			}
+		});
+
+		resultsPanel.addEventListener("mouseleave", () => {
+			if (!isResizingResultsPanel) {
+				resultsPanel.classList.remove("resize-hover");
+			}
+		});
+
+		resultsPanel.addEventListener("mousedown", (e) => {
+			const rect = resultsPanel.getBoundingClientRect();
+			const offsetX = e.clientX - rect.left;
+
+			if (offsetX <= RESIZE_HANDLE_WIDTH) {
+				isResizingResultsPanel = true;
+				resultsPanelStartX = e.clientX;
+				resultsPanelStartWidth = rect.width;
+				resultsPanel.classList.add("resizing");
+				document.body.style.cursor = "ew-resize";
+				document.body.style.userSelect = "none";
+				e.preventDefault();
+			}
+		});
+
+		// --- Embedded Chat Thread Resize (right edge, between chat-thread and results-panel) ---
+		let isResizingChatThread = false;
+		let chatThreadStartX = 0;
+		let resultsPanelStartWidthForChatThread = 0;
+
+		chatThread.addEventListener("mousemove", (e) => {
+			if (isResizingChatThread) return;
+			const rect = chatThread.getBoundingClientRect();
+			const offsetX = rect.right - e.clientX;
+
+			if (offsetX <= RESIZE_HANDLE_WIDTH) {
+				chatThread.classList.add("resize-hover");
+			} else {
+				chatThread.classList.remove("resize-hover");
+			}
+		});
+
+		chatThread.addEventListener("mouseleave", () => {
+			if (!isResizingChatThread) {
+				chatThread.classList.remove("resize-hover");
+			}
+		});
+
+		chatThread.addEventListener("mousedown", (e) => {
+			const rect = chatThread.getBoundingClientRect();
+			const offsetX = rect.right - e.clientX;
+
+			if (offsetX <= RESIZE_HANDLE_WIDTH) {
+				isResizingChatThread = true;
+				chatThreadStartX = e.clientX;
+				resultsPanelStartWidthForChatThread = resultsPanel.getBoundingClientRect().width;
+				chatThread.classList.add("resizing");
+				document.body.style.cursor = "ew-resize";
+				document.body.style.userSelect = "none";
+				e.preventDefault();
+			}
+		});
+
+		// --- Global mousemove handler for all embedded resize operations ---
+		document.addEventListener("mousemove", (e) => {
+			const containerRect = floatingChatInput.getBoundingClientRect();
+			const minWidth = 180;
+			const minChatThreadWidth = 200;
+			const minResultsWidth = 250;
+
+			if (isResizingSessionList) {
+				const deltaX = e.clientX - sessionListStartX;
+				const newWidth = sessionListStartWidth + deltaX;
+				const maxWidth = containerRect.width * 0.4;
+
+				if (newWidth >= minWidth && newWidth <= maxWidth) {
+					sessionList.style.width = `${newWidth}px`;
+				}
+			}
+
+			if (isResizingResultsPanel) {
+				const deltaX = resultsPanelStartX - e.clientX;
+				const newWidth = resultsPanelStartWidth + deltaX;
+				const maxWidth = containerRect.width * 0.6;
+
+				if (newWidth >= minResultsWidth && newWidth <= maxWidth) {
+					resultsPanel.style.width = `${newWidth}px`;
+				}
+			}
+
+			if (isResizingChatThread) {
+				const deltaX = e.clientX - chatThreadStartX;
+				// Expand chat thread = shrink results panel
+				const newResultsWidth = resultsPanelStartWidthForChatThread - deltaX;
+				const maxResultsWidth = containerRect.width * 0.6;
+
+				if (newResultsWidth >= minResultsWidth && newResultsWidth <= maxResultsWidth) {
+					resultsPanel.style.width = `${newResultsWidth}px`;
+				}
+			}
+		});
+
+		// --- Global mouseup handler to end all embedded resize operations ---
+		document.addEventListener("mouseup", () => {
+			if (isResizingSessionList) {
+				isResizingSessionList = false;
+				sessionList.classList.remove("resizing");
+				sessionList.classList.remove("resize-hover");
+				document.body.style.cursor = "";
+				document.body.style.userSelect = "";
+			}
+
+			if (isResizingResultsPanel) {
+				isResizingResultsPanel = false;
+				resultsPanel.classList.remove("resizing");
+				resultsPanel.classList.remove("resize-hover");
+				document.body.style.cursor = "";
+				document.body.style.userSelect = "";
+			}
+
+			if (isResizingChatThread) {
+				isResizingChatThread = false;
+				chatThread.classList.remove("resizing");
+				chatThread.classList.remove("resize-hover");
+				document.body.style.cursor = "";
+				document.body.style.userSelect = "";
+			}
+		});
+	}
+
+	// Initialize resize functionality for floating chat input right edge (between chat and editor in State 4)
+	initFloatingChatEditorResize();
+
+	function initFloatingChatEditorResize() {
+		const vsCode = document.querySelector("vs-code");
+		const editorWell = document.querySelector("editor-well");
+		if (!floatingChatInput || !editorWell || !vsCode) return;
+
+		const RESIZE_HANDLE_WIDTH = 6;
+		let isResizingEditor = false;
+		let startX = 0;
+		let startEditorWidth = 0;
+
+		// Track mouse position on floating chat input right edge
+		floatingChatInput.addEventListener("mousemove", (e) => {
+			const state = floatingChatInput.getAttribute("data-state");
+			if (state !== "4" || floatingChatInput.hidden || isResizingEditor) return;
+
+			const rect = floatingChatInput.getBoundingClientRect();
+			const offsetX = rect.right - e.clientX;
+
+			if (offsetX <= RESIZE_HANDLE_WIDTH) {
+				floatingChatInput.classList.add("resize-hover");
+			} else {
+				floatingChatInput.classList.remove("resize-hover");
+			}
+		});
+
+		floatingChatInput.addEventListener("mouseleave", () => {
+			if (!isResizingEditor) {
+				floatingChatInput.classList.remove("resize-hover");
+			}
+		});
+
+		floatingChatInput.addEventListener("mousedown", (e) => {
+			const state = floatingChatInput.getAttribute("data-state");
+			if (state !== "4" || floatingChatInput.hidden) return;
+
+			const rect = floatingChatInput.getBoundingClientRect();
+			const offsetX = rect.right - e.clientX;
+
+			if (offsetX <= RESIZE_HANDLE_WIDTH) {
+				isResizingEditor = true;
+				startX = e.clientX;
+				startEditorWidth = editorWell.getBoundingClientRect().width;
+				floatingChatInput.classList.add("resizing");
+				document.body.style.cursor = "ew-resize";
+				document.body.style.userSelect = "none";
+				e.preventDefault();
+			}
+		});
+
+		document.addEventListener("mousemove", (e) => {
+			if (!isResizingEditor) return;
+
+			const deltaX = startX - e.clientX; // Moving left increases editor width
+			const newEditorWidth = startEditorWidth + deltaX;
+
+			const mainArea = document.querySelector(".main-area");
+			const mainAreaWidth = mainArea ? mainArea.getBoundingClientRect().width : window.innerWidth;
+
+			// Set min and max width constraints for editor
+			const minEditorWidth = 200;
+			const maxEditorWidth = mainAreaWidth * 0.6;
+
+			if (newEditorWidth >= minEditorWidth && newEditorWidth <= maxEditorWidth) {
+				// Convert to percentage for grid template
+				const editorPercent = (newEditorWidth / mainAreaWidth) * 100;
+				vsCode.style.setProperty("--state4-editor-width", `${editorPercent}%`);
+			}
+		});
+
+		document.addEventListener("mouseup", () => {
+			if (isResizingEditor) {
+				isResizingEditor = false;
+				floatingChatInput.classList.remove("resizing");
+				floatingChatInput.classList.remove("resize-hover");
+				document.body.style.cursor = "";
+				document.body.style.userSelect = "";
+			}
+		});
+	}
+}
+
 initVsCodeHeroTabs();
 initMonacoEditor();
 initSecondarySidebarResize();
@@ -1151,9 +2058,401 @@ initTabBarInteraction();
 initPickerMenus();
 initChatSessions();
 initSessionListToggle();
-initChatSessionsToggle();
 initOpenInEditorHandler();
 initProjectSwitchHandler();
+initFloatingChatInput();
+initFloatingInputRowAnimation();
+initBackgroundAgentPicker();
 
 // Render the initial tree view for the default project
 renderTreeView(getCurrentProjectId());
+
+// Initialize floating input row focus/blur animation with hover detection
+function initFloatingInputRowAnimation() {
+	const floatingInputRow = document.querySelector("floating-input-row");
+	const inputField = floatingInputRow?.querySelector("input-field input");
+
+	if (!floatingInputRow || !inputField) return;
+
+	let isHovered = false;
+	let isInteractingWithMenu = false;
+
+	const hasOpenMenu = () => Boolean(floatingInputRow.querySelector(".picker-menu.open"));
+
+	const shouldKeepExpanded = () =>
+		inputField.value.trim() !== "" || isHovered || isInteractingWithMenu || hasOpenMenu();
+
+	// Handle focus - show input-actions row
+	inputField.addEventListener("focus", () => {
+		floatingInputRow.classList.add("expanded");
+	});
+
+	// Handle blur - hide input-actions row only if input is empty AND not hovering
+	inputField.addEventListener("blur", () => {
+		// Small delay to allow hover state to be checked
+		setTimeout(() => {
+			if (!shouldKeepExpanded()) {
+				floatingInputRow.classList.remove("expanded");
+				floatingInputRow.classList.remove("has-content");
+			}
+		}, 100);
+	});
+
+	// Handle input - track if there's content
+	inputField.addEventListener("input", () => {
+		if (inputField.value.trim() !== "") {
+			floatingInputRow.classList.add("has-content");
+		} else {
+			floatingInputRow.classList.remove("has-content");
+		}
+	});
+
+	// Handle mouse enter - track hover state
+	floatingInputRow.addEventListener("mouseenter", () => {
+		isHovered = true;
+	});
+
+	// Handle mouse leave - hide input-actions if empty and not focused
+	floatingInputRow.addEventListener("mouseleave", () => {
+		isHovered = false;
+		// Only collapse if input is empty and not focused
+		if (document.activeElement !== inputField && !shouldKeepExpanded()) {
+			floatingInputRow.classList.remove("expanded");
+			floatingInputRow.classList.remove("has-content");
+		}
+	});
+
+	// Keep input actions open when interacting with dropdown menus
+	floatingInputRow.addEventListener("pointerdown", (e) => {
+		const target = e.target instanceof Element ? e.target : null;
+		if (target && target.closest(".picker-menu")) {
+			isInteractingWithMenu = true;
+			floatingInputRow.classList.add("expanded");
+		}
+	});
+
+	document.addEventListener("pointerup", () => {
+		if (isInteractingWithMenu) {
+			setTimeout(() => {
+				isInteractingWithMenu = false;
+			}, 0);
+		}
+	});
+}
+
+function initBackgroundAgentPicker() {
+	const chatTypeContainers = Array.from(
+		document.querySelectorAll(".chat-type-container"),
+	);
+
+	if (!chatTypeContainers.length) return;
+
+	const updateVisibility = (container, value) => {
+		const backgroundAgentContainer = container
+			.closest("input-actions, chat-config-bar")
+			?.querySelector(".background-agent-container");
+		if (!backgroundAgentContainer) return;
+
+		if (value === "Background") {
+			backgroundAgentContainer.removeAttribute("hidden");
+		} else {
+			backgroundAgentContainer.setAttribute("hidden", "");
+		}
+	};
+
+	chatTypeContainers.forEach((container) => {
+		const chatTypePicker = container.querySelector("chat-type");
+		const initialValue = chatTypePicker?.childNodes[0]?.textContent?.trim() || "";
+		updateVisibility(container, initialValue);
+
+		chatTypePicker?.addEventListener("picker-change", (e) => {
+			const value = e.detail?.value || "";
+			updateVisibility(container, value);
+		});
+	});
+}
+
+// ====================================================
+// Workspace Picker (macOS Finder Style)
+// ====================================================
+function initWorkspacePicker() {
+	const workspacePicker = document.querySelector("workspace-picker");
+	if (!workspacePicker) return;
+
+	const backdrop = workspacePicker.querySelector("workspace-picker-backdrop");
+	const cancelBtn = workspacePicker.querySelector(".cancel-btn");
+	const openBtn = workspacePicker.querySelector(".open-btn");
+	const folderItems = workspacePicker.querySelectorAll("folder-item");
+	const sidebarItems = workspacePicker.querySelectorAll("sidebar-item");
+	const finderFiles = workspacePicker.querySelector("finder-files");
+	const toolbarTitle = workspacePicker.querySelector("toolbar-title");
+	const breadcrumb = workspacePicker.querySelector("finder-breadcrumb");
+	const viewButtons = workspacePicker.querySelectorAll("view-button");
+	const searchInput = workspacePicker.querySelector("toolbar-search input");
+
+	let selectedFolder = null;
+
+	// Close picker when clicking backdrop
+	backdrop?.addEventListener("click", () => {
+		hideWorkspacePicker();
+	});
+
+	// Close picker when clicking cancel
+	cancelBtn?.addEventListener("click", () => {
+		hideWorkspacePicker();
+	});
+
+	// Handle Escape key to close
+	document.addEventListener("keydown", (e) => {
+		if (e.key === "Escape" && !workspacePicker.hasAttribute("hidden")) {
+			hideWorkspacePicker();
+		}
+	});
+
+	// Folder selection
+	folderItems.forEach((folder) => {
+		folder.addEventListener("click", () => {
+			// Remove selection from all folders
+			folderItems.forEach((f) => f.removeAttribute("selected"));
+			// Select clicked folder
+			folder.setAttribute("selected", "");
+			selectedFolder = folder.getAttribute("data-path");
+			// Enable open button
+			openBtn?.removeAttribute("disabled");
+		});
+
+		// Double-click to open
+		folder.addEventListener("dblclick", () => {
+			if (selectedFolder) {
+				openWorkspace(selectedFolder);
+			}
+		});
+	});
+
+	// Sidebar navigation
+	sidebarItems.forEach((item) => {
+		item.addEventListener("click", () => {
+			// Update active state
+			sidebarItems.forEach((i) => i.removeAttribute("active"));
+			item.setAttribute("active", "");
+
+			// Update title and breadcrumb
+			const location = item.getAttribute("data-location");
+			const label = item.querySelector(".sidebar-label")?.textContent || "Recents";
+			if (toolbarTitle) toolbarTitle.textContent = label;
+			if (breadcrumb) {
+				breadcrumb.innerHTML = `<breadcrumb-item>${label}</breadcrumb-item>`;
+			}
+
+			// Clear selection
+			folderItems.forEach((f) => f.removeAttribute("selected"));
+			selectedFolder = null;
+			openBtn?.setAttribute("disabled", "");
+		});
+	});
+
+	// View toggle (icon/list)
+	viewButtons.forEach((btn) => {
+		btn.addEventListener("click", () => {
+			viewButtons.forEach((b) => b.removeAttribute("active"));
+			btn.setAttribute("active", "");
+
+			if (btn.classList.contains("list-view")) {
+				finderFiles?.classList.add("list-view");
+			} else {
+				finderFiles?.classList.remove("list-view");
+			}
+		});
+	});
+
+	// Search filtering
+	searchInput?.addEventListener("input", (e) => {
+		const query = e.target.value.toLowerCase();
+		folderItems.forEach((folder) => {
+			const name = folder.querySelector("folder-name")?.textContent?.toLowerCase() || "";
+			const meta = folder.querySelector("folder-meta")?.textContent?.toLowerCase() || "";
+			if (name.includes(query) || meta.includes(query)) {
+				folder.style.display = "";
+			} else {
+				folder.style.display = "none";
+			}
+		});
+	});
+
+	// Open button handler
+	openBtn?.addEventListener("click", () => {
+		if (selectedFolder) {
+			openWorkspace(selectedFolder);
+		}
+	});
+}
+
+function showWorkspacePicker() {
+	const workspacePicker = document.querySelector("workspace-picker");
+	if (!workspacePicker) return;
+
+	workspacePicker.removeAttribute("hidden");
+
+	// Reset state
+	const openBtn = workspacePicker.querySelector(".open-btn");
+	const folderItems = workspacePicker.querySelectorAll("folder-item");
+	folderItems.forEach((f) => f.removeAttribute("selected"));
+	openBtn?.setAttribute("disabled", "");
+
+	// Focus search input
+	setTimeout(() => {
+		const searchInput = workspacePicker.querySelector("toolbar-search input");
+		searchInput?.focus();
+	}, 100);
+}
+
+function hideWorkspacePicker() {
+	const workspacePicker = document.querySelector("workspace-picker");
+	if (!workspacePicker) return;
+
+	workspacePicker.classList.add("closing");
+	setTimeout(() => {
+		workspacePicker.setAttribute("hidden", "");
+		workspacePicker.classList.remove("closing");
+	}, 200);
+}
+
+function openWorkspace(path) {
+	// Simulate opening a workspace in VS Code
+	console.log("Opening workspace:", path);
+
+	// Get folder name from path
+	const folderName = path.split("/").pop();
+
+	// Update command palette button text
+	const cmdPaletteButton = document.querySelector("cmd-palette-button");
+	if (cmdPaletteButton) {
+		// The button has SVG + text node, we need to update the text node
+		const textNodes = Array.from(cmdPaletteButton.childNodes).filter(
+			node => node.nodeType === Node.TEXT_NODE
+		);
+		if (textNodes.length > 0) {
+			// Update the last text node (the one after the SVG)
+			textNodes[textNodes.length - 1].textContent = folderName;
+		}
+	}
+
+	// Load project data for tree view and editor
+	const project = projectData[folderName];
+	if (project) {
+		// Load all project files into fileCodeExamples so tree item clicks work
+		for (const [filename, fileData] of Object.entries(project.files)) {
+			fileCodeExamples[filename] = fileData;
+		}
+
+		// Update tree view
+		const treeView = document.querySelector("tree-view");
+		if (treeView) {
+			treeView.innerHTML = renderProjectTreeView(project);
+		}
+
+		// Update editor with active file
+		const activeFileName = getActiveFile(folderName);
+		if (activeFileName) {
+			const fileData = getFileCode(folderName, activeFileName);
+			if (fileData) {
+				// Update tab bar - remove existing tabs and add new one
+				const tabBar = document.querySelector("editor-well tab-bar");
+				if (tabBar) {
+					// Remove all existing file tabs (keep only fill-end and tab-action)
+					const existingTabs = tabBar.querySelectorAll("tab-item:not([type='fill-end'])");
+					existingTabs.forEach(tab => tab.remove());
+
+					// Create new active tab
+					const newTab = document.createElement("tab-item");
+					newTab.setAttribute("active", "");
+					newTab.innerHTML = `
+						<span class="filename">${activeFileName}</span>
+						<span class="close-icon">
+							<svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+								<path d="M12.1465 5.14652C12.3418 4.95127 12.6583 4.95126 12.8535 5.14652C13.0487 5.34179 13.0488 5.65831 12.8535 5.85355L9.70705 9.00004L12.8535 12.1465C13.0488 12.3418 13.0488 12.6583 12.8535 12.8536C12.6583 13.0488 12.3418 13.0488 12.1465 12.8536L9.00002 9.70707L5.85354 12.8536C5.6583 13.0488 5.34177 13.0488 5.14651 12.8536C4.95125 12.6583 4.95125 12.3418 5.14651 12.1465L8.29299 9.00004L5.14651 5.85355C4.95125 5.6583 4.95126 5.34179 5.14651 5.14652C5.34177 4.95126 5.65828 4.95126 5.85354 5.14652L9.00002 8.29301L12.1465 5.14652Z" />
+							</svg>
+						</span>
+					`;
+
+					// Insert at the beginning of the tab bar
+					const fillEnd = tabBar.querySelector('[type="fill-end"]');
+					if (fillEnd) {
+						tabBar.insertBefore(newTab, fillEnd);
+					} else {
+						tabBar.prepend(newTab);
+					}
+				}
+
+				// Update Monaco editor
+				setEditorContent(activeFileName);
+			}
+		}
+	}
+
+	// Add a new workspace pill to the floating chat input
+	const workspaceRow = document.querySelector("floating-chat-input workspace-row");
+	if (workspaceRow) {
+		// Check if workspace pill already exists
+		const existingPill = workspaceRow.querySelector(`workspace-pill[data-workspace="${folderName}"]`);
+		if (!existingPill) {
+			// Create new workspace pill
+			const newPill = document.createElement("workspace-pill");
+			newPill.setAttribute("data-workspace", folderName);
+			newPill.innerHTML = `
+				<span class="workspace-name">${folderName}</span>
+				<span class="view-sessions-icon" title="View sessions">
+					<svg width="12" height="12" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+						<path d="M5.64645 3.14645C5.45118 3.34171 5.45118 3.65829 5.64645 3.85355L9.79289 8L5.64645 12.1464C5.45118 12.3417 5.45118 12.6583 5.64645 12.8536C5.84171 13.0488 6.15829 13.0488 6.35355 12.8536L10.8536 8.35355C11.0488 8.15829 11.0488 7.84171 10.8536 7.64645L6.35355 3.14645C6.15829 2.95118 5.84171 2.95118 5.64645 3.14645Z"/>
+					</svg>
+				</span>
+			`;
+
+			// Insert before the new-session-button
+			const newSessionBtn = workspaceRow.querySelector("new-session-button");
+			workspaceRow.insertBefore(newPill, newSessionBtn);
+
+			// Remove active from other pills and set new one as active
+			workspaceRow.querySelectorAll("workspace-pill").forEach((p) => p.removeAttribute("active"));
+			newPill.setAttribute("active", "");
+		}
+	}
+
+	updateFloatingChatWorkspaceCounts();
+
+	// Close the workspace picker
+	hideWorkspacePicker();
+}
+
+/**
+ * Render tree view HTML for a project from projectData
+ * @param {Object} project - The project data object
+ * @returns {string} HTML string for the tree view
+ */
+function renderProjectTreeView(project) {
+	let html = "";
+	for (const item of project.tree) {
+		const indentAttr = item.indent > 0 ? `indent="${item.indent}"` : "";
+		const isFolder = item.type === "folder";
+		const openAttr = isFolder && item.open ? "open" : "";
+		const folderAttr = isFolder ? "folder" : "";
+		const activeAttr = item.active ? "active" : "";
+
+		if (isFolder) {
+			html += `<tree-item ${folderAttr} ${openAttr} ${indentAttr}>
+				${TREE_ICONS.chevron}
+				${TREE_ICONS.folder}
+				<span class="folder-name">${item.name}</span>
+			</tree-item>`;
+		} else {
+			html += `<tree-item ${indentAttr} ${activeAttr}>
+				${TREE_ICONS.file}
+				<span class="file-name">${item.name}</span>
+			</tree-item>`;
+		}
+	}
+	return html;
+}
+
+// Initialize workspace picker
+initWorkspacePicker();

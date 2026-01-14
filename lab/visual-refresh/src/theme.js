@@ -2,11 +2,44 @@
 export default {
 	$schema: "vscode://schemas/color-theme",
 	type: "dark",
+	semanticHighlighting: true,
+	semanticTokenColors: {
+		// Semantic token colors for language server support
+		"namespace": "#c8a8f0",
+		"type": "#7ae8d0",
+		"type.defaultLibrary": "#7ae8d0",
+		"class": "#7ae8d0",
+		"class.defaultLibrary": "#7ae8d0",
+		"interface": "#7ae8d0",
+		"struct": "#7ae8d0",
+		"enum": "#7ae8d0",
+		"enumMember": "#ffc87a",
+		"typeParameter": "#7ae8d0",
+		"function": "#ffcaa0",
+		"function.defaultLibrary": "#ffcaa0",
+		"method": "#ffcaa0",
+		"macro": "#d4a8ff",
+		"variable": "#9dcfff",
+		"variable.readonly": "#8be8af",
+		"variable.readonly.defaultLibrary": "#8be8af",
+		"variable.defaultLibrary": "#9dcfff",
+		"parameter": { "foreground": "#9dcfff", "italic": true },
+		"property": "#a8c8ff",
+		"property.readonly": "#8be8af",
+		"label": "#9dcfff",
+		"keyword": "#7cd5f0",
+		"string": "#ffb5a0",
+		"number": "#ffc87a",
+		"regexp": "#ff9eb0",
+		"operator": "#7cd5f0",
+		"decorator": "#c8a8f0",
+		"comment": { "foreground": "#7a8aa8", "italic": true },
+	},
 	colors: {
 		"actionBar.toggledBackground": "#1a2530",
 		"activityBar.activeBorder": "#6ec8e5",
-		"activityBar.background": "#0d0d0d",
-		"activityBar.border": "#1e1e1e",
+		"activityBar.background": "#1e1e1e",
+		"activityBar.border": "#2a2a2a",
 		"activityBar.foreground": "#e4e4e4",
 		"activityBar.inactiveForeground": "#606060",
 		"activityBarBadge.background": "#6ec8e5",
@@ -25,20 +58,20 @@ export default {
 		"chat.slashCommandForeground": "#6ec8e5",
 		"checkbox.background": "#181818",
 		"checkbox.border": "#2a2a2a",
-		"debugToolBar.background": "#0d0d0d",
+		"debugToolBar.background": "#1e1e1e",
 		descriptionForeground: "#8a8a8a",
 		"dropdown.background": "#121212",
 		"dropdown.border": "#2a2a2a",
 		"dropdown.foreground": "#e4e4e4",
-		"dropdown.listBackground": "#0d0d0d",
-		"editor.background": "#121212",
+		"dropdown.listBackground": "#1e1e1e",
+		"editor.background": "#0a0a0a",
 		"editor.findMatchBackground": "#6ec8e566",
 		"editor.foreground": "#d8d8d8",
 		"editor.inactiveSelectionBackground": "#ffffff0d",
 		"editor.selectionHighlightBackground": "#6ec8e525",
 		"editorGroup.border": "#1e1e1e",
-		"editorGroupHeader.tabsBackground": "#0d0d0d",
-		"editorGroupHeader.tabsBorder": "#1e1e1e",
+		"editorGroupHeader.tabsBackground": "#1e1e1e",
+		"editorGroupHeader.tabsBorder": "#2a2a2a",
 		"editorGutter.addedBackground": "#3fa266",
 		"editorGutter.deletedBackground": "#e34671",
 		"editorGutter.modifiedBackground": "#d2943e",
@@ -61,68 +94,68 @@ export default {
 		"keybindingLabel.foreground": "#e4e4e4",
 		"list.activeSelectionIconForeground": "#e4e4e4",
 		"list.dropBackground": "#6ec8e520",
-		"menu.background": "#0d0d0d",
-		"menu.border": "#1e1e1e",
+		"menu.background": "#1e1e1e",
+		"menu.border": "#2a2a2a",
 		"menu.foreground": "#e4e4e4",
 		"menu.selectionBackground": "#ffffff12",
 		"menu.separatorBackground": "#1e1e1e",
-		"notificationCenterHeader.background": "#0d0d0d",
+		"notificationCenterHeader.background": "#1e1e1e",
 		"notificationCenterHeader.foreground": "#e4e4e4",
 		"notifications.background": "#141414",
 		"notifications.border": "#1e1e1e",
 		"notifications.foreground": "#e4e4e4",
-		"panel.background": "#0d0d0d",
-		"panel.border": "#1e1e1e",
+		"panel.background": "#1e1e1e",
+		"panel.border": "#2a2a2a",
 		"panelInput.border": "#1e1e1e",
 		"panelTitle.activeBorder": "#6ec8e500",
 		"panelTitle.activeForeground": "#e4e4e4",
 		"panelTitle.inactiveForeground": "#707070",
-		"peekViewEditor.background": "#0d0d0d",
+		"peekViewEditor.background": "#1e1e1e",
 		"peekViewEditor.matchHighlightBackground": "#6ec8e544",
-		"peekViewResult.background": "#0d0d0d",
+		"peekViewResult.background": "#1e1e1e",
 		"peekViewResult.matchHighlightBackground": "#6ec8e544",
 		"pickerGroup.border": "#252525",
 		"ports.iconRunningProcessForeground": "#3fa266",
 		"progressBar.background": "#3fa266",
-		"quickInput.background": "#0d0d0d",
+		"quickInput.background": "#1e1e1e",
 		"quickInput.foreground": "#e4e4e4",
 		"settings.dropdownBackground": "#121212",
 		"settings.dropdownBorder": "#2a2a2a",
 		"settings.headerForeground": "#ffffff",
 		"settings.modifiedItemIndicator": "#6ec8e5",
-		"sideBar.background": "#0d0d0d",
-		"sideBar.border": "#1e1e1e",
+		"sideBar.background": "#1e1e1e",
+		"sideBar.border": "#2a2a2a",
 		"sideBar.foreground": "#a0a0a0",
-		"sideBarSectionHeader.background": "#0d0d0d",
-		"sideBarSectionHeader.border": "#1e1e1e",
+		"sideBarSectionHeader.background": "#1e1e1e",
+		"sideBarSectionHeader.border": "#2a2a2a",
 		"sideBarSectionHeader.foreground": "#808080",
 		"sideBarTitle.foreground": "#808080",
-		"statusBar.background": "#0d0d0d",
-		"statusBar.border": "#1e1e1e",
+		"statusBar.background": "#1e1e1e",
+		"statusBar.border": "#2a2a2a",
 		"statusBar.debuggingBackground": "#6ec8e5",
 		"statusBar.debuggingForeground": "#0d0d0d",
 		"statusBar.focusBorder": "#6ec8e5",
 		"statusBar.foreground": "#707070",
-		"statusBar.noFolderBackground": "#0d0d0d",
+		"statusBar.noFolderBackground": "#1e1e1e",
 		"statusBarItem.focusBorder": "#6ec8e5",
 		"statusBarItem.hoverBackground": "#ffffff10",
 		"statusBarItem.hoverForeground": "#e4e4e4",
 		"statusBarItem.prominentBackground": "#ffffff0d",
-		"statusBarItem.remoteBackground": "#0d0d0d",
+		"statusBarItem.remoteBackground": "#1e1e1e",
 		"statusBarItem.remoteForeground": "#808080",
-		"tab.activeBackground": "#121212",
-		"tab.activeBorder": "#121212",
+		"tab.activeBackground": "#0a0a0a",
+		"tab.activeBorder": "#0a0a0a",
 		"tab.activeBorderTop": "#00000000",
 		"tab.activeForeground": "#e4e4e4",
-		"tab.border": "#1e1e1e",
-		"tab.hoverBackground": "#1a1a1a",
-		"tab.inactiveBackground": "#0d0d0d",
+		"tab.border": "#2a2a2a",
+		"tab.hoverBackground": "#252525",
+		"tab.inactiveBackground": "#1e1e1e",
 		"tab.inactiveForeground": "#606060",
 		"tab.lastPinnedBorder": "#ffffff20",
-		"tab.selectedBackground": "#121212",
+		"tab.selectedBackground": "#0a0a0a",
 		"tab.selectedBorderTop": "#00000000",
 		"tab.selectedForeground": "#e4e4e4",
-		"tab.unfocusedActiveBorder": "#121212",
+		"tab.unfocusedActiveBorder": "#0a0a0a",
 		"tab.unfocusedActiveBorderTop": "#00000000",
 		"tab.unfocusedHoverBackground": "#1a1a1a",
 		"terminal.foreground": "#e4e4e4",
@@ -136,23 +169,24 @@ export default {
 		"textPreformat.background": "#252525",
 		"textPreformat.foreground": "#d8d8d8",
 		"textSeparator.foreground": "#1e1e1e",
-		"titleBar.activeBackground": "#0d0d0d",
+		"titleBar.activeBackground": "#1e1e1e",
 		"titleBar.activeForeground": "#909090",
-		"titleBar.border": "#1e1e1e",
-		"titleBar.inactiveBackground": "#0d0d0d",
+		"titleBar.border": "#2a2a2a",
+		"titleBar.inactiveBackground": "#1e1e1e",
 		"titleBar.inactiveForeground": "#606060",
 		"welcomePage.progress.foreground": "#6ec8e5",
 		"welcomePage.tileBackground": "#141414",
 		"widget.border": "#1e1e1e",
 	},
 	tokenColors: [
-		// Base text
+		// Base text - warm off-white (fallback for any unmatched tokens)
 		{
 			scope: ["source", "text"],
 			settings: {
-				foreground: "#d8d8d8",
+				foreground: "#c8d0e0",
 			},
 		},
+		// Meta blocks - slightly colored
 		{
 			scope: [
 				"meta.embedded",
@@ -161,7 +195,52 @@ export default {
 				"variable.legacy.builtin.python",
 			],
 			settings: {
-				foreground: "#d8d8d8",
+				foreground: "#c8d0e0",
+			},
+		},
+		// Package/module names - soft lavender
+		{
+			scope: [
+				"entity.name.package",
+				"entity.name.module",
+				"entity.name.namespace",
+				"support.other.namespace",
+				"entity.name.scope-resolution",
+			],
+			settings: {
+				foreground: "#c8a8f0",
+			},
+		},
+		// Built-in types - teal mint
+		{
+			scope: [
+				"support.type",
+				"support.type.builtin",
+				"support.type.primitive",
+				"storage.type.numeric",
+				"storage.type.string",
+				"storage.type.boolean",
+				"storage.type.byte",
+				"storage.type.error",
+				"storage.type.uintptr",
+				"storage.type.rune",
+				"storage.type.built-in",
+				"keyword.type",
+				"support.type.primitive.go",
+			],
+			settings: {
+				foreground: "#7ae8d0",
+			},
+		},
+		// Generic identifiers (catch-all for any remaining plain identifiers)
+		{
+			scope: [
+				"meta.identifier",
+				"source identifier",
+				"source.go meta.function-call",
+			],
+			settings: {
+				foreground: "#9dcfff",
 			},
 		},
 		{
@@ -179,18 +258,18 @@ export default {
 		{
 			scope: "header",
 			settings: {
-				foreground: "#6ec8e5",
+				foreground: "#7cd5f0",
 			},
 		},
-		// Comments
+		// Comments - soft muted periwinkle
 		{
 			scope: ["comment", "punctuation.definition.comment"],
 			settings: {
-				foreground: "#5a6370",
+				foreground: "#7a8aa8",
 				fontStyle: "italic",
 			},
 		},
-		// Constants
+		// Constants - bright mint cyan
 		{
 			scope: [
 				"constant",
@@ -200,9 +279,10 @@ export default {
 				"constant.language.undefined",
 			],
 			settings: {
-				foreground: "#7dcfdc",
+				foreground: "#7aecd6",
 			},
 		},
+		// Numbers - warm peachy gold
 		{
 			scope: [
 				"constant.numeric",
@@ -215,16 +295,16 @@ export default {
 				"keyword.operator.minus.exponent",
 			],
 			settings: {
-				foreground: "#f1b467",
+				foreground: "#ffc87a",
 			},
 		},
 		{
 			scope: "constant.regexp",
 			settings: {
-				foreground: "#b8a0f8",
+				foreground: "#d4a8ff",
 			},
 		},
-		// Strings - using warm coral
+		// Strings - soft coral pink
 		{
 			scope: [
 				"string",
@@ -236,19 +316,19 @@ export default {
 				"meta.embedded.assembly",
 			],
 			settings: {
-				foreground: "#e8a07a",
+				foreground: "#ffb5a0",
 			},
 		},
 		{
 			scope: ["string.tag", "string.value"],
 			settings: {
-				foreground: "#e8a07a",
+				foreground: "#ffb5a0",
 			},
 		},
 		{
 			scope: "string.regexp",
 			settings: {
-				foreground: "#fc6b83",
+				foreground: "#ff9eb0",
 			},
 		},
 		{
@@ -258,10 +338,10 @@ export default {
 				"punctuation.definition.string.end",
 			],
 			settings: {
-				foreground: "#e8a07a",
+				foreground: "#ffb5a0",
 			},
 		},
-		// Template expressions
+		// Template expressions - bright teal
 		{
 			scope: [
 				"punctuation.definition.template-expression.begin",
@@ -270,22 +350,23 @@ export default {
 				"meta.template.expression punctuation.definition",
 			],
 			settings: {
-				foreground: "#7dcfdc",
+				foreground: "#7aecd6",
 			},
 		},
 		{
 			scope: ["meta.template.expression"],
 			settings: {
-				foreground: "#d8d8d8",
+				foreground: "#c8d0e0",
 			},
 		},
-		// Keywords
+		// Keywords - bright cyan
 		{
 			scope: ["keyword", "keyword.other"],
 			settings: {
-				foreground: "#7dcfdc",
+				foreground: "#7cd5f0",
 			},
 		},
+		// Control flow - soft lavender purple
 		{
 			scope: [
 				"keyword.control",
@@ -296,7 +377,7 @@ export default {
 				"keyword.control.switch",
 			],
 			settings: {
-				foreground: "#b8a0f8",
+				foreground: "#d4a8ff",
 			},
 		},
 		{
@@ -308,13 +389,13 @@ export default {
 				"keyword.control.as",
 			],
 			settings: {
-				foreground: "#7dcfdc",
+				foreground: "#7cd5f0",
 			},
 		},
 		{
 			scope: "keyword.operator",
 			settings: {
-				foreground: "#d8d8d8",
+				foreground: "#c8d0df",
 			},
 		},
 		{
@@ -329,16 +410,16 @@ export default {
 				"keyword.operator.wordlike",
 			],
 			settings: {
-				foreground: "#7dcfdc",
+				foreground: "#7cd5f0",
 			},
 		},
 		{
 			scope: "keyword.other.unit",
 			settings: {
-				foreground: "#f1b467",
+				foreground: "#ffc87a",
 			},
 		},
-		// Storage
+		// Storage - mint cyan
 		{
 			scope: [
 				"storage",
@@ -350,10 +431,10 @@ export default {
 				"storage.type.type",
 			],
 			settings: {
-				foreground: "#7dcfdc",
+				foreground: "#7cd5f0",
 			},
 		},
-		// Variables
+		// Variables - sky blue
 		{
 			scope: [
 				"variable",
@@ -363,24 +444,28 @@ export default {
 				"support.variable",
 				"entity.name.variable",
 				"constant.other.placeholder",
+				"meta.function-call variable.other.object",
+				"source.go variable.other",
 			],
 			settings: {
-				foreground: "#87c3ff",
+				foreground: "#9dcfff",
 			},
 		},
 		{
 			scope: ["variable.parameter", "variable.parameter.function"],
 			settings: {
-				foreground: "#87c3ff",
+				foreground: "#9dcfff",
 				fontStyle: "italic",
 			},
 		},
+		// Constants - bright mint green
 		{
 			scope: ["variable.other.constant", "variable.other.enummember", "variable.readonly"],
 			settings: {
-				foreground: "#70b489",
+				foreground: "#8be8af",
 			},
 		},
+		// this/self - soft rose
 		{
 			scope: [
 				"variable.language",
@@ -389,21 +474,24 @@ export default {
 				"variable.language.super",
 			],
 			settings: {
-				foreground: "#cc7c8a",
+				foreground: "#f0a0b8",
 				fontStyle: "italic",
 			},
 		},
+		// Properties - soft periwinkle blue
 		{
 			scope: [
 				"variable.other.property",
 				"variable.other.object.property",
 				"meta.object-literal.key",
+				"meta.field.declaration variable",
+				"variable.other.member.declaration",
 			],
 			settings: {
-				foreground: "#87c3ff",
+				foreground: "#a8c8ff",
 			},
 		},
-		// Functions
+		// Functions - warm peach
 		{
 			scope: [
 				"entity.name.function",
@@ -413,16 +501,28 @@ export default {
 				"meta.method-call entity.name.function",
 			],
 			settings: {
-				foreground: "#efb080",
+				foreground: "#ffcaa0",
 			},
 		},
 		{
 			scope: ["support.function.builtin", "support.function.console"],
 			settings: {
-				foreground: "#efb080",
+				foreground: "#ffcaa0",
 			},
 		},
-		// Types and Classes
+		// Method receivers - soft lavender (e.g., "flag" in flag.String)
+		{
+			scope: [
+				"variable.other.object.access",
+				"variable.other.object.property",
+				"meta.method-call variable.other.object",
+				"meta.function-call variable",
+			],
+			settings: {
+				foreground: "#c8a8f0",
+			},
+		},
+		// Types and Classes - soft teal mint
 		{
 			scope: [
 				"entity.name.type",
@@ -435,17 +535,17 @@ export default {
 				"support.type.primitive",
 			],
 			settings: {
-				foreground: "#6ec8e5",
+				foreground: "#7ae8d0",
 			},
 		},
 		{
 			scope: ["entity.other.inherited-class"],
 			settings: {
-				foreground: "#6ec8e5",
+				foreground: "#7ae8d0",
 				fontStyle: "italic",
 			},
 		},
-		// HTML/XML Tags
+		// HTML/XML Tags - soft cyan
 		{
 			scope: [
 				"entity.name.tag",
@@ -454,7 +554,7 @@ export default {
 				"entity.name.tag.localname",
 			],
 			settings: {
-				foreground: "#7dcfdc",
+				foreground: "#ff9eb0",
 			},
 		},
 		{
@@ -465,10 +565,10 @@ export default {
 				"punctuation.definition.tag.end",
 			],
 			settings: {
-				foreground: "#5a6a70",
+				foreground: "#6a8090",
 			},
 		},
-		// JSX/TSX - this is critical
+		// JSX/TSX - soft mint for components
 		{
 			scope: [
 				"support.class.component",
@@ -482,7 +582,7 @@ export default {
 				"entity.name.tag.tsx",
 			],
 			settings: {
-				foreground: "#6ec8e5",
+				foreground: "#7ae8d0",
 			},
 		},
 		{
@@ -495,10 +595,10 @@ export default {
 				"punctuation.definition.tag.end.tsx",
 			],
 			settings: {
-				foreground: "#5a6a70",
+				foreground: "#6a8090",
 			},
 		},
-		// Attributes
+		// Attributes - soft lavender
 		{
 			scope: [
 				"entity.other.attribute-name",
@@ -509,10 +609,11 @@ export default {
 				"entity.other.attribute-name.ts",
 			],
 			settings: {
-				foreground: "#b8a0f8",
+				foreground: "#c8a8f0",
 				fontStyle: "italic",
 			},
 		},
+		// CSS selectors - golden yellow
 		{
 			scope: [
 				"entity.other.attribute-name.class.css",
@@ -521,16 +622,17 @@ export default {
 				"entity.other.attribute-name.pseudo-element",
 			],
 			settings: {
-				foreground: "#f1b467",
+				foreground: "#f8d87a",
 			},
 		},
-		// CSS
+		// CSS tags
 		{
 			scope: ["entity.name.tag.css", "entity.name.tag.less", "entity.name.tag.scss"],
 			settings: {
-				foreground: "#f1b467",
+				foreground: "#ff9eb0",
 			},
 		},
+		// CSS properties - sky blue
 		{
 			scope: [
 				"support.type.property-name",
@@ -539,9 +641,10 @@ export default {
 				"meta.property-name.css",
 			],
 			settings: {
-				foreground: "#87c3ff",
+				foreground: "#9dcfff",
 			},
 		},
+		// CSS values - coral
 		{
 			scope: [
 				"support.constant.property-value",
@@ -553,53 +656,54 @@ export default {
 				"meta.property-value.css",
 			],
 			settings: {
-				foreground: "#e8a07a",
+				foreground: "#ffb5a0",
 			},
 		},
+		// CSS colors - gold
 		{
 			scope: ["constant.other.color", "constant.other.color.rgb-value", "constant.other.rgb-value"],
 			settings: {
-				foreground: "#f1b467",
+				foreground: "#f8d87a",
 			},
 		},
-		// JSON
+		// JSON keys - periwinkle
 		{
 			scope: ["support.type.property-name.json", "punctuation.support.type.property-name.json"],
 			settings: {
-				foreground: "#87c3ff",
+				foreground: "#a8c8ff",
 			},
 		},
 		{
 			scope: ["string.quoted.double.json", "string.json"],
 			settings: {
-				foreground: "#e8a07a",
+				foreground: "#ffb5a0",
 			},
 		},
 		// YAML
 		{
 			scope: ["entity.name.tag.yaml", "punctuation.definition.block.sequence.item.yaml"],
 			settings: {
-				foreground: "#87c3ff",
+				foreground: "#a8c8ff",
 			},
 		},
 		{
 			scope: ["string.unquoted.yaml", "string.quoted.single.yaml", "string.quoted.double.yaml"],
 			settings: {
-				foreground: "#e8a07a",
+				foreground: "#ffb5a0",
 			},
 		},
-		// Markdown
+		// Markdown headings - bright sky blue
 		{
 			scope: "markup.heading",
 			settings: {
-				foreground: "#87c3ff",
+				foreground: "#9dcfff",
 				fontStyle: "bold",
 			},
 		},
 		{
 			scope: "markup.bold",
 			settings: {
-				foreground: "#7dcfdc",
+				foreground: "#ffc87a",
 				fontStyle: "bold",
 			},
 		},
@@ -624,54 +728,101 @@ export default {
 		{
 			scope: ["markup.inline.raw", "markup.fenced_code", "markup.raw"],
 			settings: {
-				foreground: "#e8a07a",
+				foreground: "#ffb5a0",
 			},
 		},
+		// Diff - bright mint green
 		{
 			scope: "markup.inserted",
 			settings: {
-				foreground: "#70b489",
+				foreground: "#8be8af",
 			},
 		},
+		// Diff - soft pink red
 		{
 			scope: "markup.deleted",
 			settings: {
-				foreground: "#fc6b83",
+				foreground: "#ff9eb0",
 			},
 		},
 		{
 			scope: "markup.changed",
 			settings: {
-				foreground: "#f1b467",
+				foreground: "#ffc87a",
 			},
 		},
 		{
 			scope: ["markup.quote", "punctuation.definition.quote.begin.markdown"],
 			settings: {
-				foreground: "#5a6370",
+				foreground: "#7a8aa8",
 				fontStyle: "italic",
 			},
 		},
 		{
 			scope: ["markup.list", "punctuation.definition.list.begin.markdown"],
 			settings: {
-				foreground: "#87c3ff",
+				foreground: "#9dcfff",
 			},
 		},
 		{
 			scope: ["markup.link", "string.other.link"],
 			settings: {
-				foreground: "#6ec8e5",
+				foreground: "#7cd5f0",
 			},
 		},
-		// Invalid
+		// Invalid - soft coral
 		{
 			scope: "invalid",
 			settings: {
-				foreground: "#fc6b83",
+				foreground: "#ff9eb0",
 			},
 		},
-		// Go-specific
+		// Support classes and modules - soft lavender (for package.method calls)
+		{
+			scope: [
+				"support.class",
+				"support.module",
+				"support.other.module",
+				"entity.name.module",
+				"variable.other.object",
+				"variable.other.object.access",
+			],
+			settings: {
+				foreground: "#c8a8f0",
+			},
+		},
+		// Struct/object field keys - periwinkle blue
+		{
+			scope: [
+				"variable.other.field",
+				"variable.other.member",
+				"entity.name.tag.reference",
+				"meta.field.declaration entity.name.variable",
+				"variable.object.property",
+				"meta.struct.key",
+			],
+			settings: {
+				foreground: "#a8c8ff",
+			},
+		},
+		// Assignment and comparison operators - soft cyan
+		{
+			scope: [
+				"keyword.operator.assignment",
+				"keyword.operator.comparison",
+				"keyword.operator.relational",
+				"keyword.operator.arithmetic",
+				"keyword.operator.logical",
+				"keyword.operator.bitwise",
+				"keyword.operator.channel",
+				"keyword.operator.address",
+				"keyword.operator.pointer",
+			],
+			settings: {
+				foreground: "#7cd5f0",
+			},
+		},
+		// Go-specific - cyan
 		{
 			scope: [
 				"keyword.package.go",
@@ -686,49 +837,113 @@ export default {
 				"keyword.chan.go",
 			],
 			settings: {
-				foreground: "#7dcfdc",
+				foreground: "#7cd5f0",
 			},
 		},
 		{
 			scope: ["keyword.control.go"],
 			settings: {
-				foreground: "#b8a0f8",
+				foreground: "#d4a8ff",
 			},
 		},
+		// Go package names - lavender
 		{
-			scope: ["entity.name.package.go"],
+			scope: [
+				"entity.name.package.go",
+				"support.other.package.go",
+				"entity.name.import.go.package",
+			],
 			settings: {
-				foreground: "#d8d8d8",
+				foreground: "#c8a8f0",
 			},
 		},
+		// Go imports
 		{
 			scope: ["entity.name.import.go", "string.quoted.double.go"],
 			settings: {
-				foreground: "#e8a07a",
+				foreground: "#ffb5a0",
 			},
 		},
+		// Go functions
 		{
-			scope: ["entity.name.function.go", "support.function.go"],
+			scope: ["entity.name.function.go", "support.function.go", "support.function.builtin.go"],
 			settings: {
-				foreground: "#efb080",
+				foreground: "#ffcaa0",
 			},
 		},
+		// Go types - teal mint
 		{
-			scope: ["entity.name.type.go", "storage.type.go"],
+			scope: [
+				"entity.name.type.go",
+				"storage.type.go",
+				"storage.type.error.go",
+				"storage.type.numeric.go",
+				"storage.type.string.go",
+				"storage.type.boolean.go",
+				"storage.type.byte.go",
+				"storage.type.rune.go",
+				"storage.type.uintptr.go",
+				"support.type.go",
+				"support.type.builtin.go",
+				"entity.name.type.interface.go",
+				"entity.name.type.struct.go",
+			],
 			settings: {
-				foreground: "#6ec8e5",
+				foreground: "#7ae8d0",
 			},
 		},
+		// Go variables - sky blue
 		{
-			scope: ["variable.other.go", "variable.other.member.go", "variable.other.assignment.go"],
+			scope: [
+				"variable.other.go",
+				"variable.other.member.go", 
+				"variable.other.assignment.go",
+				"variable.other.declaration.go",
+				"variable.other.blank.go",
+				"source.go variable",
+			],
 			settings: {
-				foreground: "#87c3ff",
+				foreground: "#9dcfff",
 			},
 		},
+		// Go struct field names - periwinkle
 		{
-			scope: ["constant.language.go", "constant.other.placeholder.go"],
+			scope: [
+				"variable.other.property.go",
+				"variable.other.field.go",
+				"entity.name.variable.field.go",
+				"meta.struct.field.go variable",
+				"source.go meta.composite-literal variable.other",
+			],
 			settings: {
-				foreground: "#7dcfdc",
+				foreground: "#a8c8ff",
+			},
+		},
+		// Go constants
+		{
+			scope: [
+				"constant.language.go",
+				"constant.other.placeholder.go",
+				"constant.other.go",
+			],
+			settings: {
+				foreground: "#7aecd6",
+			},
+		},
+		// Go operators - bright cyan
+		{
+			scope: [
+				"keyword.operator.go",
+				"keyword.operator.assignment.go",
+				"keyword.operator.arithmetic.go",
+				"keyword.operator.comparison.go",
+				"keyword.operator.logical.go",
+				"keyword.operator.channel.go",
+				"keyword.operator.address.go",
+				"keyword.operator.ellipsis.go",
+			],
+			settings: {
+				foreground: "#7cd5f0",
 			},
 		},
 		// Regex
@@ -739,37 +954,37 @@ export default {
 				"support.other.parenthesis.regexp",
 			],
 			settings: {
-				foreground: "#e8a07a",
+				foreground: "#ffb5a0",
 			},
 		},
 		{
 			scope: ["constant.character.character-class.regexp", "constant.other.character-class.regexp"],
 			settings: {
-				foreground: "#fc6b83",
+				foreground: "#ff9eb0",
 			},
 		},
 		{
 			scope: ["keyword.operator.or.regexp", "keyword.control.anchor.regexp"],
 			settings: {
-				foreground: "#efb080",
+				foreground: "#ffcaa0",
 			},
 		},
 		{
 			scope: "keyword.operator.quantifier.regexp",
 			settings: {
-				foreground: "#f1b467",
+				foreground: "#ffc87a",
 			},
 		},
 		{
 			scope: ["constant.character", "constant.other.option"],
 			settings: {
-				foreground: "#7dcfdc",
+				foreground: "#7aecd6",
 			},
 		},
 		{
 			scope: "constant.character.escape",
 			settings: {
-				foreground: "#f1b467",
+				foreground: "#ffc87a",
 			},
 		},
 		// Punctuation
@@ -782,7 +997,7 @@ export default {
 				"punctuation.separator.key-value",
 			],
 			settings: {
-				foreground: "#808080",
+				foreground: "#a0a8b8",
 			},
 		},
 		{
@@ -800,39 +1015,112 @@ export default {
 				"punctuation.parenthesis",
 			],
 			settings: {
-				foreground: "#d8d8d8",
+				foreground: "#c8d0df",
+			},
+		},
+		// JSX expression braces - mint cyan
+		{
+			scope: [
+				"punctuation.section.embedded.begin.jsx",
+				"punctuation.section.embedded.end.jsx",
+				"punctuation.section.embedded.begin.tsx",
+				"punctuation.section.embedded.end.tsx",
+				"meta.jsx.children punctuation.section.embedded",
+			],
+			settings: {
+				foreground: "#7aecd6",
+			},
+		},
+		// JSX Text content - soft warm cream
+		{
+			scope: [
+				"meta.jsx.children",
+				"string.unquoted.jsx.text",
+			],
+			settings: {
+				foreground: "#e8dcd0",
+			},
+		},
+		// Catch-all for source code entities - variable colored
+		{
+			scope: [
+				"source entity.name",
+				"source meta.definition.variable entity.name.function",
+			],
+			settings: {
+				foreground: "#9dcfff",
+			},
+		},
+		// Catch-all for source member access - periwinkle
+		{
+			scope: [
+				"source meta.selector",
+				"source meta.selector entity.name",
+			],
+			settings: {
+				foreground: "#a8c8ff",
+			},
+		},
+		// Support classes (for package.method style calls) - lavender
+		{
+			scope: [
+				"support.class",
+				"support.other.module",
+				"entity.name.module",
+				"support.type.object.module",
+			],
+			settings: {
+				foreground: "#c8a8f0",
+			},
+		},
+		// All remaining entity.name defaults - sky blue
+		{
+			scope: [
+				"entity.name",
+			],
+			settings: {
+				foreground: "#9dcfff",
+			},
+		},
+		// All remaining support defaults - teal 
+		{
+			scope: [
+				"support",
+			],
+			settings: {
+				foreground: "#7ae8d0",
 			},
 		},
 		// Misc
 		{
 			scope: "entity.name.label",
 			settings: {
-				foreground: "#d8d8d8",
+				foreground: "#c8d0e0",
 			},
 		},
 		// Tokens
 		{
 			scope: "token.info-token",
 			settings: {
-				foreground: "#6ec8e5",
+				foreground: "#7cd5f0",
 			},
 		},
 		{
 			scope: "token.warn-token",
 			settings: {
-				foreground: "#f1b467",
+				foreground: "#ffc87a",
 			},
 		},
 		{
 			scope: "token.error-token",
 			settings: {
-				foreground: "#fc6b83",
+				foreground: "#ff9eb0",
 			},
 		},
 		{
 			scope: "token.debug-token",
 			settings: {
-				foreground: "#b8a0f8",
+				foreground: "#d4a8ff",
 			},
 		},
 	],

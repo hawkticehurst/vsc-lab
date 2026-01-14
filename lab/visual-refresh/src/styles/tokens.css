@@ -3,6 +3,7 @@
 	--vscode-tab-strip-height: 38px;
 	--vscode-indent-width: 32px;
 	--vscode-line-number-gutter-width: 54px;
+	--vscode-panel-gap: 5px;
 	
 	/* Modern 2025 spacing scale */
 	--space-1: 4px;
@@ -24,9 +25,9 @@
 	--transition-spring: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 
 	/* Core colors - Rich dark theme */
-	--vscode-bg: #0a0a0b;
-	--vscode-bg-elevated: #111113;
-	--vscode-bg-surface: #161618;
+	--vscode-bg: #101013;
+	--vscode-bg-elevated: #141416;
+	--vscode-bg-surface: #181819;
 	--vscode-foreground: #ebebec;
 	--vscode-foreground-secondary: #7c7c82;
 	--vscode-foreground-muted: #545458;
@@ -43,7 +44,7 @@
 	--vscode-chat-border: rgba(255, 255, 255, 0.06);
 
 	/* Editor */
-	--vscode-editor-bg: #0e0e10;
+	--vscode-editor-bg: #0a0a0c;
 	--vscode-editor-fg: #dcdcde;
 	--vscode-editor-selection-bg: rgba(94, 184, 212, 0.15);
 	--vscode-line-number-color: #3d3d42;
@@ -53,16 +54,16 @@
 	--vscode-input-bg-hover: rgba(255, 255, 255, 0.05);
 	--vscode-input-border: rgba(255, 255, 255, 0.08);
 	--vscode-input-border-focus: rgba(94, 184, 212, 0.5);
-	--vscode-input-bg-expert-codebase-swimlane: #0c0c0e;
-	--vscode-input-border-expert-codebase-swimlane: rgba(255, 255, 255, 0.06);
+	--vscode-input-bg-expert-codebase-swimlane: #0a0a0c;
+	--vscode-input-border-expert-codebase-swimlane: rgba(255, 255, 255, 0.08);
 
 	/* Menu & Dropdown */
-	--vscode-menu-bg: #131315;
+	--vscode-menu-bg: #141416;
 	--vscode-menu-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
 
 	/* Tabs */
 	--vscode-tab-hover-bg: rgba(255, 255, 255, 0.04);
-	--vscode-tab-active-bg: #0e0e10;
+	--vscode-tab-active-bg: #0a0a0c;
 	--vscode-tab-active-border: #5eb8d4;
 
 	/* Interactive states */

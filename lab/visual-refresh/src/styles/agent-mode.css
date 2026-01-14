@@ -76,12 +76,5 @@ vs-code[agent-mode-swimlane] {
 		editor-well {
 			visibility: hidden;
 		}
-		secondary-side-bar {
-			border-radius: 0 0 8px 8px;
-			/* Note: There's a weird visual bug where the sidebar content is shifted 1px to the right
-		on very small screens and this fixes it. There's probably a better solution but this 
-		will do for now. */
-			transform: translateX(-1px);
-		}
 	}
 }

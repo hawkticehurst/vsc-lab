@@ -1,0 +1,746 @@
+<workspace-picker hidden>
+	<workspace-picker-backdrop></workspace-picker-backdrop>
+	<workspace-picker-window>
+		<finder-sidebar>
+			<sidebar-section>
+				<sidebar-title>Favorites</sidebar-title>
+				<sidebar-item active data-location="recents">
+					<span class="sidebar-icon">
+						<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+							<path d="M8 1C4.13 1 1 4.13 1 8C1 11.87 4.13 15 8 15C11.87 15 15 11.87 15 8C15 4.13 11.87 1 8 1ZM8 14C4.69 14 2 11.31 2 8C2 4.69 4.69 2 8 2C11.31 2 14 4.69 14 8C14 11.31 11.31 14 8 14ZM8.5 4H7.5V8.5H11V7.5H8.5V4Z"/>
+						</svg>
+					</span>
+					<span class="sidebar-label">Recents</span>
+				</sidebar-item>
+				<sidebar-item data-location="desktop">
+					<span class="sidebar-icon">
+						<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+							<path d="M14.5 1H1.5C0.67 1 0 1.67 0 2.5V10.5C0 11.33 0.67 12 1.5 12H6V14H4V15H12V14H10V12H14.5C15.33 12 16 11.33 16 10.5V2.5C16 1.67 15.33 1 14.5 1ZM15 10.5C15 10.78 14.78 11 14.5 11H1.5C1.22 11 1 10.78 1 10.5V2.5C1 2.22 1.22 2 1.5 2H14.5C14.78 2 15 2.22 15 2.5V10.5Z"/>
+						</svg>
+					</span>
+					<span class="sidebar-label">Desktop</span>
+				</sidebar-item>
+				<sidebar-item data-location="documents">
+					<span class="sidebar-icon">
+						<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+							<path d="M13.5 1H5.5C4.67 1 4 1.67 4 2.5V3H2.5C1.67 3 1 3.67 1 4.5V13.5C1 14.33 1.67 15 2.5 15H10.5C11.33 15 12 14.33 12 13.5V13H13.5C14.33 13 15 12.33 15 11.5V2.5C15 1.67 14.33 1 13.5 1ZM11 13.5C11 13.78 10.78 14 10.5 14H2.5C2.22 14 2 13.78 2 13.5V4.5C2 4.22 2.22 4 2.5 4H10.5C10.78 4 11 4.22 11 4.5V13.5ZM14 11.5C14 11.78 13.78 12 13.5 12H12V4.5C12 3.67 11.33 3 10.5 3H5V2.5C5 2.22 5.22 2 5.5 2H13.5C13.78 2 14 2.22 14 2.5V11.5Z"/>
+						</svg>
+					</span>
+					<span class="sidebar-label">Documents</span>
+				</sidebar-item>
+				<sidebar-item data-location="downloads">
+					<span class="sidebar-icon">
+						<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+							<path d="M8 11L4 7H6.5V1H9.5V7H12L8 11ZM14.5 13H1.5C0.67 13 0 13.67 0 14.5C0 15.33 0.67 16 1.5 16H14.5C15.33 16 16 15.33 16 14.5C16 13.67 15.33 13 14.5 13ZM14.5 15H1.5C1.22 15 1 14.78 1 14.5C1 14.22 1.22 14 1.5 14H14.5C14.78 14 15 14.22 15 14.5C15 14.78 14.78 15 14.5 15Z"/>
+						</svg>
+					</span>
+					<span class="sidebar-label">Downloads</span>
+				</sidebar-item>
+			</sidebar-section>
+			<sidebar-section>
+				<sidebar-title>iCloud</sidebar-title>
+				<sidebar-item data-location="icloud">
+					<span class="sidebar-icon cloud">
+						<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+							<path d="M13.5 6C13.33 6 13.17 6.01 13.01 6.04C12.42 3.72 10.39 2 8 2C5.52 2 3.42 3.85 2.94 6.28C1.25 6.63 0 8.15 0 10C0 12.21 1.79 14 4 14H13.5C15.43 14 17 12.43 17 10.5C17 8.01 15.43 6 13.5 6ZM13.5 13H4C2.35 13 1 11.65 1 10C1 8.57 2.01 7.35 3.39 7.08L4.03 6.95L4.04 6.28C4.2 4.47 5.94 3 8 3C9.94 3 11.58 4.34 11.91 6.14L12.04 6.87L12.77 6.95C14.08 7.11 16 8.35 16 10.5C16 11.88 14.88 13 13.5 13Z"/>
+						</svg>
+					</span>
+					<span class="sidebar-label">iCloud Drive</span>
+				</sidebar-item>
+			</sidebar-section>
+			<sidebar-section>
+				<sidebar-title>Locations</sidebar-title>
+				<sidebar-item data-location="macbook">
+					<span class="sidebar-icon laptop">
+						<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+							<path d="M14.5 11H14V3.5C14 2.67 13.33 2 12.5 2H3.5C2.67 2 2 2.67 2 3.5V11H1.5C0.67 11 0 11.67 0 12.5V13C0 13.55 0.45 14 1 14H15C15.55 14 16 13.55 16 13V12.5C16 11.67 15.33 11 14.5 11ZM3 3.5C3 3.22 3.22 3 3.5 3H12.5C12.78 3 13 3.22 13 3.5V11H3V3.5ZM15 13H1V12.5C1 12.22 1.22 12 1.5 12H14.5C14.78 12 15 12.22 15 12.5V13Z"/>
+						</svg>
+					</span>
+					<span class="sidebar-label">MacBook Pro</span>
+					<span class="sidebar-eject">
+						<svg width="12" height="12" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+							<path d="M8 3L2 9H14L8 3ZM3 11V13H13V11H3Z"/>
+						</svg>
+					</span>
+				</sidebar-item>
+			</sidebar-section>
+			<sidebar-section>
+				<sidebar-title>Tags</sidebar-title>
+				<sidebar-item data-location="tag-red">
+					<span class="sidebar-tag red"></span>
+					<span class="sidebar-label">Red</span>
+				</sidebar-item>
+				<sidebar-item data-location="tag-blue">
+					<span class="sidebar-tag blue"></span>
+					<span class="sidebar-label">Blue</span>
+				</sidebar-item>
+				<sidebar-item data-location="tag-green">
+					<span class="sidebar-tag green"></span>
+					<span class="sidebar-label">Green</span>
+				</sidebar-item>
+			</sidebar-section>
+		</finder-sidebar>
+		<finder-content>
+			<finder-toolbar>
+				<toolbar-nav>
+					<nav-button class="back" disabled>
+						<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+							<path d="M10.3632 3.56457L5.92775 8.00002L10.3632 12.4355C10.5585 12.6307 10.5585 12.9473 10.3632 13.1426C10.168 13.3378 9.85138 13.3378 9.65612 13.1426L4.85357 8.33999C4.65831 8.14473 4.65831 7.82815 4.85357 7.63289L9.65612 2.83034C9.85138 2.63508 10.168 2.63508 10.3632 2.83034C10.5585 3.0256 10.5585 3.34218 10.3632 3.53744V3.56457Z"/>
+						</svg>
+					</nav-button>
+					<nav-button class="forward" disabled>
+						<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+							<path d="M5.63681 12.4354L10.0722 7.99998L5.63681 3.56453C5.44155 3.36927 5.44155 3.05269 5.63681 2.85743C5.83207 2.66217 6.14865 2.66217 6.34391 2.85743L11.1465 7.66001C11.3417 7.85527 11.3417 8.17185 11.1465 8.36711L6.34391 13.1697C6.14865 13.3649 5.83207 13.3649 5.63681 13.1697C5.44155 12.9744 5.44155 12.6578 5.63681 12.4626V12.4354Z"/>
+						</svg>
+					</nav-button>
+				</toolbar-nav>
+				<toolbar-title>Recents</toolbar-title>
+				<toolbar-actions>
+					<toolbar-search>
+						<svg width="14" height="14" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+							<path d="M10.0195 10.7266C9.06578 11.5217 7.83875 12 6.5 12C3.46243 12 1 9.53757 1 6.5C1 3.46243 3.46243 1 6.5 1C9.53757 1 12 3.46243 12 6.5C12 7.83875 11.5217 9.06578 10.7266 10.0195L13.8535 13.1464C14.0488 13.3417 14.0488 13.6583 13.8535 13.8536C13.6583 14.0488 13.3417 14.0488 13.1464 13.8536L10.0195 10.7266ZM11 6.5C11 4.01472 8.98528 2 6.5 2C4.01472 2 2 4.01472 2 6.5C2 8.98528 4.01472 11 6.5 11C8.98528 11 11 8.98528 11 6.5Z"/>
+						</svg>
+						<input type="text" placeholder="Search">
+					</toolbar-search>
+					<view-toggle>
+						<view-button class="icon-view" active>
+							<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+								<path d="M2 2H6V6H2V2ZM2 10H6V14H2V10ZM10 2H14V6H10V2ZM10 10H14V14H10V10Z"/>
+							</svg>
+						</view-button>
+						<view-button class="list-view">
+							<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+								<path d="M2 3H14V4H2V3ZM2 7H14V8H2V7ZM2 11H14V12H2V11Z"/>
+							</svg>
+						</view-button>
+					</view-toggle>
+				</toolbar-actions>
+			</finder-toolbar>
+			<finder-breadcrumb>
+				<breadcrumb-item>Recents</breadcrumb-item>
+			</finder-breadcrumb>
+			<finder-files>
+				<folder-item data-path="/Users/hawk/Projects/vscode-extension">
+					<folder-icon>
+						<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+							<defs>
+								<linearGradient id="folder-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+									<stop offset="0%" style="stop-color:#5AC8FA"/>
+									<stop offset="100%" style="stop-color:#007AFF"/>
+								</linearGradient>
+							</defs>
+							<path d="M4 12C4 9.79 5.79 8 8 8H18L22 12H40C42.21 12 44 13.79 44 16V36C44 38.21 42.21 40 40 40H8C5.79 40 4 38.21 4 36V12Z" fill="url(#folder-gradient)"/>
+							<path d="M4 16H44V36C44 38.21 42.21 40 40 40H8C5.79 40 4 38.21 4 36V16Z" fill="#4AA3DF" opacity="0.9"/>
+						</svg>
+					</folder-icon>
+					<folder-name>vscode-extension</folder-name>
+					<folder-meta>TypeScript Project</folder-meta>
+				</folder-item>
+				<folder-item data-path="/Users/hawk/Projects/react-dashboard">
+					<folder-icon>
+						<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+							<path d="M4 12C4 9.79 5.79 8 8 8H18L22 12H40C42.21 12 44 13.79 44 16V36C44 38.21 42.21 40 40 40H8C5.79 40 4 38.21 4 36V12Z" fill="url(#folder-gradient)"/>
+							<path d="M4 16H44V36C44 38.21 42.21 40 40 40H8C5.79 40 4 38.21 4 36V16Z" fill="#4AA3DF" opacity="0.9"/>
+						</svg>
+					</folder-icon>
+					<folder-name>react-dashboard</folder-name>
+					<folder-meta>React + Vite</folder-meta>
+				</folder-item>
+				<folder-item data-path="/Users/hawk/Projects/api-server">
+					<folder-icon>
+						<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+							<path d="M4 12C4 9.79 5.79 8 8 8H18L22 12H40C42.21 12 44 13.79 44 16V36C44 38.21 42.21 40 40 40H8C5.79 40 4 38.21 4 36V12Z" fill="url(#folder-gradient)"/>
+							<path d="M4 16H44V36C44 38.21 42.21 40 40 40H8C5.79 40 4 38.21 4 36V16Z" fill="#4AA3DF" opacity="0.9"/>
+						</svg>
+					</folder-icon>
+					<folder-name>api-server</folder-name>
+					<folder-meta>Node.js + Express</folder-meta>
+				</folder-item>
+				<folder-item data-path="/Users/hawk/Projects/mobile-app">
+					<folder-icon>
+						<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+							<path d="M4 12C4 9.79 5.79 8 8 8H18L22 12H40C42.21 12 44 13.79 44 16V36C44 38.21 42.21 40 40 40H8C5.79 40 4 38.21 4 36V12Z" fill="url(#folder-gradient)"/>
+							<path d="M4 16H44V36C44 38.21 42.21 40 40 40H8C5.79 40 4 38.21 4 36V16Z" fill="#4AA3DF" opacity="0.9"/>
+						</svg>
+					</folder-icon>
+					<folder-name>mobile-app</folder-name>
+					<folder-meta>React Native</folder-meta>
+				</folder-item>
+				<folder-item data-path="/Users/hawk/Projects/ml-pipeline">
+					<folder-icon>
+						<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+							<path d="M4 12C4 9.79 5.79 8 8 8H18L22 12H40C42.21 12 44 13.79 44 16V36C44 38.21 42.21 40 40 40H8C5.79 40 4 38.21 4 36V12Z" fill="url(#folder-gradient)"/>
+							<path d="M4 16H44V36C44 38.21 42.21 40 40 40H8C5.79 40 4 38.21 4 36V16Z" fill="#4AA3DF" opacity="0.9"/>
+						</svg>
+					</folder-icon>
+					<folder-name>ml-pipeline</folder-name>
+					<folder-meta>Python + PyTorch</folder-meta>
+				</folder-item>
+				<folder-item data-path="/Users/hawk/Projects/design-system">
+					<folder-icon>
+						<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+							<path d="M4 12C4 9.79 5.79 8 8 8H18L22 12H40C42.21 12 44 13.79 44 16V36C44 38.21 42.21 40 40 40H8C5.79 40 4 38.21 4 36V12Z" fill="url(#folder-gradient)"/>
+							<path d="M4 16H44V36C44 38.21 42.21 40 40 40H8C5.79 40 4 38.21 4 36V16Z" fill="#4AA3DF" opacity="0.9"/>
+						</svg>
+					</folder-icon>
+					<folder-name>design-system</folder-name>
+					<folder-meta>CSS + Storybook</folder-meta>
+				</folder-item>
+				<folder-item data-path="/Users/hawk/Projects/blog-platform">
+					<folder-icon>
+						<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+							<path d="M4 12C4 9.79 5.79 8 8 8H18L22 12H40C42.21 12 44 13.79 44 16V36C44 38.21 42.21 40 40 40H8C5.79 40 4 38.21 4 36V12Z" fill="url(#folder-gradient)"/>
+							<path d="M4 16H44V36C44 38.21 42.21 40 40 40H8C5.79 40 4 38.21 4 36V16Z" fill="#4AA3DF" opacity="0.9"/>
+						</svg>
+					</folder-icon>
+					<folder-name>blog-platform</folder-name>
+					<folder-meta>Next.js + MDX</folder-meta>
+				</folder-item>
+				<folder-item data-path="/Users/hawk/Projects/cli-tool">
+					<folder-icon>
+						<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+							<path d="M4 12C4 9.79 5.79 8 8 8H18L22 12H40C42.21 12 44 13.79 44 16V36C44 38.21 42.21 40 40 40H8C5.79 40 4 38.21 4 36V12Z" fill="url(#folder-gradient)"/>
+							<path d="M4 16H44V36C44 38.21 42.21 40 40 40H8C5.79 40 4 38.21 4 36V16Z" fill="#4AA3DF" opacity="0.9"/>
+						</svg>
+					</folder-icon>
+					<folder-name>cli-tool</folder-name>
+					<folder-meta>Rust + Clap</folder-meta>
+				</folder-item>
+			</finder-files>
+		</finder-content>
+		<finder-footer>
+			<footer-info>
+				<span class="item-count">8 items</span>
+				<span class="disk-space">142.3 GB available</span>
+			</footer-info>
+			<footer-actions>
+				<footer-button class="cancel-btn">Cancel</footer-button>
+				<footer-button class="open-btn" disabled>Open</footer-button>
+			</footer-actions>
+		</finder-footer>
+	</workspace-picker-window>
+</workspace-picker>
+
+<style>
+	/* ========================================
+	   Workspace Picker - macOS Finder Style
+	   ======================================== */
+	workspace-picker {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 1000;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		opacity: 0;
+		visibility: hidden;
+		transition: opacity 0.2s ease, visibility 0.2s ease;
+	}
+
+	workspace-picker:not([hidden]) {
+		opacity: 1;
+		visibility: visible;
+	}
+
+	workspace-picker-backdrop {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: transparent;
+	}
+
+	workspace-picker-window {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		width: 90%;
+		max-width: 900px;
+		height: 80%;
+		max-height: 600px;
+		background: var(--vscode-bg);
+		border: 1px solid var(--vscode-border);
+		border-radius: 12px;
+		box-shadow: 
+			0 25px 50px -12px rgba(0, 0, 0, 0.5),
+			0 0 0 1px rgba(255, 255, 255, 0.05);
+		overflow: hidden;
+		transform: scale(0.95) translateY(10px);
+		transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	workspace-picker:not([hidden]) workspace-picker-window {
+		transform: scale(1) translateY(0);
+	}
+
+	/* ========================================
+	   Finder Sidebar
+	   ======================================== */
+	finder-sidebar {
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 52px;
+		width: 180px;
+		background: linear-gradient(to right, rgba(255, 255, 255, 0.02), transparent);
+		border-right: 1px solid var(--vscode-border);
+		display: flex;
+		flex-direction: column;
+		padding: 12px 0;
+		overflow-y: auto;
+	}
+
+	sidebar-section {
+		display: flex;
+		flex-direction: column;
+		padding: 0 8px;
+		margin-bottom: 16px;
+	}
+
+	sidebar-title {
+		font-size: 11px;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--vscode-foreground-secondary);
+		padding: 4px 10px 8px 10px;
+		opacity: 0.7;
+	}
+
+	sidebar-item {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 6px 10px;
+		border-radius: 6px;
+		cursor: pointer;
+		transition: all var(--transition-fast);
+		color: var(--vscode-foreground);
+		font-size: 13px;
+	}
+
+	sidebar-item:hover {
+		background: var(--vscode-icon-button-hover-bg);
+	}
+
+	sidebar-item[active] {
+		background: var(--vscode-accent-subtle);
+		color: var(--vscode-accent);
+	}
+
+	sidebar-item .sidebar-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 18px;
+		height: 18px;
+		color: var(--vscode-foreground-secondary);
+		opacity: 0.8;
+	}
+
+	sidebar-item[active] .sidebar-icon {
+		color: var(--vscode-accent);
+		opacity: 1;
+	}
+
+	sidebar-item .sidebar-icon.cloud svg {
+		color: #5AC8FA;
+	}
+
+	sidebar-item .sidebar-icon.laptop svg {
+		color: #A8A8A8;
+	}
+
+	sidebar-item .sidebar-label {
+		flex: 1;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	sidebar-item .sidebar-eject {
+		display: none;
+		align-items: center;
+		justify-content: center;
+		color: var(--vscode-foreground-secondary);
+		opacity: 0.5;
+	}
+
+	sidebar-item:hover .sidebar-eject {
+		display: flex;
+	}
+
+	sidebar-item .sidebar-tag {
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+	}
+
+	sidebar-item .sidebar-tag.red {
+		background: #FF453A;
+	}
+
+	sidebar-item .sidebar-tag.blue {
+		background: #007AFF;
+	}
+
+	sidebar-item .sidebar-tag.green {
+		background: #30D158;
+	}
+
+	/* ========================================
+	   Finder Content
+	   ======================================== */
+	finder-content {
+		position: absolute;
+		left: 180px;
+		right: 0;
+		top: 0;
+		bottom: 52px;
+		display: flex;
+		flex-direction: column;
+		background: var(--vscode-editor-bg);
+	}
+
+	finder-toolbar {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 10px 16px;
+		background: rgba(255, 255, 255, 0.02);
+		border-bottom: 1px solid var(--vscode-border);
+	}
+
+	toolbar-nav {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+	}
+
+	nav-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		border-radius: 6px;
+		color: var(--vscode-foreground-secondary);
+		cursor: pointer;
+		transition: all var(--transition-fast);
+	}
+
+	nav-button:not([disabled]):hover {
+		background: var(--vscode-icon-button-hover-bg);
+		color: var(--vscode-foreground);
+	}
+
+	nav-button[disabled] {
+		opacity: 0.3;
+		cursor: not-allowed;
+	}
+
+	toolbar-title {
+		flex: 1;
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--vscode-foreground);
+		text-align: center;
+	}
+
+	toolbar-actions {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	toolbar-search {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		padding: 6px 10px;
+		background: var(--vscode-input-bg);
+		border: 1px solid var(--vscode-input-border);
+		border-radius: 6px;
+		width: 180px;
+		transition: all var(--transition-fast);
+	}
+
+	toolbar-search:focus-within {
+		border-color: var(--vscode-accent);
+		box-shadow: 0 0 0 2px var(--vscode-accent-subtle);
+	}
+
+	toolbar-search svg {
+		color: var(--vscode-foreground-secondary);
+		flex-shrink: 0;
+	}
+
+	toolbar-search input {
+		flex: 1;
+		background: transparent;
+		border: none;
+		outline: none;
+		font-size: 13px;
+		color: var(--vscode-foreground);
+	}
+
+	toolbar-search input::placeholder {
+		color: var(--vscode-foreground-secondary);
+	}
+
+	view-toggle {
+		display: flex;
+		background: var(--vscode-input-bg);
+		border: 1px solid var(--vscode-input-border);
+		border-radius: 6px;
+		overflow: hidden;
+	}
+
+	view-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 26px;
+		cursor: pointer;
+		color: var(--vscode-foreground-secondary);
+		transition: all var(--transition-fast);
+	}
+
+	view-button:hover {
+		background: var(--vscode-icon-button-hover-bg);
+	}
+
+	view-button[active] {
+		background: var(--vscode-accent-subtle);
+		color: var(--vscode-accent);
+	}
+
+	finder-breadcrumb {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		padding: 8px 16px;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+	}
+
+	breadcrumb-item {
+		font-size: 12px;
+		color: var(--vscode-foreground-secondary);
+		cursor: pointer;
+		padding: 2px 6px;
+		border-radius: 4px;
+		transition: all var(--transition-fast);
+	}
+
+	breadcrumb-item:hover {
+		background: var(--vscode-icon-button-hover-bg);
+		color: var(--vscode-foreground);
+	}
+
+	breadcrumb-item:last-child {
+		color: var(--vscode-foreground);
+		font-weight: 500;
+	}
+
+	/* ========================================
+	   Finder Files Grid
+	   ======================================== */
+	finder-files {
+		flex: 1;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+		gap: 16px;
+		padding: 20px;
+		overflow-y: auto;
+		align-content: start;
+	}
+
+	folder-item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 6px;
+		padding: 12px 8px;
+		border-radius: 8px;
+		cursor: pointer;
+		transition: all var(--transition-fast);
+		user-select: none;
+	}
+
+	folder-item:hover {
+		background: var(--vscode-icon-button-hover-bg);
+	}
+
+	folder-item[selected] {
+		background: var(--vscode-accent-subtle);
+	}
+
+	folder-item[selected] folder-name {
+		color: var(--vscode-accent);
+	}
+
+	folder-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 56px;
+		height: 48px;
+	}
+
+	folder-icon svg {
+		width: 100%;
+		height: 100%;
+		filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+	}
+
+	folder-name {
+		font-size: 12px;
+		font-weight: 500;
+		color: var(--vscode-foreground);
+		text-align: center;
+		max-width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	folder-meta {
+		font-size: 10px;
+		color: var(--vscode-foreground-secondary);
+		text-align: center;
+		opacity: 0.7;
+	}
+
+	/* ========================================
+	   Finder Footer
+	   ======================================== */
+	finder-footer {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 12px 16px;
+		background: rgba(255, 255, 255, 0.02);
+		border-top: 1px solid var(--vscode-border);
+	}
+
+	footer-info {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		font-size: 12px;
+		color: var(--vscode-foreground-secondary);
+	}
+
+	footer-actions {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	footer-button {
+		padding: 6px 16px;
+		border-radius: 6px;
+		font-size: 13px;
+		font-weight: 500;
+		cursor: pointer;
+		transition: all var(--transition-fast);
+	}
+
+	footer-button.cancel-btn {
+		background: transparent;
+		color: var(--vscode-foreground);
+		border: 1px solid var(--vscode-border);
+	}
+
+	footer-button.cancel-btn:hover {
+		background: var(--vscode-icon-button-hover-bg);
+		border-color: var(--vscode-border-strong);
+	}
+
+	footer-button.open-btn {
+		background: var(--vscode-accent);
+		color: white;
+		border: 1px solid var(--vscode-accent);
+	}
+
+	footer-button.open-btn:not([disabled]):hover {
+		filter: brightness(1.1);
+	}
+
+	footer-button.open-btn[disabled] {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	/* ========================================
+	   List View Mode (when toggled)
+	   ======================================== */
+	finder-files.list-view {
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+		padding: 8px;
+	}
+
+	finder-files.list-view folder-item {
+		flex-direction: row;
+		align-items: center;
+		gap: 12px;
+		padding: 8px 12px;
+		border-radius: 6px;
+	}
+
+	finder-files.list-view folder-icon {
+		width: 32px;
+		height: 28px;
+	}
+
+	finder-files.list-view folder-name {
+		flex: 1;
+		text-align: left;
+		font-size: 13px;
+	}
+
+	finder-files.list-view folder-meta {
+		text-align: right;
+		font-size: 12px;
+	}
+
+	/* ========================================
+	   Animation Classes
+	   ======================================== */
+	workspace-picker.closing {
+		opacity: 0;
+	}
+
+	workspace-picker.closing workspace-picker-window {
+		transform: scale(0.95) translateY(10px);
+	}
+
+	/* Quick path display for selected folder */
+	folder-item[selected]::after {
+		content: attr(data-path);
+		position: absolute;
+		bottom: -20px;
+		left: 50%;
+		transform: translateX(-50%);
+		font-size: 10px;
+		color: var(--vscode-foreground-secondary);
+		white-space: nowrap;
+		opacity: 0;
+		transition: opacity var(--transition-fast);
+	}
+
+	finder-files:not(.list-view) folder-item[selected]:hover::after {
+		opacity: 0.7;
+	}
+</style>

@@ -79,10 +79,6 @@ vs-code[hero-editor] {
 		secondary-side-bar {
 			display: none;
 		}
-		editor-well,
-		editor-area {
-			border-bottom-right-radius: 8px;
-		}
 	}
 }
 @media (max-width: 725px) {
@@ -94,10 +90,6 @@ vs-code[hero-editor] {
 		secondary-side-bar {
 			display: none;
 		}
-		editor-well,
-		editor-area {
-			border-bottom-right-radius: 8px;
-		}
 	}
 }
 @media (max-width: 650px) {
@@ -108,10 +100,6 @@ vs-code[hero-editor] {
 		}
 		secondary-side-bar {
 			display: none;
-		}
-		editor-well,
-		editor-area {
-			border-bottom-right-radius: 8px;
 		}
 	}
 }
@@ -128,11 +116,6 @@ vs-code[hero-editor] {
 		editor-well {
 			display: none;
 		}
-		editor-well,
-		editor-area {
-			border-bottom-right-radius: 8px;
-			border-bottom-left-radius: 8px;
-		}
 	}
 }
 @media (max-width: 430px) {
@@ -147,11 +130,6 @@ vs-code[hero-editor] {
 		primary-side-bar,
 		editor-well {
 			display: none;
-		}
-		editor-well,
-		editor-area {
-			border-bottom-right-radius: 8px;
-			border-bottom-left-radius: 8px;
 		}
 	}
 }

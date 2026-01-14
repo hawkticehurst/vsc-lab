@@ -103,8 +103,9 @@
 		padding: 6px 8px;
 		gap: 4px;
 		height: var(--vscode-tab-strip-height);
-		border-bottom: solid 1px var(--vscode-border);
-		background: linear-gradient(to bottom, var(--vscode-bg), rgba(0, 0, 0, 0.1));
+		border: solid 1px var(--vscode-border);
+		border-radius: var(--radius-md);
+		background: var(--vscode-bg);
 		width: 100%;
 		min-width: 0;
 		overflow-x: auto;
@@ -122,9 +123,9 @@
 		tab-item {
 			display: flex;
 			align-items: center;
-			gap: 6px;
-			padding: 6px 12px;
-			border-radius: var(--radius-md);
+			gap: 3px;
+			padding: 6px 3px 6px 6px;
+			border-radius: var(--radius-sm);
 			background: transparent;
 			border: 1px solid transparent;
 			color: var(--vscode-foreground-secondary);

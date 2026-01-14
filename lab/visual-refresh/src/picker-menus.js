@@ -2,46 +2,50 @@
 // Uses class-based visibility toggle for dropdown menus
 
 export function initPickerMenus() {
-	const modePickerContainer = document.querySelector('.mode-picker-container');
-	const modelPickerContainer = document.querySelector('.model-picker-container');
+	const modePickerContainers = Array.from(document.querySelectorAll('.mode-picker-container'));
+	const modelPickerContainers = Array.from(document.querySelectorAll('.model-picker-container'));
+	const chatTypeContainers = Array.from(document.querySelectorAll('.chat-type-container'));
+	const backgroundAgentContainers = Array.from(
+		document.querySelectorAll('.background-agent-container'),
+	);
 
-	if (!modePickerContainer && !modelPickerContainer) return;
-
-	// Setup mode picker
-	if (modePickerContainer) {
-		const modePicker = modePickerContainer.querySelector('mode-picker');
-		const modeMenu = modePickerContainer.querySelector('.mode-picker-menu');
-
-		if (modePicker && modeMenu) {
-			setupPickerMenu(modePicker, modeMenu, (option) => {
-				const label = option.querySelector('option-label')?.textContent;
-				if (label) {
-					// Update the picker text (keep the SVG chevron)
-					const svg = modePicker.querySelector('svg');
-					modePicker.textContent = '';
-					modePicker.append(label + ' ', svg);
-				}
-			});
-		}
+	if (
+		!modePickerContainers.length &&
+		!modelPickerContainers.length &&
+		!chatTypeContainers.length &&
+		!backgroundAgentContainers.length
+	) {
+		return;
 	}
 
-	// Setup model picker
-	if (modelPickerContainer) {
-		const modelPicker = modelPickerContainer.querySelector('model-picker');
-		const modelMenu = modelPickerContainer.querySelector('.model-picker-menu');
+	const initContainer = (container, pickerSelector, menuSelector) => {
+		const picker = container.querySelector(pickerSelector);
+		const menu = container.querySelector(menuSelector);
 
-		if (modelPicker && modelMenu) {
-			setupPickerMenu(modelPicker, modelMenu, (option) => {
-				const label = option.querySelector('option-label')?.textContent;
-				if (label) {
-					// Update the picker text (keep the SVG chevron)
-					const svg = modelPicker.querySelector('svg');
-					modelPicker.textContent = '';
-					modelPicker.append(label + ' ', svg);
-				}
-			});
-		}
-	}
+		if (!picker || !menu) return;
+
+		setupPickerMenu(picker, menu, (option) => {
+			const label = option.querySelector('option-label')?.textContent;
+			if (label) {
+				const svg = picker.querySelector('svg');
+				picker.textContent = '';
+				picker.append(label + ' ', svg);
+			}
+		});
+	};
+
+	modePickerContainers.forEach((container) =>
+		initContainer(container, 'mode-picker', '.mode-picker-menu'),
+	);
+	modelPickerContainers.forEach((container) =>
+		initContainer(container, 'model-picker', '.model-picker-menu'),
+	);
+	chatTypeContainers.forEach((container) =>
+		initContainer(container, 'chat-type', '.chat-type-menu'),
+	);
+	backgroundAgentContainers.forEach((container) =>
+		initContainer(container, 'background-agent', '.background-agent-menu'),
+	);
 }
 
 function setupPickerMenu(picker, menu, onSelect) {
@@ -64,6 +68,8 @@ function setupPickerMenu(picker, menu, onSelect) {
 		const option = e.target.closest('menu-option');
 		if (!option) return;
 
+		const label = option.querySelector('option-label')?.textContent?.trim();
+
 		// Update selected state
 		menu.querySelectorAll('menu-option').forEach(opt => {
 			opt.removeAttribute('selected');
@@ -72,6 +78,14 @@ function setupPickerMenu(picker, menu, onSelect) {
 
 		// Call the onSelect callback
 		onSelect(option);
+
+		if (label) {
+			picker.dispatchEvent(
+				new CustomEvent('picker-change', {
+					detail: { value: label },
+				}),
+			);
+		}
 
 		// Close the menu
 		menu.classList.remove('open');

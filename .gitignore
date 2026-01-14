@@ -27,3 +27,5 @@ build
 !published/**/*
 .ds_store
 .DS_Store
+
+.playwright-mcp/
