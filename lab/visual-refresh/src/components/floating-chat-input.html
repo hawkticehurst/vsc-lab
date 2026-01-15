@@ -339,7 +339,7 @@
 					<embedded-thread-content>
 						<!-- Chat thread content is dynamically rendered -->
 						<empty-state>
-							<empty-state-title>What would you like to build?</empty-state-title>
+							<empty-state-title>New Chat</empty-state-title>
 							<empty-state-disclaimer>
 								<p>Copilot can make mistakes. Review output carefully before use.</p>
 							</empty-state-disclaimer>
@@ -530,12 +530,6 @@
 				</embedded-results-panel>
 			</canvas-content>
 			<canvas-footer>
-				<back-button class="canvas-back">
-					<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
-						<path d="M5.92775 8.00002L10.3632 3.56457C10.5585 3.36931 10.5585 3.05272 10.3632 2.85746C10.168 2.6622 9.85138 2.6622 9.65612 2.85746L4.85357 7.66001C4.65831 7.85527 4.65831 8.17186 4.85357 8.36712L9.65612 13.1697C9.85138 13.3649 10.168 13.3649 10.3632 13.1697C10.5585 12.9744 10.5585 12.6578 10.3632 12.4626L5.92775 8.00002Z"/>
-					</svg>
-				</back-button>
-				<span class="canvas-title">Full View</span>
 				<collapse-canvas-button title="Collapse to smaller view">
 					<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
 						<path d="M3 3L6 3L6 4L4.5 4L6.35355 5.85355L5.64645 6.56066L4 4.91421L4 6L3 6L3 3Z"/>
@@ -1400,6 +1394,7 @@
 	canvas-footer {
 		display: flex;
 		align-items: center;
+		justify-content: flex-end;
 		gap: 8px;
 		padding: 4px 12px;
 		border-top: 1px solid var(--vscode-border);
@@ -2511,7 +2506,7 @@
 	
 	/* When State 4 is active, modify the main area grid to accommodate the chat panel */
 	vs-code:has(floating-chat-input[data-state="4"]:not([hidden])) .main-area {
-		grid-template-columns: var(--state4-sidebar-width, 48px) 1fr var(--state4-editor-width, 35%) !important;
+		grid-template-columns: var(--state4-sidebar-width, 200px) 1fr var(--state4-editor-width, 35%) !important;
 		transition: grid-template-columns 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
@@ -2538,28 +2533,53 @@
 
 	/* Primary sidebar styling when chat is expanded - allow resizing */
 	vs-code:has(floating-chat-input[data-state="4"]:not([hidden])) primary-side-bar {
-		width: var(--state4-sidebar-width, 48px) !important;
+		width: var(--state4-sidebar-width, 200px) !important;
 		min-width: 48px !important;
 		max-width: 300px;
 		transition: 
-			width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-			min-width 0.4s cubic-bezier(0.22, 1, 0.36, 1) !important;
+			opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+			transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+			width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+			min-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+			border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+			background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
 	}
 
-	/* Hide sidebar content when shrunk to icon-only, keep activity bar visible */
+	/* Sidebar collapsed styling in State 4 */
+	vs-code:has(floating-chat-input[data-state="4"]:not([hidden])) primary-side-bar.collapsed {
+		opacity: 0 !important;
+		transform: translateX(-10px) !important;
+		width: 0 !important;
+		min-width: 0 !important;
+		border-color: transparent !important;
+		background-color: transparent !important;
+		pointer-events: none !important;
+	}
+
+	/* When sidebar is collapsed in State 4, adjust grid to let chat fill the space */
+	vs-code:has(floating-chat-input[data-state="4"]:not([hidden])):has(primary-side-bar.collapsed) .main-area {
+		grid-template-columns: 0 1fr var(--state4-editor-width, 35%) !important;
+	}
+
+	/* When BOTH sidebar and editor are collapsed in State 4 */
+	vs-code:has(floating-chat-input[data-state="4"]:not([hidden])):has(primary-side-bar.collapsed):has(editor-well.collapsed) .main-area {
+		grid-template-columns: 0 1fr 0 !important;
+	}
+
+	/* Show sidebar content by default in State 4 with 200px width */
 	vs-code:has(floating-chat-input[data-state="4"]:not([hidden])) primary-side-bar view-actions,
 	vs-code:has(floating-chat-input[data-state="4"]:not([hidden])) primary-side-bar tree-view {
-		opacity: 0;
-		pointer-events: none;
+		opacity: 1;
+		pointer-events: auto;
 		overflow: hidden;
 		transition: opacity 0.2s ease !important;
 	}
 
-	/* Show sidebar content when resized wider */
-	vs-code:has(floating-chat-input[data-state="4"]:not([hidden])) primary-side-bar.expanded view-actions,
-	vs-code:has(floating-chat-input[data-state="4"]:not([hidden])) primary-side-bar.expanded tree-view {
-		opacity: 1;
-		pointer-events: auto;
+	/* Hide sidebar content when resized to collapsed state */
+	vs-code:has(floating-chat-input[data-state="4"]:not([hidden])) primary-side-bar.collapsed view-actions,
+	vs-code:has(floating-chat-input[data-state="4"]:not([hidden])) primary-side-bar.collapsed tree-view {
+		opacity: 0;
+		pointer-events: none;
 		transition: opacity 0.2s ease 0.1s !important;
 	}
 
@@ -2575,6 +2595,30 @@
 		max-width: 100% !important;
 		overflow: hidden !important;
 		transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1) !important;
+	}
+
+	/* When editor-well is collapsed in State 4, adjust grid to 2 columns */
+	vs-code:has(floating-chat-input[data-state="4"]:not([hidden])):has(editor-well.collapsed) .main-area {
+		grid-template-columns: var(--state4-sidebar-width, 200px) 1fr !important;
+	}
+
+	/* Editor-well collapsed styling in State 4 */
+	vs-code:has(floating-chat-input[data-state="4"]:not([hidden])) editor-well.collapsed {
+		opacity: 0 !important;
+		transform: translateX(10px) !important;
+		min-width: 0 !important;
+		max-width: 0 !important;
+		width: 0 !important;
+		flex: 0 0 0 !important;
+		border-color: transparent !important;
+		background-color: transparent !important;
+		pointer-events: none !important;
+		overflow: hidden !important;
+	}
+
+	/* Hide resize handle when editor is collapsed in State 4 */
+	vs-code:has(floating-chat-input[data-state="4"]:not([hidden])):has(editor-well.collapsed) floating-chat-input::after {
+		display: none;
 	}
 
 	/* Ensure tab-bar doesn't overflow */

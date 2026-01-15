@@ -76,7 +76,9 @@ vs-code {
 		height: 100%;
 		align-items: stretch;
 		gap: var(--vscode-panel-gap);
-		transition: gap var(--transition-smooth);
+		transition: 
+			gap var(--transition-smooth),
+			grid-template-columns 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 	}
 	/* Remove gap when primary sidebar is collapsed */
 	.main-area:has(primary-side-bar.collapsed) {
@@ -98,6 +100,62 @@ vs-code {
 	}
 	&[layout="right-sidebar"] .main-area {
 		grid-template-columns: 1fr 32%;
+	}
+
+	/* --- Main Area Panels (Generic) --- */
+	.main-area [data-panel] {
+		position: relative;
+		min-width: 0;
+		min-height: 0;
+	}
+
+	.main-area [data-panel][hidden] {
+		display: none;
+	}
+
+	/* Resize handles for panel edges */
+	.main-area [data-panel="left"]::after,
+	.main-area [data-panel="middle"]::after {
+		content: "";
+		position: absolute;
+		right: -3px;
+		top: 0;
+		width: 6px;
+		height: 100%;
+		cursor: ew-resize;
+		z-index: 10;
+		background-color: transparent;
+		transition: background-color var(--transition-smooth);
+	}
+
+	.main-area [data-panel="right"]::before,
+	.main-area [data-panel="middle"]::before {
+		content: "";
+		position: absolute;
+		left: -3px;
+		top: 0;
+		width: 6px;
+		height: 100%;
+		cursor: ew-resize;
+		z-index: 10;
+		background-color: transparent;
+		transition: background-color var(--transition-smooth);
+	}
+
+	.main-area [data-panel].resize-hover-left::before,
+	.main-area [data-panel].resizing-left::before {
+		background-color: var(--vscode-accent);
+	}
+
+	.main-area [data-panel].resize-hover-right::after,
+	.main-area [data-panel].resizing-right::after {
+		background-color: var(--vscode-accent);
+	}
+
+	.main-area [data-panel].resizing-left,
+	.main-area [data-panel].resizing-right {
+		user-select: none;
+		transition: none !important;
 	}
 
 	/* --- Sidebars --- */
@@ -136,7 +194,9 @@ vs-code {
 	}
 
 	secondary-side-bar.resize-hover::before,
-	secondary-side-bar.resizing::before {
+	secondary-side-bar.resize-hover-left::before,
+	secondary-side-bar.resizing::before,
+	secondary-side-bar.resizing-left::before {
 		background-color: var(--vscode-accent);
 	}
 
@@ -163,7 +223,9 @@ vs-code {
 	}
 
 	primary-side-bar.resize-hover::after,
-	primary-side-bar.resizing::after {
+	primary-side-bar.resize-hover-right::after,
+	primary-side-bar.resizing::after,
+	primary-side-bar.resizing-right::after {
 		background-color: var(--vscode-accent);
 	}
 
@@ -194,6 +256,78 @@ vs-code {
 		border-color: transparent;
 		background-color: transparent;
 		pointer-events: none;
+	}
+
+	/* --- Editor Well Animated Collapse --- */
+	editor-well {
+		position: relative;
+		transition: 
+			opacity var(--transition-smooth),
+			transform var(--transition-smooth),
+			width var(--transition-smooth),
+			max-width var(--transition-smooth),
+			border-color var(--transition-smooth),
+			background-color var(--transition-smooth);
+		overflow: hidden;
+	}
+
+	/* Resize handle for editor-well (left edge) */
+	editor-well::before {
+		content: "";
+		position: absolute;
+		left: -3px;
+		top: 0;
+		width: 4px;
+		height: 100%;
+		cursor: ew-resize;
+		z-index: 10;
+		background-color: transparent;
+		transition: background-color var(--transition-smooth);
+	}
+
+	editor-well.resize-hover::before,
+	editor-well.resize-hover-left::before,
+	editor-well.resizing::before,
+	editor-well.resizing-left::before {
+		background-color: var(--vscode-accent);
+	}
+
+	editor-well.resizing {
+		user-select: none;
+		/* Disable transitions during manual resize for responsive feel */
+		transition: none !important;
+	}
+
+	editor-well.collapsed {
+		opacity: 0;
+		transform: translateX(10px);
+		width: 0 !important;
+		max-width: 0 !important;
+		min-width: 0 !important;
+		border-color: transparent;
+		background-color: transparent;
+		pointer-events: none;
+		overflow: hidden;
+	}
+
+	/* Hide resize handle when editor is collapsed */
+	editor-well.collapsed::before {
+		display: none;
+	}
+
+	/* Adjust grid when editor-well is collapsed - sidebar expands to fill space */
+	.main-area:has(editor-well.collapsed) {
+		grid-template-columns: 1fr 0;
+	}
+
+	/* When both primary sidebar and editor are collapsed */
+	.main-area:has(primary-side-bar.collapsed):has(editor-well.collapsed) {
+		grid-template-columns: 0 0;
+	}
+
+	/* When only primary sidebar is collapsed and editor is visible */
+	.main-area:has(primary-side-bar.collapsed):not(:has(editor-well.collapsed)) {
+		grid-template-columns: 0 1fr;
 	}
 
 	/* --- Collapsible Panes --- */

@@ -7,6 +7,9 @@ import { projectData, getActiveFile, getFileCode } from "./projects.js";
 // Import component styles via virtual module - Vite processes CSS nesting
 import "virtual:html-components.css";
 
+/** @type {null | (() => void)} */
+let refreshMainAreaPanels = null;
+
 // Lightweight client logic for the VS Code hero editor tab UI.
 // Handles clicking and keyboard navigation between <tab-item> elements
 // and shows the corresponding <editor-area>. Adds accessibility roles
@@ -158,6 +161,319 @@ function initVsCodeHeroTabs() {
 	});
 }
 
+// Initialize generic layout/resize behavior for main-area panels
+function initMainAreaPanels() {
+	const vsCode = document.querySelector("vs-code");
+	const mainArea = document.querySelector(".main-area");
+	if (!mainArea) return;
+
+	const floatingChatInput = document.querySelector("floating-chat-input");
+	const positions = ["left", "middle", "right"];
+	const panels = {
+		left: /** @type {HTMLElement|null} */ (null),
+		middle: /** @type {HTMLElement|null} */ (null),
+		right: /** @type {HTMLElement|null} */ (null),
+	};
+	const panelState = {
+		left: { width: 0, hasCustomWidth: false },
+		right: { width: 0, hasCustomWidth: false },
+	};
+
+	const RESIZE_HANDLE_WIDTH = 6;
+	const COLLAPSE_DELAY = 250;
+	const DEFAULT_MIN_MIDDLE = 280;
+
+	const isState4 = () =>
+		Boolean(
+			floatingChatInput &&
+			floatingChatInput.getAttribute("data-state") === "4" &&
+			!floatingChatInput.hasAttribute("hidden"),
+		);
+
+	const updatePanels = () => {
+		positions.forEach((pos) => {
+			panels[pos] = mainArea.querySelector(`[data-panel="${pos}"]`);
+		});
+	};
+
+	const getVisiblePanels = () =>
+		positions.filter((pos) => {
+			const panel = panels[pos];
+			return panel instanceof HTMLElement && !panel.hasAttribute("hidden");
+		});
+
+	const getPanelWidth = (pos) => {
+		const panel = panels[pos];
+		if (!panel || panel.hasAttribute("hidden")) return 0;
+		if (panelState[pos] && panelState[pos].hasCustomWidth) {
+			return panelState[pos].width;
+		}
+		return panel.getBoundingClientRect().width;
+	};
+
+	const getGapSize = () => {
+		const styles = window.getComputedStyle(mainArea);
+		const gapValue = styles.columnGap || styles.gap || "0px";
+		const parsed = parseFloat(gapValue);
+		return Number.isNaN(parsed) ? 0 : parsed;
+	};
+
+	const getColumnSize = (pos) => {
+		if (pos === "middle") return "minmax(0, 1fr)";
+		if (panelState[pos] && panelState[pos].hasCustomWidth) {
+			return `${panelState[pos].width}px`;
+		}
+		return pos === "right" ? "minmax(240px, 32%)" : "auto";
+	};
+
+	const applyLayout = () => {
+		if (isState4()) return;
+		updatePanels();
+		const visiblePanels = getVisiblePanels();
+		if (!visiblePanels.length) return;
+
+		const columns = [];
+		visiblePanels.forEach((pos, index) => {
+			const panel = panels[pos];
+			if (panel) panel.style.gridColumn = String(index + 1);
+			columns.push(getColumnSize(pos));
+		});
+
+		mainArea.style.gridTemplateColumns = columns.join(" ");
+		mainArea.style.gap = visiblePanels.length <= 1 ? "0px" : "var(--vscode-panel-gap)";
+	};
+
+	const setPanelHidden = (pos, shouldHide) => {
+		const panel = panels[pos];
+		if (!panel) return;
+		if (shouldHide) {
+			panel.classList.add("collapsed");
+			panel.setAttribute("data-collapsing", "");
+			setTimeout(() => {
+				if (panel.classList.contains("collapsed")) {
+					panel.setAttribute("hidden", "");
+				}
+				panel.removeAttribute("data-collapsing");
+				applyLayout();
+			}, COLLAPSE_DELAY);
+		} else {
+			panel.removeAttribute("hidden");
+			requestAnimationFrame(() => {
+				panel.classList.remove("collapsed");
+				applyLayout();
+			});
+		}
+	};
+
+	const togglePanel = (pos) => {
+		const panel = panels[pos];
+		if (!panel) return;
+		const isHidden = panel.hasAttribute("hidden") || panel.classList.contains("collapsed");
+		setPanelHidden(pos, !isHidden);
+	};
+
+	const getResizeConstraints = (targetPos) => {
+		const panel = panels[targetPos];
+		const mainWidth = mainArea.getBoundingClientRect().width;
+		const visiblePanels = getVisiblePanels();
+		const gap = getGapSize();
+		const totalGap = gap * Math.max(visiblePanels.length - 1, 0);
+		const middlePanel = panels.middle;
+		const middleMin = middlePanel
+			? Number.parseFloat(middlePanel.getAttribute("data-panel-min") || String(DEFAULT_MIN_MIDDLE))
+			: 0;
+		const rightVisible = Boolean(panels.right && !panels.right.hasAttribute("hidden"));
+		const leftVisible = Boolean(panels.left && !panels.left.hasAttribute("hidden"));
+		const rightWidth = rightVisible ? getPanelWidth("right") : 0;
+		const leftWidth = leftVisible ? getPanelWidth("left") : 0;
+		const baseMin = panel ? Number.parseFloat(panel.getAttribute("data-panel-min") || "0") : 0;
+		const baseMax = panel ? Number.parseFloat(panel.getAttribute("data-panel-max") || "0") : 0;
+
+		if (targetPos === "left" && isState4()) {
+			return { min: Math.max(48, baseMin || 0), max: Math.min(300, baseMax || 300) };
+		}
+
+		if (targetPos === "left") {
+			const maxBySpace = mainWidth - totalGap - rightWidth - middleMin;
+			const fallbackMax = mainWidth * 0.45;
+			const max = Math.min(baseMax || fallbackMax, maxBySpace);
+			return { min: Math.max(150, baseMin || 0), max };
+		}
+
+		if (targetPos === "right") {
+			const maxBySpace = mainWidth - totalGap - leftWidth - middleMin;
+			const fallbackMax = mainWidth * 0.55;
+			const max = Math.min(baseMax || fallbackMax, maxBySpace);
+			return { min: Math.max(200, baseMin || 0), max };
+		}
+
+		return { min: 0, max: mainWidth };
+	};
+
+	const setPanelWidth = (pos, width) => {
+		const panel = panels[pos];
+		if (!panel) return;
+		const clampedWidth = Math.max(0, Math.round(width));
+		panelState[pos].width = clampedWidth;
+		panelState[pos].hasCustomWidth = true;
+		panel.style.width = `${clampedWidth}px`;
+
+		if (pos === "left" && isState4()) {
+			vsCode?.style.setProperty("--state4-sidebar-width", `${clampedWidth}px`);
+			if (clampedWidth <= 100) {
+				panel.classList.add("collapsed");
+			} else {
+				panel.classList.remove("collapsed");
+			}
+			return;
+		}
+
+		applyLayout();
+	};
+
+	const getEdgeForPanel = (panel, event) => {
+		const position = panel.getAttribute("data-panel") || "";
+		if (isState4() && position !== "left") return null;
+		const visiblePanels = getVisiblePanels();
+		const index = visiblePanels.indexOf(position);
+		if (index === -1) return null;
+		const canResizeLeft = index > 0;
+		const canResizeRight = index < visiblePanels.length - 1;
+
+		const rect = panel.getBoundingClientRect();
+		const offsetLeft = event.clientX - rect.left;
+		const offsetRight = rect.right - event.clientX;
+
+		if (canResizeLeft && offsetLeft <= RESIZE_HANDLE_WIDTH) return "left";
+		if (canResizeRight && offsetRight <= RESIZE_HANDLE_WIDTH) return "right";
+		return null;
+	};
+
+	const getResizeTarget = (position, edge) => {
+		if (position === "left" && edge === "right") return "left";
+		if (position === "middle" && edge === "left") return "left";
+		if (position === "middle" && edge === "right") return "right";
+		if (position === "right" && edge === "left") return "right";
+		return null;
+	};
+
+	const clearResizeHover = (panel) => {
+		panel.classList.remove("resize-hover-left");
+		panel.classList.remove("resize-hover-right");
+	};
+
+	let activeResize = null;
+
+	const startResize = (panel, edge, startX) => {
+		const position = panel.getAttribute("data-panel") || "";
+		const target = getResizeTarget(position, edge);
+		if (!target) return;
+
+		const startLeftWidth = getPanelWidth("left");
+		const startRightWidth = getPanelWidth("right");
+		activeResize = {
+			panel,
+			edge,
+			position,
+			target,
+			startX,
+			startLeftWidth,
+			startRightWidth,
+		};
+
+		panel.classList.add(edge === "left" ? "resizing-left" : "resizing-right");
+		document.body.style.cursor = "ew-resize";
+		document.body.style.userSelect = "none";
+	};
+
+	const finishResize = () => {
+		if (!activeResize) return;
+		const { panel, edge } = activeResize;
+		panel.classList.remove(edge === "left" ? "resizing-left" : "resizing-right");
+		clearResizeHover(panel);
+		document.body.style.cursor = "";
+		document.body.style.userSelect = "";
+		activeResize = null;
+	};
+
+	const handleResizeMove = (event) => {
+		if (!activeResize) return;
+		const { target, startX, startLeftWidth, startRightWidth } = activeResize;
+		const deltaX = event.clientX - startX;
+		const { min, max } = getResizeConstraints(target);
+
+		if (target === "left") {
+			const nextWidth = startLeftWidth + deltaX;
+			const clamped = Math.min(Math.max(nextWidth, min), max);
+			setPanelWidth("left", clamped);
+		}
+		if (target === "right") {
+			const nextWidth = startRightWidth - deltaX;
+			const clamped = Math.min(Math.max(nextWidth, min), max);
+			setPanelWidth("right", clamped);
+		}
+	};
+
+	const bindPanelResize = (panel) => {
+		if (!(panel instanceof HTMLElement)) return;
+
+		panel.addEventListener("mousemove", (event) => {
+			if (activeResize) return;
+			const edge = getEdgeForPanel(panel, event);
+			clearResizeHover(panel);
+			if (edge === "left") panel.classList.add("resize-hover-left");
+			if (edge === "right") panel.classList.add("resize-hover-right");
+		});
+
+		panel.addEventListener("mouseleave", () => {
+			if (!activeResize) clearResizeHover(panel);
+		});
+
+		panel.addEventListener("mousedown", (event) => {
+			const edge = getEdgeForPanel(panel, event);
+			if (!edge) return;
+			startResize(panel, edge, event.clientX);
+			event.preventDefault();
+		});
+	};
+
+	const bindToggles = () => {
+		const toggleIcons = document.querySelectorAll("top-bar-icon[data-panel-toggle]");
+		toggleIcons.forEach((icon) => {
+			icon.addEventListener("click", () => {
+				const pos = icon.getAttribute("data-panel-toggle");
+				if (pos === "left" || pos === "middle" || pos === "right") {
+					if (isState4()) {
+						if (pos === "right") {
+							togglePanel("middle");
+							return;
+						}
+						if (pos === "middle") return;
+					}
+					togglePanel(pos);
+				}
+			});
+		});
+	};
+
+	const init = () => {
+		updatePanels();
+		Object.values(panels).forEach((panel) => panel && bindPanelResize(panel));
+		bindToggles();
+		applyLayout();
+	};
+
+	document.addEventListener("mousemove", handleResizeMove);
+	document.addEventListener("mouseup", finishResize);
+
+	window.addEventListener("resize", () => {
+		if (!activeResize) applyLayout();
+	});
+
+	refreshMainAreaPanels = applyLayout;
+	init();
+}
+
 // Initialize resize functionality for secondary sidebar
 function initSecondarySidebarResize() {
 	const secondarySidebar = document.querySelector("secondary-side-bar");
@@ -298,22 +614,25 @@ function initPrimarySidebarResize() {
 		const newWidth = startWidth + deltaX;
 
 		// Check if we're in State 4 (expanded chat mode)
-		const isState4 = floatingChatInput && floatingChatInput.getAttribute("data-state") === "4" && !floatingChatInput.hidden;
+		const isState4 =
+			floatingChatInput &&
+			floatingChatInput.getAttribute("data-state") === "4" &&
+			!floatingChatInput.hidden;
 
 		// Set min and max width constraints
 		const minWidth = isState4 ? 48 : 150;
 		const maxWidth = isState4 ? 300 : window.innerWidth * 0.4;
-		const expandThreshold = 100; // Width threshold to show sidebar content
+		const collapseThreshold = 100; // Width threshold to hide sidebar content
 
 		if (newWidth >= minWidth && newWidth <= maxWidth) {
 			// In State 4, use CSS custom property for grid template
 			if (isState4) {
 				vsCode.style.setProperty("--state4-sidebar-width", `${newWidth}px`);
 				// Show/hide sidebar content based on width
-				if (newWidth > expandThreshold) {
-					primarySidebar.classList.add("expanded");
+				if (newWidth <= collapseThreshold) {
+					primarySidebar.classList.add("collapsed");
 				} else {
-					primarySidebar.classList.remove("expanded");
+					primarySidebar.classList.remove("collapsed");
 				}
 			}
 			// Update the sidebar width directly
@@ -1050,6 +1369,111 @@ function initSessionListToggle() {
 	});
 }
 
+// Initialize toggle for editor-well visibility via layout-right top bar icon
+function initEditorWellToggle() {
+	const layoutRightIcon = document.querySelector("top-bar-icon.layout-right");
+	const editorWell = document.querySelector("editor-well");
+	const mainArea = document.querySelector(".main-area");
+
+	if (!layoutRightIcon || !editorWell) return;
+
+	layoutRightIcon.addEventListener("click", () => {
+		const isCollapsing = !editorWell.classList.contains("collapsed");
+		editorWell.classList.toggle("collapsed");
+
+		// Reset custom grid styles when expanding (toggle back on)
+		// so the CSS :has() selectors can take over
+		if (!isCollapsing && mainArea) {
+			mainArea.style.gridTemplateColumns = "";
+		}
+	});
+}
+
+// Initialize resize functionality for editor-well
+function initEditorWellResize() {
+	const editorWell = document.querySelector("editor-well");
+	const mainArea = document.querySelector(".main-area");
+	const primarySidebar = document.querySelector("primary-side-bar");
+
+	if (!editorWell || !mainArea) return;
+
+	let isResizing = false;
+	let startX = 0;
+	let startWidth = 0;
+	const RESIZE_HANDLE_WIDTH = 6;
+
+	// Track mouse position to show/hide hover state on resize handle
+	editorWell.addEventListener("mousemove", (e) => {
+		if (isResizing || editorWell.classList.contains("collapsed")) return;
+		const rect = editorWell.getBoundingClientRect();
+		const offsetX = e.clientX - rect.left;
+
+		if (offsetX <= RESIZE_HANDLE_WIDTH) {
+			editorWell.classList.add("resize-hover");
+		} else {
+			editorWell.classList.remove("resize-hover");
+		}
+	});
+
+	editorWell.addEventListener("mouseleave", () => {
+		if (!isResizing) {
+			editorWell.classList.remove("resize-hover");
+		}
+	});
+
+	// Handle mousedown on the resize handle (the ::before pseudo-element area)
+	editorWell.addEventListener("mousedown", (e) => {
+		if (editorWell.classList.contains("collapsed")) return;
+
+		// Check if click is in the resize handle area (left 6px of the editor)
+		const rect = editorWell.getBoundingClientRect();
+		const offsetX = e.clientX - rect.left;
+
+		if (offsetX <= RESIZE_HANDLE_WIDTH) {
+			isResizing = true;
+			startX = e.clientX;
+			startWidth = editorWell.getBoundingClientRect().width;
+			editorWell.classList.add("resizing");
+			document.body.style.cursor = "ew-resize";
+			document.body.style.userSelect = "none";
+			e.preventDefault();
+		}
+	});
+
+	document.addEventListener("mousemove", (e) => {
+		if (!isResizing) return;
+
+		// Dragging left increases editor width, dragging right decreases it
+		const deltaX = startX - e.clientX;
+		const newWidth = startWidth + deltaX;
+		const mainAreaWidth = mainArea.getBoundingClientRect().width;
+
+		// Set min and max width constraints
+		const minWidth = 200;
+		const maxWidth = mainAreaWidth * 0.7;
+
+		if (newWidth >= minWidth && newWidth <= maxWidth) {
+			// Update the grid template columns to reflect the new editor width
+			// Use 1fr for sidebar to fill remaining space, fixed width for editor
+			if (primarySidebar && !primarySidebar.classList.contains("collapsed")) {
+				mainArea.style.gridTemplateColumns = `1fr ${newWidth}px`;
+			} else {
+				mainArea.style.gridTemplateColumns = `0 ${newWidth}px`;
+			}
+		}
+	});
+
+	document.addEventListener("mouseup", () => {
+		if (isResizing) {
+			isResizing = false;
+			editorWell.classList.remove("resizing");
+			editorWell.classList.remove("resize-hover");
+			document.body.style.cursor = "";
+			document.body.style.userSelect = "";
+		}
+	});
+}
+
 // Initialize toggle for chat-sessions visibility via chat-sessions top bar icon
 function initChatSessionsToggle() {
 	const chatSessionsIcon = document.querySelector("top-bar-icon.chat-sessions");
@@ -1325,6 +1749,28 @@ function initFloatingChatInput() {
 		detailContent.innerHTML = html;
 	};
 
+	// Helper: Render empty state for embedded panels (State 4 with no sessions)
+	const renderEmbeddedEmptyState = () => {
+		const threadContent = floatingChatInput.querySelector("embedded-thread-content");
+		const resultsPanelContent = floatingChatInput.querySelector("results-panel-content");
+
+		if (threadContent) {
+			threadContent.innerHTML = `
+				<empty-state>
+					<empty-state-title>New Chat</empty-state-title>
+					<empty-state-disclaimer>
+						<p>AI responses may be inaccurate.</p>
+						<p>If handling customer data, disable telemetry.</p>
+					</empty-state-disclaimer>
+				</empty-state>
+			`;
+		}
+
+		if (resultsPanelContent) {
+			resultsPanelContent.innerHTML = "";
+		}
+	};
+
 	// Helper: Render embedded session list for State 4
 	const renderEmbeddedSessionList = (workspaceId) => {
 		const sessionListItems = floatingChatInput.querySelector(
@@ -1333,9 +1779,11 @@ function initFloatingChatInput() {
 		if (!sessionListItems) return;
 
 		const project = chatSessionsData.projects.find((p) => p.id === workspaceId);
-		if (!project || !project.sessions) {
+		if (!project || !project.sessions || project.sessions.length === 0) {
 			sessionListItems.innerHTML =
 				'<div style="padding: 16px; color: var(--vscode-foreground-secondary); font-size: 13px;">No active sessions</div>';
+			// Render empty state for chat thread and results panel
+			renderEmbeddedEmptyState();
 			return;
 		}
 
@@ -1523,6 +1971,7 @@ function initFloatingChatInput() {
 					renderSessionPicker(workspaceId);
 				}
 				setState(2);
+				refreshMainAreaPanels?.();
 			} else if (currentState === 3) {
 				// Go back to State 2
 				setState(2);
@@ -1558,7 +2007,8 @@ function initFloatingChatInput() {
 					floatingChatInput.setAttribute("data-current-workspace", workspaceId);
 
 					// Update cmd-palette-button text in top-bar
-					const workspaceName = workspacePill.querySelector(".workspace-name")?.textContent || workspaceId;
+					const workspaceName =
+						workspacePill.querySelector(".workspace-name")?.textContent || workspaceId;
 					const cmdPaletteButton = document.querySelector("cmd-palette-button");
 					if (cmdPaletteButton) {
 						// Preserve the search icon SVG and update only the text
@@ -1594,7 +2044,8 @@ function initFloatingChatInput() {
 				floatingChatInput.setAttribute("data-current-workspace", workspaceId);
 
 				// Update cmd-palette-button text in top-bar
-				const workspaceName = workspacePill.querySelector(".workspace-name")?.textContent || workspaceId;
+				const workspaceName =
+					workspacePill.querySelector(".workspace-name")?.textContent || workspaceId;
 				const cmdPaletteButton = document.querySelector("cmd-palette-button");
 				if (cmdPaletteButton) {
 					// Preserve the search icon SVG and update only the text
@@ -1725,6 +2176,7 @@ function initFloatingChatInput() {
 
 				// Trigger state change
 				setState(4);
+				refreshMainAreaPanels?.();
 
 				// Remove animation class after transition completes
 				setTimeout(() => {
@@ -1746,6 +2198,7 @@ function initFloatingChatInput() {
 				// Wait for collapse animation to mostly complete, then change state
 				setTimeout(() => {
 					setState(2);
+					refreshMainAreaPanels?.();
 					// Render session picker for the new state
 					renderSessionPicker(workspaceId);
 
@@ -2047,8 +2500,7 @@ function initFloatingChatInput() {
 
 initVsCodeHeroTabs();
 initMonacoEditor();
-initSecondarySidebarResize();
-initPrimarySidebarResize();
+initMainAreaPanels();
 initTerminalPanelResize();
 initChatSessionsResize();
 initCollapseAllButton();
@@ -2057,7 +2509,6 @@ initTreeViewFileClick();
 initTabBarInteraction();
 initPickerMenus();
 initChatSessions();
-initSessionListToggle();
 initOpenInEditorHandler();
 initProjectSwitchHandler();
 initFloatingChatInput();
@@ -2141,9 +2592,7 @@ function initFloatingInputRowAnimation() {
 }
 
 function initBackgroundAgentPicker() {
-	const chatTypeContainers = Array.from(
-		document.querySelectorAll(".chat-type-container"),
-	);
+	const chatTypeContainers = Array.from(document.querySelectorAll(".chat-type-container"));
 
 	if (!chatTypeContainers.length) return;
 
@@ -2329,7 +2778,7 @@ function openWorkspace(path) {
 	if (cmdPaletteButton) {
 		// The button has SVG + text node, we need to update the text node
 		const textNodes = Array.from(cmdPaletteButton.childNodes).filter(
-			node => node.nodeType === Node.TEXT_NODE
+			(node) => node.nodeType === Node.TEXT_NODE,
 		);
 		if (textNodes.length > 0) {
 			// Update the last text node (the one after the SVG)
@@ -2361,7 +2810,7 @@ function openWorkspace(path) {
 				if (tabBar) {
 					// Remove all existing file tabs (keep only fill-end and tab-action)
 					const existingTabs = tabBar.querySelectorAll("tab-item:not([type='fill-end'])");
-					existingTabs.forEach(tab => tab.remove());
+					existingTabs.forEach((tab) => tab.remove());
 
 					// Create new active tab
 					const newTab = document.createElement("tab-item");
@@ -2394,7 +2843,9 @@ function openWorkspace(path) {
 	const workspaceRow = document.querySelector("floating-chat-input workspace-row");
 	if (workspaceRow) {
 		// Check if workspace pill already exists
-		const existingPill = workspaceRow.querySelector(`workspace-pill[data-workspace="${folderName}"]`);
+		const existingPill = workspaceRow.querySelector(
+			`workspace-pill[data-workspace="${folderName}"]`,
+		);
 		if (!existingPill) {
 			// Create new workspace pill
 			const newPill = document.createElement("workspace-pill");
