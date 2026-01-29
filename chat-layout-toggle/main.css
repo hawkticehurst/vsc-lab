@@ -1,0 +1,1083 @@
+/* ============================================
+   VS Code Layout Toggle Prototype
+   CSS Tokens & Base Styles
+   ============================================ */
+
+:root {
+    /* Layout dimensions */
+    --vscode-tab-strip-height: 38px;
+    --vscode-indent-width: 32px;
+    --vscode-line-number-gutter-width: 54px;
+    --vscode-panel-gap: 0px;
+
+    /* Spacing scale */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+
+    /* Border radius scale */
+    --radius-sm: 4px;
+    --radius-md: 0px;
+    --radius-lg: 0px;
+    --radius-xl: 0px;
+
+    /* Transitions */
+    --transition-fast: 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-spring: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    --transition-layout: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Core colors - Slightly brighter dark theme */
+    --vscode-bg: #1e1e1e;
+    --vscode-bg-elevated: #252526;
+    --vscode-bg-surface: #2d2d2d;
+    --vscode-foreground: #cccccc;
+    --vscode-foreground-secondary: #858585;
+    --vscode-foreground-muted: #6e6e6e;
+    --vscode-accent: #0098ff;
+    --vscode-accent-hover: #40b0ff;
+    --vscode-accent-subtle: rgba(0, 152, 255, 0.15);
+    --vscode-accent-fg: #ffffff;
+
+    /* Borders */
+    --vscode-border: #3c3c3c;
+    --vscode-border-subtle: #2d2d2d;
+    --vscode-border-strong: #4a4a4a;
+
+    /* Editor */
+    --vscode-editor-bg: #1e1e1e;
+    --vscode-editor-fg: #d4d4d4;
+    --vscode-line-number-color: #5a5a5a;
+
+    /* Inputs */
+    --vscode-input-bg: #3c3c3c;
+    --vscode-input-bg-hover: #454545;
+    --vscode-input-border: #3c3c3c;
+
+    /* Tabs */
+    --vscode-tab-hover-bg: rgba(255, 255, 255, 0.05);
+    --vscode-tab-active-bg: #1e1e1e;
+    --vscode-tab-active-border: #0098ff;
+
+    /* Interactive states */
+    --vscode-icon-button-hover-bg: rgba(255, 255, 255, 0.08);
+    --vscode-icon-button-active-bg: rgba(255, 255, 255, 0.12);
+
+    /* Git colors */
+    --vscode-git-added-fg: #4ec9b0;
+    --vscode-git-removed-fg: #f14c4c;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --shadow-popup: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================
+   Reset & Base
+   ============================================ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    margin: 0;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+    font-family:
+        -apple-system, "system-ui", BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
+        "Open Sans", "Helvetica Neue", sans-serif;
+    background: #050506 url("../visual-refresh/public/bg.jpg") no-repeat center center;
+    background-size: cover;
+    letter-spacing: -0.01em;
+}
+
+/* ============================================
+   VS Code Shell
+   ============================================ */
+
+vs-code {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 92%;
+    height: 92%;
+    background: var(--vscode-editor-bg);
+    border-radius: 8px;
+    margin: auto;
+    min-height: 0;
+    box-shadow:
+        0 0 0 1px var(--vscode-border),
+        0 24px 80px rgba(0, 0, 0, 0.65),
+        0 8px 24px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    padding: 0;
+    gap: 0;
+    position: relative;
+}
+
+vs-code * {
+    display: block;
+    box-sizing: border-box;
+}
+
+/* ============================================
+   Top Bar
+   ============================================ */
+
+top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 12px;
+    background: var(--vscode-bg);
+    border-bottom: solid 1px var(--vscode-border);
+    border-radius: 0;
+    user-select: none;
+    position: relative;
+    z-index: 100000;
+}
+
+window-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+window-button {
+    --size: 12px;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    background: var(--vscode-border);
+    transition: transform var(--transition-fast);
+}
+
+window-button:hover {
+    transform: scale(1.1);
+}
+
+window-button[type="close"] {
+    background: #FF5F57;
+}
+
+window-button[type="minimize"] {
+    background: #FFBD2E;
+}
+
+window-button[type="maximize"] {
+    background: #28C840;
+}
+
+.top-bar-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    transform: translateX(35px);
+    gap: 12px;
+    color: var(--vscode-foreground-secondary);
+}
+
+.top-bar-center>svg {
+    opacity: 0.5;
+    transition: opacity var(--transition-fast);
+    cursor: pointer;
+}
+
+.top-bar-center>svg:hover {
+    opacity: 1;
+    color: var(--vscode-foreground);
+}
+
+cmd-palette-button {
+    background: var(--vscode-bg-surface);
+    border: solid 1px var(--vscode-border);
+    color: var(--vscode-foreground-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 3px 12px;
+    border-radius: 4px;
+    width: 260px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all var(--transition-fast);
+}
+
+cmd-palette-button:hover {
+    border-color: var(--vscode-border-strong);
+    background: var(--vscode-input-bg);
+    color: var(--vscode-foreground);
+}
+
+cmd-palette-button svg {
+    width: 13px;
+    height: 13px;
+    fill: currentColor;
+}
+
+.top-bar-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    position: relative;
+    z-index: 1;
+}
+
+avatar-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: solid 2px transparent;
+    overflow: hidden;
+    background: var(--vscode-accent-subtle);
+    color: var(--vscode-accent);
+    font-size: 12px;
+    font-weight: 600;
+    transition: border-color var(--transition-fast);
+    cursor: pointer;
+}
+
+avatar-icon:hover {
+    border-color: var(--vscode-accent);
+}
+
+top-bar-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: var(--radius-sm);
+    color: var(--vscode-foreground-secondary);
+    transition: all var(--transition-fast);
+}
+
+top-bar-icon:hover {
+    background: var(--vscode-icon-button-hover-bg);
+    color: var(--vscode-foreground);
+}
+
+top-bar-icon svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+/* ============================================
+   Layout Toggle Button & Picker
+   ============================================ */
+
+.layout-toggle-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    z-index: 100000;
+}
+
+.layout-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: var(--radius-sm);
+    color: var(--vscode-foreground-secondary);
+    background: transparent;
+    border: none;
+    transition: all var(--transition-fast);
+}
+
+.layout-toggle-btn:hover {
+    background: var(--vscode-icon-button-hover-bg);
+    color: var(--vscode-accent);
+}
+
+.layout-toggle-btn.active {
+    color: var(--vscode-accent);
+    background: var(--vscode-accent-subtle);
+}
+
+.layout-toggle-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+/* Layout Picker Popup */
+.layout-picker {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--vscode-bg-elevated);
+    border: 1px solid var(--vscode-border-strong);
+    border-radius: 6px;
+    padding: 6px;
+    box-shadow: var(--shadow-popup);
+    z-index: 99999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-fast), visibility var(--transition-fast), transform var(--transition-fast);
+    transform: translateX(-50%) translateY(-4px);
+}
+
+.layout-picker:not([hidden]) {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.layout-picker-options {
+    display: flex;
+    gap: 4px;
+    position: relative;
+}
+
+/* Animated highlight background */
+.layout-highlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 44px;
+    height: 36px;
+    background: var(--vscode-accent-subtle);
+    border: 1px solid var(--vscode-accent);
+    border-radius: var(--radius-sm);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.layout-option {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 36px;
+    padding: 4px;
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-sm);
+    color: var(--vscode-foreground-secondary);
+    cursor: pointer;
+    transition: color var(--transition-fast);
+}
+
+.layout-option:hover {
+    color: var(--vscode-foreground);
+}
+
+.layout-option.active {
+    color: var(--vscode-accent);
+}
+
+.layout-option svg {
+    width: 32px;
+    height: 24px;
+}
+
+/* Position highlight based on active option */
+.layout-picker[data-active="editor"] .layout-highlight {
+    transform: translateX(0);
+}
+
+.layout-picker[data-active="split"] .layout-highlight {
+    transform: translateX(48px);
+}
+
+.layout-picker[data-active="chat"] .layout-highlight {
+    transform: translateX(96px);
+}
+
+/* ============================================
+   Main Area & Layouts
+   ============================================ */
+
+.main-area {
+    display: grid;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    align-items: stretch;
+    gap: var(--vscode-panel-gap);
+    transition: grid-template-columns var(--transition-layout);
+}
+
+/* Layout: Editor only */
+.main-area[data-layout="editor"] {
+    grid-template-columns: auto 1fr 0;
+}
+
+.main-area[data-layout="editor"] chat-panel {
+    opacity: 0;
+    width: 0;
+    padding: 0;
+    border: none;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* Layout: Split view */
+.main-area[data-layout="split"] {
+    grid-template-columns: auto 1fr minmax(280px, 35%);
+}
+
+.main-area[data-layout="split"] chat-panel {
+    opacity: 1;
+    width: auto;
+}
+
+/* Layout: Chat expanded (full view - only chat visible) */
+.main-area[data-layout="chat"] {
+    grid-template-columns: 0 0 1fr;
+}
+
+.main-area[data-layout="chat"] primary-side-bar {
+    opacity: 0;
+    width: 0;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.main-area[data-layout="chat"] editor-well {
+    opacity: 0;
+    width: 0;
+    min-width: 0;
+    padding: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.main-area[data-layout="chat"] chat-panel {
+    opacity: 1;
+    width: auto;
+}
+
+/* ============================================
+   Primary Sidebar
+   ============================================ */
+
+primary-side-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+    gap: var(--space-1);
+    height: 100%;
+    width: 220px;
+    min-width: 180px;
+    flex-shrink: 0;
+    min-height: 0;
+    background: var(--vscode-bg);
+    border-radius: 0;
+    border-right: solid 1px var(--vscode-border);
+    transition: width var(--transition-layout), opacity var(--transition-layout);
+}
+
+activity-bar {
+    display: flex;
+    flex-direction: row;
+    padding: 5px var(--space-2);
+    gap: var(--space-1);
+    border-bottom: 1px solid var(--vscode-border);
+    height: var(--vscode-tab-strip-height);
+    align-items: center;
+}
+
+activity-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-sm);
+    color: var(--vscode-foreground-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+activity-icon:hover {
+    background: var(--vscode-icon-button-hover-bg);
+    color: var(--vscode-foreground);
+}
+
+activity-icon[active] {
+    color: var(--vscode-foreground);
+    background: var(--vscode-icon-button-active-bg);
+}
+
+activity-icon svg {
+    width: 14px;
+    height: 14px;
+}
+
+view-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-2) var(--space-3);
+}
+
+view-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--vscode-foreground-secondary);
+}
+
+/* Tree View */
+tree-view {
+    display: flex;
+    flex-direction: column;
+    padding: 0 var(--space-2);
+    overflow-y: auto;
+    flex: 1;
+}
+
+tree-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    color: var(--vscode-foreground);
+    font-size: 13px;
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+tree-item:hover {
+    background: var(--vscode-icon-button-hover-bg);
+}
+
+tree-item[active] {
+    background: var(--vscode-accent-subtle);
+    color: var(--vscode-accent);
+}
+
+tree-item[indent="1"] {
+    padding-left: calc(var(--space-2) + var(--space-4));
+}
+
+tree-item .chevron-icon {
+    width: 16px;
+    height: 16px;
+    transition: transform var(--transition-fast);
+}
+
+tree-item[folder][open] .chevron-icon {
+    transform: rotate(90deg);
+}
+
+tree-item .file-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--vscode-foreground-secondary);
+}
+
+tree-item .folder-name,
+tree-item .file-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ============================================
+   Editor Well
+   ============================================ */
+
+editor-well {
+    background: var(--vscode-editor-bg);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    min-width: 0;
+    flex: 1 1 auto;
+    border-radius: 0;
+    overflow: hidden;
+    gap: 0;
+    position: relative;
+    border-right: 1px solid var(--vscode-border);
+    transition: opacity var(--transition-layout), width var(--transition-layout);
+}
+
+tab-bar {
+    display: flex;
+    align-items: stretch;
+    background: var(--vscode-bg);
+    border-bottom: 1px solid var(--vscode-border);
+    height: var(--vscode-tab-strip-height);
+    overflow-x: auto;
+}
+
+tab-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 0 var(--space-3);
+    font-size: 13px;
+    color: var(--vscode-foreground-secondary);
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+tab-item:hover {
+    background: var(--vscode-tab-hover-bg);
+}
+
+tab-item[active] {
+    color: var(--vscode-foreground);
+    background: var(--vscode-tab-active-bg);
+    border-bottom-color: var(--vscode-tab-active-border);
+}
+
+tab-item[type="fill-end"] {
+    flex: 1;
+    cursor: default;
+}
+
+tab-item[type="fill-end"]:hover {
+    background: transparent;
+}
+
+tab-item .close-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: var(--radius-sm);
+    opacity: 0;
+    transition: opacity var(--transition-fast), background var(--transition-fast);
+}
+
+tab-item:hover .close-icon {
+    opacity: 0.6;
+}
+
+tab-item .close-icon:hover {
+    opacity: 1;
+    background: var(--vscode-icon-button-hover-bg);
+}
+
+editor-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--vscode-editor-bg);
+}
+
+editor-file {
+    flex: 1;
+    overflow: auto;
+}
+
+code-content {
+    display: flex;
+    flex-direction: column;
+    font-family: 'SF Mono', 'Monaco', 'Menlo', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: var(--space-3) 0;
+}
+
+code-line {
+    display: flex;
+    padding: 0 var(--space-4);
+    min-height: 21px;
+}
+
+code-line:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+line-number {
+    width: var(--vscode-line-number-gutter-width);
+    color: var(--vscode-line-number-color);
+    text-align: right;
+    padding-right: var(--space-4);
+    user-select: none;
+    flex-shrink: 0;
+}
+
+/* Syntax highlighting */
+.keyword {
+    color: #c586c0;
+}
+
+.function {
+    color: #dcdcaa;
+}
+
+.string {
+    color: #ce9178;
+}
+
+.number {
+    color: #b5cea8;
+}
+
+.comment {
+    color: #6a9955;
+}
+
+.code-text {
+    color: #9cdcfe;
+}
+
+code-content {
+    color: #9cdcfe;
+    /* Default text color for code */
+}
+
+code-preview {
+    color: #9cdcfe;
+    /* Default text color for code preview */
+}
+
+/* ============================================
+   Chat Panel
+   ============================================ */
+
+chat-panel {
+    display: flex;
+    flex-direction: column;
+    background: var(--vscode-bg);
+    border-radius: 0;
+    min-width: 0;
+    overflow: hidden;
+    transition: opacity var(--transition-layout), width var(--transition-layout);
+}
+
+chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 var(--space-3);
+    height: var(--vscode-tab-strip-height);
+    border-bottom: 1px solid var(--vscode-border);
+}
+
+chat-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--vscode-foreground);
+}
+
+chat-actions {
+    display: flex;
+    gap: var(--space-1);
+}
+
+chat-actions button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--vscode-foreground-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+chat-actions button:hover {
+    background: var(--vscode-icon-button-hover-bg);
+    color: var(--vscode-foreground);
+}
+
+chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+chat-message {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+chat-message[type="user"] message-content {
+    background: var(--vscode-accent-subtle);
+    color: var(--vscode-foreground);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+chat-message[type="assistant"] message-content {
+    color: var(--vscode-foreground);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+chat-code-block {
+    display: flex;
+    flex-direction: column;
+    background: var(--vscode-editor-bg);
+    border: 1px solid var(--vscode-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-2) var(--space-3);
+    background: var(--vscode-bg-surface);
+    font-size: 12px;
+    color: var(--vscode-foreground-secondary);
+}
+
+code-header .stats {
+    display: flex;
+    gap: var(--space-2);
+}
+
+code-header .add {
+    color: var(--vscode-git-added-fg);
+}
+
+code-header .remove {
+    color: var(--vscode-git-removed-fg);
+}
+
+code-preview {
+    display: flex;
+    flex-direction: column;
+    font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+    font-size: 12px;
+}
+
+code-preview code-line {
+    padding: var(--space-1) var(--space-3);
+}
+
+code-preview code-line[type="add"] {
+    background: rgba(72, 180, 120, 0.1);
+    border-left: 3px solid var(--vscode-git-added-fg);
+}
+
+code-preview code-line[type="remove"] {
+    background: rgba(240, 85, 120, 0.1);
+    border-left: 3px solid var(--vscode-git-removed-fg);
+}
+
+code-preview line-number {
+    width: 32px;
+    padding-right: var(--space-2);
+}
+
+chat-input-area {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    border-top: 1px solid var(--vscode-border);
+    background: var(--vscode-bg-surface);
+}
+
+chat-input-area input {
+    flex: 1;
+    background: var(--vscode-input-bg);
+    border: 1px solid var(--vscode-input-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2) var(--space-3);
+    color: var(--vscode-foreground);
+    font-size: 13px;
+    outline: none;
+    transition: border-color var(--transition-fast);
+}
+
+chat-input-area input:focus {
+    border-color: var(--vscode-accent);
+}
+
+chat-input-area input::placeholder {
+    color: var(--vscode-foreground-muted);
+}
+
+chat-input-area .send-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--vscode-accent);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--vscode-accent-fg);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+chat-input-area .send-btn:hover {
+    background: var(--vscode-accent-hover);
+}
+
+/* ============================================
+   Status Bar
+   ============================================ */
+
+status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px var(--space-3);
+    background: var(--vscode-bg);
+    border-radius: 0;
+    border-top: 1px solid var(--vscode-border);
+    font-size: 12px;
+    color: var(--vscode-foreground-secondary);
+}
+
+status-item {
+    display: inline-flex;
+    padding: 2px var(--space-2);
+    gap: var(--space-2);
+}
+
+status-item.right {
+    margin-left: auto;
+    gap: var(--space-3);
+}
+
+status-item.right~status-item.right {
+    margin-left: 0;
+}
+
+status-bar skeleton-bar {
+    background: var(--vscode-border-strong);
+    opacity: 0.6;
+}
+
+/* ============================================
+   Skeleton UI Elements
+   ============================================ */
+
+skeleton-bar {
+    display: block;
+    height: 12px;
+    background: var(--vscode-border-strong);
+    border-radius: 4px;
+    opacity: 0.6;
+}
+
+skeleton-circle {
+    display: block;
+    width: 24px;
+    height: 24px;
+    background: var(--vscode-border-strong);
+    border-radius: 50%;
+    opacity: 0.6;
+    flex-shrink: 0;
+}
+
+/* Tree view skeleton items */
+tree-view tree-item {
+    display: flex;
+    align-items: center;
+    padding: var(--space-1) var(--space-2);
+}
+
+tree-view tree-item skeleton-bar {
+    height: 10px;
+}
+
+/* Code skeleton */
+code-skeleton {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-4);
+    gap: var(--space-2);
+}
+
+skeleton-line {
+    display: flex;
+    min-height: 18px;
+}
+
+skeleton-line[indent="1"] {
+    padding-left: 20px;
+}
+
+skeleton-line[indent="2"] {
+    padding-left: 40px;
+}
+
+skeleton-line skeleton-bar {
+    height: 10px;
+}
+
+/* Chat skeleton elements */
+message-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: var(--vscode-bg-surface);
+    border-radius: var(--radius-md);
+}
+
+chat-message[type="user"] message-skeleton {
+    background: var(--vscode-accent-subtle);
+}
+
+chat-code-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    background: var(--vscode-editor-bg);
+    border: 1px solid var(--vscode-border);
+    border-radius: var(--radius-sm);
+}
+
+chat-input-area .input-skeleton {
+    flex: 1;
+    height: 32px;
+}
+
+/* Tab skeleton */
+tab-item skeleton-bar {
+    height: 10px;
+}
