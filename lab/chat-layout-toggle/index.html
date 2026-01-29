@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VS Code Layout Toggle Prototype</title>
+    <link rel="stylesheet" href="main.css" />
+</head>
+
+<body>
+    <vs-code>
+        <top-bar>
+            <window-buttons>
+                <window-button type="close"></window-button>
+                <window-button type="minimize"></window-button>
+                <window-button type="maximize"></window-button>
+            </window-buttons>
+            <section class="top-bar-center">
+                <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                    <path
+                        d="M13.5 8.5C13.7761 8.5 14 8.27614 14 8C14 7.72386 13.7761 7.5 13.5 7.5L3.80298 7.5L7.83448 3.87165C8.03974 3.68692 8.05638 3.37078 7.87165 3.16552C7.68692 2.96027 7.37077 2.94363 7.16552 3.12836L2.16552 7.62835C2.06016 7.72317 2 7.85826 2 8C2 8.14174 2.06016 8.27683 2.16552 8.37165L7.16552 12.8716C7.37077 13.0564 7.68692 13.0397 7.87165 12.8345C8.05638 12.6292 8.03974 12.3131 7.83448 12.1283L3.80298 8.5L13.5 8.5Z" />
+                </svg>
+                <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                    <path
+                        d="M2.5 7.5C2.22386 7.5 2 7.72386 2 8C2 8.27614 2.22386 8.5 2.5 8.5L12.197 8.5L8.16552 12.1283C7.96026 12.3131 7.94362 12.6292 8.12835 12.8345C8.31308 13.0397 8.62923 13.0564 8.83448 12.8716L13.8345 8.37164C13.9398 8.27682 14 8.14174 14 8C14 7.85825 13.9398 7.72317 13.8345 7.62835L8.83448 3.12835C8.62923 2.94362 8.31308 2.96026 8.12835 3.16551C7.94362 3.37077 7.96026 3.68691 8.16552 3.87164L12.197 7.5L2.5 7.5Z" />
+                </svg>
+                <cmd-palette-button>
+                    <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor">
+                        <path
+                            d="M10.0195 10.7266C9.06578 11.5217 7.83875 12 6.5 12C3.46243 12 1 9.53757 1 6.5C1 3.46243 3.46243 1 6.5 1C9.53757 1 12 3.46243 12 6.5C12 7.83875 11.5217 9.06578 10.7266 10.0195L13.8535 13.1464C14.0488 13.3417 14.0488 13.6583 13.8535 13.8536C13.6583 14.0488 13.3417 14.0488 13.1464 13.8536L10.0195 10.7266ZM11 6.5C11 4.01472 8.98528 2 6.5 2C4.01472 2 2 4.01472 2 6.5C2 8.98528 4.01472 11 6.5 11C8.98528 11 11 8.98528 11 6.5Z" />
+                    </svg>
+                    my-project
+                </cmd-palette-button>
+                <!-- Chat Sparkle Icon - Layout Toggle Button -->
+                <div class="layout-toggle-container">
+                    <button id="layout-toggle-btn" class="layout-toggle-btn" aria-label="Toggle chat layout">
+                        <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor">
+                            <path
+                                d="M9.055 2.672C9.019 2.622 8.999 2.561 8.999 2.498C8.999 2.435 9.019 2.374 9.055 2.323C9.091 2.272 9.142 2.233 9.201 2.212L9.373 2.157H9.375L9.97 1.964C10.167 1.896 10.348 1.79 10.503 1.652C10.529 1.629 10.554 1.605 10.579 1.58C10.75 1.407 10.878 1.197 10.954 0.966L11.203 0.201C11.223 0.142 11.262 0.091 11.313 0.055C11.364 0.019 11.425 0 11.488 0H11.503C11.56 0.003 11.615 0.022 11.662 0.055C11.714 0.091 11.752 0.142 11.773 0.201L12.022 0.966C12.099 1.198 12.23 1.41 12.403 1.583C12.458 1.638 12.517 1.689 12.579 1.735C12.713 1.834 12.862 1.911 13.021 1.964L13.786 2.213L13.801 2.217C13.86 2.237 13.911 2.275 13.947 2.326C13.984 2.378 14.003 2.438 14.003 2.501C14.003 2.564 13.983 2.625 13.947 2.676C13.911 2.727 13.86 2.765 13.801 2.786L13.036 3.035C12.803 3.112 12.591 3.243 12.418 3.416C12.245 3.589 12.114 3.8 12.037 4.033L11.788 4.798C11.781 4.817 11.772 4.836 11.761 4.854C11.739 4.889 11.711 4.92 11.677 4.944C11.627 4.98 11.567 5 11.506 5H11.502C11.439 5 11.378 4.98 11.327 4.944C11.275 4.908 11.237 4.857 11.216 4.798L10.967 4.033C10.958 4.006 10.948 3.979 10.938 3.952C10.86 3.75 10.74 3.566 10.586 3.413C10.483 3.311 10.368 3.223 10.242 3.152C10.183 3.119 10.121 3.089 10.058 3.064C10.056 3.064 10.051 3.061 10.051 3.061L9.968 3.031L9.201 2.782C9.142 2.761 9.091 2.723 9.055 2.672ZM15.958 5.862C15.929 5.822 15.888 5.791 15.841 5.774L15.829 5.771L15.217 5.572V5.574C15.031 5.512 14.862 5.408 14.723 5.269C14.584 5.13 14.48 4.961 14.418 4.775L14.219 4.163C14.203 4.116 14.172 4.075 14.131 4.046C14.09 4.018 14.041 4.002 13.991 4.002C13.941 4.002 13.892 4.017 13.851 4.046C13.811 4.075 13.78 4.116 13.763 4.163L13.564 4.775C13.503 4.959 13.401 5.127 13.264 5.266C13.128 5.404 12.961 5.51 12.777 5.573L12.165 5.772C12.118 5.788 12.076 5.819 12.048 5.86C12.02 5.901 12.004 5.95 12.004 6C12.004 6.05 12.019 6.099 12.048 6.14C12.077 6.18 12.118 6.211 12.165 6.228L12.748 6.417V6.42L12.772 6.428C12.959 6.49 13.128 6.594 13.267 6.733C13.405 6.872 13.51 7.042 13.572 7.228L13.772 7.84C13.788 7.887 13.819 7.928 13.86 7.957C13.9 7.985 13.947 8.001 13.996 8.001H14.003C14.053 8.001 14.102 7.986 14.143 7.957C14.184 7.928 14.214 7.887 14.231 7.84L14.43 7.228C14.492 7.042 14.596 6.873 14.735 6.734C14.874 6.595 15.043 6.491 15.229 6.429L15.841 6.23C15.888 6.214 15.93 6.183 15.958 6.142C15.986 6.101 16.002 6.052 16.002 6.002C16.002 5.952 15.987 5.903 15.958 5.862ZM13 9.5C13 10.328 12.328 11 11.5 11H7.312L4 13.898V11H2.5C1.672 11 1 10.328 1 9.5V4.5C1 3.672 1.672 3 2.5 3H8V2H2.5C1.119 2 0 3.119 0 4.5V9.5C0 10.881 1.119 12 2.5 12H3V13.942C3 14.784 3.992 15.234 4.625 14.679L7.688 11.999H11.5C12.881 11.999 14 10.88 14 9.499V8.999H13V9.5Z" />
+                        </svg>
+                    </button>
+                    <!-- Layout Picker Popup -->
+                    <div id="layout-picker" class="layout-picker" hidden>
+                        <div class="layout-picker-options">
+                            <div class="layout-highlight"></div>
+                            <button class="layout-option active" data-layout="editor" aria-label="Editor only">
+                                <!-- Editor only layout icon -->
+                                <svg width="32" height="24" viewBox="0 0 32 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="1" y="1" width="30" height="22" rx="2" stroke="currentColor"
+                                        stroke-width="1.5" fill="none" />
+                                    <rect x="3" y="3" width="8" height="18" rx="1" fill="currentColor" opacity="0.3" />
+                                    <rect x="13" y="3" width="16" height="18" rx="1" fill="currentColor"
+                                        opacity="0.6" />
+                                </svg>
+                            </button>
+                            <button class="layout-option" data-layout="split" aria-label="Split view">
+                                <!-- Split layout icon -->
+                                <svg width="32" height="24" viewBox="0 0 32 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="1" y="1" width="30" height="22" rx="2" stroke="currentColor"
+                                        stroke-width="1.5" fill="none" />
+                                    <rect x="3" y="3" width="6" height="18" rx="1" fill="currentColor" opacity="0.3" />
+                                    <rect x="11" y="3" width="9" height="18" rx="1" fill="currentColor" opacity="0.6" />
+                                    <rect x="22" y="3" width="7" height="18" rx="1" fill="currentColor" opacity="0.8" />
+                                </svg>
+                            </button>
+                            <button class="layout-option" data-layout="chat" aria-label="Chat expanded">
+                                <!-- Chat expanded layout icon (full view - no sidebar) -->
+                                <svg width="32" height="24" viewBox="0 0 32 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="1" y="1" width="30" height="22" rx="2" stroke="currentColor"
+                                        stroke-width="1.5" fill="none" />
+                                    <rect x="3" y="3" width="26" height="18" rx="1" fill="currentColor" opacity="0.8" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="top-bar-right">
+                <top-bar-icon class="layout-left">
+                    <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor">
+                        <path
+                            d="M12.5 1C13.881 1 15 2.119 15 3.5V12.5C15 13.881 13.881 15 12.5 15H3.5C2.119 15 1 13.881 1 12.5V3.5C1 2.119 2.119 1 3.5 1H12.5ZM12.5 14C13.328 14 14 13.328 14 12.5V3.5C14 2.672 13.328 2 12.5 2H7V14H12.5Z" />
+                    </svg>
+                </top-bar-icon>
+                <top-bar-icon class="layout-bottom">
+                    <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor">
+                        <path
+                            d="M15 12.5C15 13.881 13.881 15 12.5 15H3.5C2.119 15 1 13.881 1 12.5V3.5C1 2.119 2.119 1 3.5 1H12.5C13.881 1 15 2.119 15 3.5V12.5ZM2 10H14V3.5C14 2.672 13.328 2 12.5 2H3.5C2.672 2 2 2.672 2 3.5V10Z" />
+                    </svg>
+                </top-bar-icon>
+                <top-bar-icon class="layout-right">
+                    <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor">
+                        <path
+                            d="M12.5 1C13.881 1 15 2.119 15 3.5V12.5C15 13.881 13.881 15 12.5 15H3.5C2.119 15 1 13.881 1 12.5V3.5C1 2.119 2.119 1 3.5 1H12.5ZM9 14V2H3.5C2.672 2 2 2.672 2 3.5V12.5C2 13.328 2.672 14 3.5 14H9Z" />
+                    </svg>
+                </top-bar-icon>
+                <avatar-icon>
+                    <span>U</span>
+                </avatar-icon>
+                <top-bar-icon>
+                    <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor">
+                        <path
+                            d="M15.471 9.99998L15.029 9.53498C14.894 9.39198 14.777 9.23298 14.677 9.06198C14.409 8.61584 14.2596 8.10818 14.243 7.58698V5.93998C14.2349 4.73109 13.8086 3.56123 13.038 2.62598C12.2625 1.69527 11.1884 1.05707 9.99996 0.822976V0.499976C9.99996 0.367368 9.94728 0.240191 9.85351 0.146422C9.75974 0.0526529 9.63257 0 9.49996 0C9.36735 0 9.24018 0.0526529 9.14641 0.146422C9.05264 0.240191 8.99996 0.367368 8.99996 0.499976V0.847976C7.82504 1.10051 6.76525 1.74577 6.00002 2.67687C5.23479 3.60796 4.81065 4.77057 4.79496 5.97198V7.61898C4.77836 8.14018 4.62896 8.64784 4.36096 9.09398C4.26796 9.25398 4.16096 9.40398 4.03796 9.53798L3.55896 10.036C3.47986 10.1183 3.42129 10.2181 3.38818 10.3273C3.35506 10.4365 3.34835 10.552 3.36859 10.6643C3.38884 10.7765 3.43544 10.8823 3.50456 10.9731C3.57369 11.0638 3.66345 11.137 3.76596 11.187C4.17896 11.387 4.71996 11.5 5.28196 11.5H6.49996C6.49996 12.2956 6.81603 13.0587 7.37864 13.6213C7.94125 14.1839 8.70431 14.5 9.49996 14.5C10.2956 14.5 11.0587 14.1839 11.6213 13.6213C12.1839 13.0587 12.5 12.2956 12.5 11.5H13.756C14.305 11.5 14.836 11.39 15.243 11.195C15.3476 11.1456 15.4393 11.0721 15.5101 10.9805C15.5809 10.889 15.6286 10.7819 15.6494 10.668C15.6702 10.5542 15.6635 10.437 15.6298 10.3263C15.5961 10.2155 15.5363 10.1145 15.4555 10.032L15.471 9.99998ZM9.49996 13.5C8.96953 13.5 8.46082 13.2893 8.08575 12.9142C7.71068 12.5391 7.49996 12.0304 7.49996 11.5H11.5C11.5 12.0304 11.2893 12.5391 10.9142 12.9142C10.5391 13.2893 10.0304 13.5 9.49996 13.5ZM4.70096 10.5C4.77296 10.405 4.84096 10.307 4.90496 10.205C5.28076 9.58942 5.48945 8.88832 5.51196 8.16898V5.99998C5.51196 4.94198 5.93096 3.92698 6.67896 3.17998C7.42696 2.43298 8.44196 2.01298 9.49996 2.01298C10.558 2.01298 11.573 2.43198 12.32 3.17998C13.068 3.92698 13.488 4.94198 13.488 5.99998V8.13698C13.5079 8.86999 13.7178 9.58499 14.098 10.211C14.163 10.321 14.233 10.421 14.308 10.518L4.70096 10.5Z" />
+                    </svg>
+                </top-bar-icon>
+            </section>
+        </top-bar>
+        <section class="main-area" data-layout="editor">
+            <primary-side-bar>
+                <activity-bar role="navigation" aria-label="Primary activity bar">
+                    <activity-icon active>
+                        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor">
+                            <path
+                                d="M17.5 0h-9L7 1.5V6H2.5L1 7.5v15.07L2.5 24h12.07L16 22.57V18h4.7l1.3-1.43V4.5L17.5 0zm0 2.12l2.38 2.38H17.5V2.12zm-3 20.38h-12v-15H7v9.07L8.5 18h6v4.5zm6-6h-12v-15H16V6h4.5v10.5z" />
+                        </svg>
+                    </activity-icon>
+                    <activity-icon>
+                        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor">
+                            <path
+                                d="M23.03 21.97L15.162 14.102C16.31 12.717 17 10.939 17 9C17 4.582 13.418 1 9 1C4.582 1 1 4.582 1 9C1 13.418 4.582 17 9 17C10.939 17 12.717 16.31 14.102 15.162L21.97 23.03L23.031 21.969L23.03 21.97ZM2.5 9C2.5 5.416 5.416 2.5 9 2.5C12.584 2.5 15.5 5.416 15.5 9C15.5 12.584 12.584 15.5 9 15.5C5.416 15.5 2.5 12.584 2.5 9Z" />
+                        </svg>
+                    </activity-icon>
+                    <activity-icon>
+                        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor">
+                            <path
+                                d="M21.007 8.222A3.738 3.738 0 0 0 15.045 5.2a3.737 3.737 0 0 0 1.156 6.583 2.988 2.988 0 0 1-2.668 1.67h-2.99a4.456 4.456 0 0 0-2.989 1.165V7.4a3.737 3.737 0 1 0-1.494 0v9.117a3.776 3.776 0 1 0 1.816.099 2.99 2.99 0 0 1 2.668-1.667h2.99a4.484 4.484 0 0 0 4.223-3.039 3.736 3.736 0 0 0 3.25-3.687zM4.565 3.738a2.242 2.242 0 1 1 4.484 0 2.242 2.242 0 0 1-4.484 0zm4.484 16.441a2.242 2.242 0 1 1-4.484 0 2.242 2.242 0 0 1 4.484 0zm8.221-9.715a2.242 2.242 0 1 1 0-4.485 2.242 2.242 0 0 1 0 4.485z" />
+                        </svg>
+                    </activity-icon>
+                </activity-bar>
+                <view-actions>
+                    <skeleton-bar style="width: 60px;"></skeleton-bar>
+                </view-actions>
+                <tree-view>
+                    <tree-item><skeleton-bar style="width: 45%;"></skeleton-bar></tree-item>
+                    <tree-item indent="1"><skeleton-bar style="width: 55%;"></skeleton-bar></tree-item>
+                    <tree-item indent="1"><skeleton-bar style="width: 40%;"></skeleton-bar></tree-item>
+                    <tree-item indent="1"><skeleton-bar style="width: 50%;"></skeleton-bar></tree-item>
+                    <tree-item><skeleton-bar style="width: 65%;"></skeleton-bar></tree-item>
+                    <tree-item indent="1"><skeleton-bar style="width: 35%;"></skeleton-bar></tree-item>
+                    <tree-item indent="1"><skeleton-bar style="width: 48%;"></skeleton-bar></tree-item>
+                    <tree-item><skeleton-bar style="width: 58%;"></skeleton-bar></tree-item>
+                </tree-view>
+            </primary-side-bar>
+            <editor-well>
+                <tab-bar>
+                    <tab-item active>
+                        <skeleton-bar style="width: 60px;"></skeleton-bar>
+                    </tab-item>
+                    <tab-item>
+                        <skeleton-bar style="width: 50px;"></skeleton-bar>
+                    </tab-item>
+                    <tab-item type="fill-end"></tab-item>
+                </tab-bar>
+                <editor-area>
+                    <editor-file>
+                        <code-skeleton>
+                            <skeleton-line><skeleton-bar style="width: 35%;"></skeleton-bar></skeleton-line>
+                            <skeleton-line><skeleton-bar style="width: 42%;"></skeleton-bar></skeleton-line>
+                            <skeleton-line></skeleton-line>
+                            <skeleton-line><skeleton-bar style="width: 55%;"></skeleton-bar></skeleton-line>
+                            <skeleton-line indent="1"><skeleton-bar style="width: 48%;"></skeleton-bar></skeleton-line>
+                            <skeleton-line></skeleton-line>
+                            <skeleton-line indent="1"><skeleton-bar style="width: 38%;"></skeleton-bar></skeleton-line>
+                            <skeleton-line indent="2"><skeleton-bar style="width: 52%;"></skeleton-bar></skeleton-line>
+                            <skeleton-line indent="1"><skeleton-bar style="width: 15%;"></skeleton-bar></skeleton-line>
+                            <skeleton-line><skeleton-bar style="width: 8%;"></skeleton-bar></skeleton-line>
+                            <skeleton-line></skeleton-line>
+                            <skeleton-line><skeleton-bar style="width: 32%;"></skeleton-bar></skeleton-line>
+                        </code-skeleton>
+                    </editor-file>
+                </editor-area>
+            </editor-well>
+            <chat-panel>
+                <chat-header>
+                    <skeleton-bar style="width: 80px;"></skeleton-bar>
+                    <chat-actions>
+                        <skeleton-circle></skeleton-circle>
+                    </chat-actions>
+                </chat-header>
+                <chat-messages>
+                    <chat-message type="user">
+                        <message-skeleton>
+                            <skeleton-bar style="width: 85%;"></skeleton-bar>
+                            <skeleton-bar style="width: 45%;"></skeleton-bar>
+                        </message-skeleton>
+                    </chat-message>
+                    <chat-message type="assistant">
+                        <message-skeleton>
+                            <skeleton-bar style="width: 90%;"></skeleton-bar>
+                            <skeleton-bar style="width: 78%;"></skeleton-bar>
+                            <skeleton-bar style="width: 60%;"></skeleton-bar>
+                        </message-skeleton>
+                    </chat-message>
+                    <chat-code-skeleton>
+                        <skeleton-bar style="width: 100%; height: 24px; margin-bottom: 8px;"></skeleton-bar>
+                        <skeleton-bar style="width: 70%;"></skeleton-bar>
+                        <skeleton-bar style="width: 50%;"></skeleton-bar>
+                        <skeleton-bar style="width: 80%;"></skeleton-bar>
+                    </chat-code-skeleton>
+                    <chat-message type="assistant">
+                        <message-skeleton>
+                            <skeleton-bar style="width: 75%;"></skeleton-bar>
+                            <skeleton-bar style="width: 55%;"></skeleton-bar>
+                        </message-skeleton>
+                    </chat-message>
+                </chat-messages>
+                <chat-input-area>
+                    <skeleton-bar class="input-skeleton"></skeleton-bar>
+                    <skeleton-circle></skeleton-circle>
+                </chat-input-area>
+            </chat-panel>
+        </section>
+        <status-bar>
+            <skeleton-bar style="width: 40px; height: 10px;"></skeleton-bar>
+            <status-item class="right">
+                <skeleton-bar style="width: 60px; height: 10px;"></skeleton-bar>
+                <skeleton-bar style="width: 35px; height: 10px;"></skeleton-bar>
+                <skeleton-bar style="width: 55px; height: 10px;"></skeleton-bar>
+            </status-item>
+        </status-bar>
+    </vs-code>
+    <script src="main.js"></script>
+</body>
+
+</html>
