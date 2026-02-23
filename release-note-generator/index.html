@@ -18,11 +18,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="./assets/index-B2LsmXWb.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-xr0CINif.css">
+  <script type="module" crossorigin src="./assets/index-Csya41M5.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Cm__vTZp.css">
 </head>
 
 <body>
+    <div class="floating-editor-controls" aria-label="Editor controls">
+        <div class="editor-actions">
+            <button type="button" id="undoBtn" class="icon-btn" title="Undo (Ctrl/Cmd+Z)" aria-label="Undo">
+                <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                    <path
+                        d="M3.00098 2.5C3.00098 2.22386 3.22483 2 3.50098 2C3.77712 2 4.00098 2.22386 4.00098 2.5V6.34262L7.17202 3.17157C8.73412 1.60948 11.2668 1.60948 12.8289 3.17157C14.391 4.73367 14.391 7.26633 12.8289 8.82843L7.80375 13.8536C7.60849 14.0488 7.2919 14.0488 7.09664 13.8536C6.90138 13.6583 6.90138 13.3417 7.09664 13.1464L12.1218 8.12132C13.2933 6.94975 13.2933 5.05025 12.1218 3.87868C10.9502 2.70711 9.0507 2.70711 7.87913 3.87868L4.75781 7H8.50098C8.77712 7 9.00098 7.22386 9.00098 7.5C9.00098 7.77614 8.77712 8 8.50098 8H3.60098C3.26961 8 3.00098 7.73137 3.00098 7.4V2.5Z" />
+                </svg>
+            </button>
+            <button type="button" id="redoBtn" class="icon-btn" title="Redo (Ctrl/Cmd+Shift+Z)" aria-label="Redo">
+                <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                    <path
+                        d="M13.0004 2.5C13.0004 2.22386 12.7766 2 12.5004 2C12.2243 2 12.0004 2.22386 12.0004 2.5V6.34262L8.8294 3.17157C7.26731 1.60948 4.73465 1.60948 3.17255 3.17157C1.61045 4.73367 1.61045 7.26633 3.17255 8.82843L8.19768 13.8536C8.39294 14.0488 8.70952 14.0488 8.90478 13.8536C9.10004 13.6583 9.10004 13.3417 8.90478 13.1464L3.87966 8.12132C2.70808 6.94975 2.70808 5.05025 3.87966 3.87868C5.05123 2.70711 6.95072 2.70711 8.1223 3.87868L11.2436 7H7.50045C7.22431 7 7.00045 7.22386 7.00045 7.5C7.00045 7.77614 7.22431 8 7.50045 8H12.4004C12.7318 8 13.0004 7.73137 13.0004 7.4V2.5Z" />
+                </svg>
+            </button>
+        </div>
+        <button type="button" id="resetBtn" class="secondary-btn">Reset all</button>
+    </div>
+
     <div class="app-layout">
         <!-- Side Panel -->
         <aside class="config-panel">
