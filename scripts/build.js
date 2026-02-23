@@ -7,8 +7,9 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// The folder containing all prototypes/apps
+// The folders containing projects
 const LAB_DIR = "lab";
+const TOOLS_DIR = "tools";
 
 // Directories to exclude when scanning for projects
 const EXCLUDED_DIRS = ["node_modules", "build", ".git", ".vscode"];
@@ -188,8 +189,28 @@ function formatProjectName(name) {
 		.join(" ");
 }
 
-// Generate the index.html homepage with links to all demos
-function generateHomepage(projects, consolidatedBuildPath, rootDir) {
+// Generate HTML links for a list of projects
+function generateProjectLinks(projects, emptyMessage) {
+	if (projects.length === 0) {
+		return `<div class="empty-state">${emptyMessage}</div>`;
+	}
+
+	return projects
+		.sort()
+		.map((project) => {
+			const displayName = formatProjectName(project);
+			return `<a href="./${project}/" class="demo-link">
+                    <span class="demo-name">${displayName}</span>
+                    <svg class="demo-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>`;
+		})
+		.join("\n                ");
+}
+
+// Generate the index.html homepage with links to all demos and tools
+function generateHomepage(demos, tools, consolidatedBuildPath, rootDir) {
 	const templatePath = path.join(rootDir, "assets", "index.html");
 	const outputPath = path.join(consolidatedBuildPath, "index.html");
 
@@ -201,58 +222,32 @@ function generateHomepage(projects, consolidatedBuildPath, rootDir) {
 	let template = fs.readFileSync(templatePath, "utf-8");
 
 	// Generate the demo links HTML
-	let demosHtml = "";
+	const demosHtml = generateProjectLinks(demos, "No demos found");
 
-	if (projects.length === 0) {
-		demosHtml = '<div class="empty-state">No demos found</div>';
-	} else {
-		demosHtml = projects
-			.sort()
-			.map((project) => {
-				const displayName = formatProjectName(project);
-				return `<a href="./${project}/" class="demo-link">
-                    <span class="demo-name">${displayName}</span>
-                    <svg class="demo-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </a>`;
-			})
-			.join("\n                ");
-	}
+	// Generate the tools links HTML
+	const toolsHtml = generateProjectLinks(tools, "No tools found");
 
-	// Replace the placeholder with generated links
+	// Replace the placeholders with generated links
 	template = template.replace("<!-- DEMOS_LIST -->", demosHtml);
+	template = template.replace("<!-- TOOLS_LIST -->", toolsHtml);
 
 	fs.writeFileSync(outputPath, template);
 	console.log("\nGenerated homepage: index.html");
 }
 
-// Main function
-async function main() {
-	const rootDir = path.resolve(__dirname, "..");
-	const labDir = path.join(rootDir, LAB_DIR);
-	const consolidatedBuildPath = path.join(rootDir, "build");
-
-	// Verify lab directory exists
-	if (!fs.existsSync(labDir)) {
-		console.error(`Lab directory not found: ${labDir}`);
-		process.exit(1);
+// Process all projects in a directory and return list of successfully built projects
+function processDirectory(sourceDir, consolidatedBuildPath, label) {
+	if (!fs.existsSync(sourceDir)) {
+		console.log(`\n${label} directory not found: ${sourceDir}, skipping...`);
+		return [];
 	}
 
-	// Create consolidated build directory
-	if (fs.existsSync(consolidatedBuildPath)) {
-		fs.rmSync(consolidatedBuildPath, { recursive: true });
-	}
-	fs.mkdirSync(consolidatedBuildPath);
+	const projects = getProjects(sourceDir);
+	console.log(`\nFound ${label.toLowerCase()}:`, projects);
 
-	// Get all project directories in the lab folder
-	const projects = getProjects(labDir);
-	console.log("Found projects:", projects);
-
-	// Build or copy each project
 	const builtProjects = [];
 	for (const project of projects) {
-		const projectPath = path.join(labDir, project);
+		const projectPath = path.join(sourceDir, project);
 
 		if (hasBuildCommand(projectPath)) {
 			// Project has a build command - build it and copy output
@@ -268,8 +263,30 @@ async function main() {
 		}
 	}
 
-	// Generate the homepage with links to all demos
-	generateHomepage(builtProjects, consolidatedBuildPath, rootDir);
+	return builtProjects;
+}
+
+// Main function
+async function main() {
+	const rootDir = path.resolve(__dirname, "..");
+	const labDir = path.join(rootDir, LAB_DIR);
+	const toolsDir = path.join(rootDir, TOOLS_DIR);
+	const consolidatedBuildPath = path.join(rootDir, "build");
+
+	// Create consolidated build directory
+	if (fs.existsSync(consolidatedBuildPath)) {
+		fs.rmSync(consolidatedBuildPath, { recursive: true });
+	}
+	fs.mkdirSync(consolidatedBuildPath);
+
+	// Process lab demos
+	const builtDemos = processDirectory(labDir, consolidatedBuildPath, "Demos");
+
+	// Process tools
+	const builtTools = processDirectory(toolsDir, consolidatedBuildPath, "Tools");
+
+	// Generate the homepage with links to all demos and tools
+	generateHomepage(builtDemos, builtTools, consolidatedBuildPath, rootDir);
 
 	console.log("\nBuild process completed!");
 	console.log(`Consolidated build output is in: ${consolidatedBuildPath}`);
