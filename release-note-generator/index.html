@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VS Code Release Note Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="./assets/index-B2LsmXWb.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-xr0CINif.css">
+</head>
+
+<body>
+    <div class="app-layout">
+        <!-- Side Panel -->
+        <aside class="config-panel">
+            <h1 class="panel-title">VS Code Release Note Generator</h1>
+
+            <!-- Dimensions -->
+            <section class="config-section">
+                <h2 class="section-title">Dimensions</h2>
+                <div class="field">
+                    <label for="platformSelect">Platform</label>
+                    <select id="platformSelect">
+                        <option value="twitter" selected>Twitter / X (1200×675)</option>
+                        <option value="bluesky">Bluesky (1200×627)</option>
+                        <option value="linkedin">LinkedIn (1200×627)</option>
+                        <option value="facebook">Facebook (1200×630)</option>
+                        <option value="youtube">YouTube Thumbnail (1280×720)</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Theme -->
+            <section class="config-section">
+                <h2 class="section-title">Theme</h2>
+                <div class="field">
+                    <label for="themeSelect">Graphic Theme</label>
+                    <select id="themeSelect">
+                        <option value="dark" selected>Dark</option>
+                        <option value="light">Light</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Export -->
+            <section class="config-section export-section">
+                <button type="button" id="downloadBtn" class="download-btn">Download PNG</button>
+            </section>
+        </aside>
+
+        <!-- Preview Area -->
+        <main class="preview-area">
+            <div class="viewport">
+                <div id="releaseCard" class="release-card" style="visibility: hidden;">
+                    <!-- Header -->
+                    <header class="release-header">
+                        <div class="title-group">
+                            <h1 id="releaseTitle" class="release-title editable" contenteditable="true"></h1>
+                            <span id="versionPill" class="version-pill editable" contenteditable="true"></span>
+                        </div>
+                        <svg class="vscode-logo" xmlns="http://www.w3.org/2000/svg" width="64" height="64"
+                            viewBox="0 0 64 64" fill="none">
+                            <mask id="mask0_9_128" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0"
+                                width="64" height="64">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M45.3836 63.563C46.3916 63.9556 47.541 63.9305 48.5584 63.4409L61.7349 57.1006C63.1195 56.4344 64 55.0331 64 53.4958V10.5045C64 8.96722 63.1195 7.56595 61.735 6.8997L48.5584 0.559204C47.2232 -0.0832829 45.6605 0.0740861 44.4887 0.926045C44.3212 1.04775 44.1618 1.18363 44.0122 1.33338L18.7872 24.3465L7.7998 16.0062C6.77698 15.2298 5.34632 15.2934 4.39637 16.1575L0.872339 19.3631C-0.289633 20.4201 -0.290965 22.2482 0.869462 23.3069L10.3982 32.0001L0.869462 40.6933C-0.290965 41.752 -0.289633 43.58 0.872339 44.637L4.39637 47.8426C5.34632 48.7067 6.77698 48.7704 7.7998 47.9939L18.7872 39.6536L44.0122 62.6667C44.4112 63.066 44.8797 63.3667 45.3836 63.563ZM48.0097 17.4713L28.8698 32.0001L48.0097 46.5288V17.4713Z"
+                                    fill="white" />
+                            </mask>
+                            <g mask="url(#mask0_9_128)">
+                                <path
+                                    d="M61.7353 6.90953L48.5484 0.560308C47.0221 -0.174613 45.1979 0.135392 44 1.33329L0.83111 40.6932C-0.330023 41.7519 -0.328687 43.5799 0.83399 44.6369L4.36016 47.8425C5.3107 48.7066 6.74222 48.7703 7.76566 47.9939L59.751 8.55669C61.495 7.23363 64 8.47753 64 10.6666V10.5135C64 8.97692 63.1198 7.57614 61.7353 6.90953Z"
+                                    fill="#0065A9" />
+                                <g filter="url(#filter0_d_9_128)">
+                                    <path
+                                        d="M61.7353 57.0904L48.5484 63.4396C47.0221 64.1745 45.1979 63.8645 44 62.6666L0.83111 23.3067C-0.330023 22.248 -0.328687 20.42 0.83399 19.363L4.36016 16.1574C5.3107 15.2932 6.74222 15.2296 7.76566 16.006L59.751 55.4432C61.495 56.7663 64 55.5224 64 53.3333V53.4864C64 55.023 63.1198 56.4238 61.7353 57.0904Z"
+                                        fill="#007ACC" />
+                                </g>
+                                <g filter="url(#filter1_d_9_128)">
+                                    <path
+                                        d="M48.549 63.4409C47.0221 64.1752 45.198 63.8647 44 62.6667C45.4761 64.1428 48 63.0974 48 61.0099V2.99024C48 0.902725 45.4761 -0.14271 44 1.33339C45.198 0.135375 47.0221 -0.175068 48.549 0.559203L61.7336 6.8997C63.119 7.56595 64 8.96723 64 10.5045V53.4958C64 55.0331 63.119 56.4344 61.7335 57.1006L48.549 63.4409Z"
+                                        fill="#1F9CF0" />
+                                </g>
+                                <g opacity="0.25" style="mix-blend-mode:overlay">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M45.3447 63.563C46.3527 63.9556 47.5021 63.9305 48.5195 63.4409L61.696 57.1006C63.0806 56.4344 63.9611 55.0331 63.9611 53.4958V10.5045C63.9611 8.96722 63.0806 7.56595 61.6961 6.8997L48.5195 0.559204C47.1843 -0.0832829 45.6217 0.0740861 44.4498 0.926045C44.2824 1.04775 44.1229 1.18363 43.9733 1.33338L18.7484 24.3465L7.76092 16.0062C6.7381 15.2298 5.30745 15.2934 4.35749 16.1575L0.83346 19.3631C-0.328513 20.4201 -0.329845 22.2482 0.830583 23.3069L10.3593 32.0001L0.830583 40.6933C-0.329845 41.752 -0.328513 43.58 0.83346 44.637L4.35749 47.8426C5.30745 48.7067 6.7381 48.7704 7.76092 47.9939L18.7484 39.6536L43.9733 62.6667C44.3723 63.066 44.8408 63.3667 45.3447 63.563ZM47.9708 17.4713L28.831 32.0001L47.9708 46.5288V17.4713Z"
+                                        fill="url(#paint0_linear_9_128)" />
+                                </g>
+                            </g>
+                            <defs>
+                                <filter id="filter0_d_9_128" x="-7.03888" y="8.46387" width="78.0389" height="62.3706"
+                                    filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                    <feColorMatrix in="SourceAlpha" type="matrix"
+                                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                    <feOffset />
+                                    <feGaussianBlur stdDeviation="3.5" />
+                                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                                    <feBlend mode="overlay" in2="BackgroundImageFix"
+                                        result="effect1_dropShadow_9_128" />
+                                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_9_128"
+                                        result="shape" />
+                                </filter>
+                                <filter id="filter1_d_9_128" x="37" y="-6.83496" width="34" height="77.6699"
+                                    filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                    <feColorMatrix in="SourceAlpha" type="matrix"
+                                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                    <feOffset />
+                                    <feGaussianBlur stdDeviation="3.5" />
+                                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                                    <feBlend mode="overlay" in2="BackgroundImageFix"
+                                        result="effect1_dropShadow_9_128" />
+                                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_9_128"
+                                        result="shape" />
+                                </filter>
+                                <linearGradient id="paint0_linear_9_128" x1="31.9611" y1="0.165039" x2="31.9611"
+                                    y2="63.8351" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="white" />
+                                    <stop offset="1" stop-color="white" stop-opacity="0" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </header>
+
+                    <!-- Content columns -->
+                    <div class="release-content">
+                        <!-- Column 1 -->
+                        <div class="release-column" id="column1">
+                            <h2 class="column-title editable" contenteditable="true"></h2>
+                            <ul class="feature-list"></ul>
+                            <button type="button" class="add-feature-inline-btn" data-column="1">+ Add feature</button>
+                        </div>
+
+                        <!-- Column 2 -->
+                        <div class="release-column" id="column2">
+                            <h2 class="column-title editable" contenteditable="true"></h2>
+                            <ul class="feature-list"></ul>
+                            <button type="button" class="add-feature-inline-btn" data-column="2">+ Add feature</button>
+                        </div>
+
+                        <!-- Column 3 -->
+                        <div class="release-column" id="column3">
+                            <h2 class="column-title editable" contenteditable="true"></h2>
+                            <ul class="feature-list"></ul>
+                            <button type="button" class="add-feature-inline-btn" data-column="3">+ Add feature</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+
+</html>
