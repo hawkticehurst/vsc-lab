@@ -65,44 +65,33 @@ const themes: Record<string, ThemeColors> = {
     },
 };
 
-const defaultState: SavedState = {
-    platform: 'twitter',
-    theme: 'dark',
-    title: 'January Release',
-    version: 'v1.109',
-    columns: [
-        {
-            title: 'Unified agent UX',
-            features: [
-                { name: 'Run parallel subagents.', desc: 'Delegate tasks to multiple subagents in parallel with isolated context.' },
-                { name: 'Pick your agents.', desc: 'Your GitHub Copilot subscription now includes Copilot, Claude, and Codex agents. Run them locally or in the cloud.' },
-                { name: 'Manage agent sessions.', desc: 'New agents-first experience to track progress, switch providers, and jump between threads.' },
-            ],
-        },
-        {
-            title: 'Agent extensibility',
-            features: [
-                { name: 'Build MCP Apps.', desc: 'Build forms, dashboards, and interactive tools that render inline.' },
-                { name: 'Load skills by default. (GA)', desc: 'Reusable capabilities that load on-demand. Extensions can add their own.' },
-                { name: 'Share org-level instructions', desc: 'Distribute agent config and instruction files across your GitHub organization.' },
-            ],
-        },
-        {
-            title: 'New built-in tools',
-            features: [
-                { name: 'Debug in the browser.', desc: 'Use the new built-in browser to inspect DOM, network, and console logs.' },
-                { name: 'Create Mermaid diagrams.', desc: 'Mermaid diagrams render directly in agent chat responses.' },
-                { name: 'Sandbox terminal commands.', desc: 'Execute agent commands in a controlled environment on macOS and Linux.' },
-            ],
-        },
-    ],
-};
+function createDefaultState(): SavedState {
+    const month = new Date().toLocaleString('en-US', { month: 'long' });
+    const defaultFeatures: FeatureData[] = [1, 2, 3].map((n) => ({
+        name: `Feature #${n}`,
+        desc: 'Concise description of the feature',
+    }));
+
+    return {
+        platform: 'twitter',
+        theme: 'dark',
+        title: `${month} Release`,
+        version: 'v1.109',
+        columns: [
+            { title: 'Theme #1', features: defaultFeatures.map((f) => ({ ...f })) },
+            { title: 'Theme #2', features: defaultFeatures.map((f) => ({ ...f })) },
+            { title: 'Theme #3', features: defaultFeatures.map((f) => ({ ...f })) },
+        ],
+    };
+}
 
 // Elements
 let card: HTMLElement;
 let titleEl: HTMLElement;
 let versionEl: HTMLElement;
 let columns: HTMLElement[];
+let undoBtn: HTMLButtonElement | null = null;
+let redoBtn: HTMLButtonElement | null = null;
 
 // Debounce timer for saving
 let saveTimeout: number | null = null;
@@ -138,6 +127,8 @@ function pushToHistory(state: SavedState): void {
         history.shift();
         historyIndex--;
     }
+
+    updateHistoryButtons();
 }
 
 function undo(): void {
@@ -145,6 +136,7 @@ function undo(): void {
 
     historyIndex--;
     restoreState(history[historyIndex]);
+    updateHistoryButtons();
 }
 
 function redo(): void {
@@ -152,6 +144,7 @@ function redo(): void {
 
     historyIndex++;
     restoreState(history[historyIndex]);
+    updateHistoryButtons();
 }
 
 function restoreState(state: SavedState): void {
@@ -232,7 +225,7 @@ function saveState(): void {
 
 function loadState(): boolean {
     const saved = localStorage.getItem(STORAGE_KEY);
-    const state: SavedState = saved ? JSON.parse(saved) : defaultState;
+    const state: SavedState = saved ? JSON.parse(saved) : createDefaultState();
 
     try {
         // Restore platform
@@ -289,11 +282,57 @@ function loadState(): boolean {
         // Initialize history with the loaded state
         history = [JSON.parse(JSON.stringify(state))];
         historyIndex = 0;
+        updateHistoryButtons();
 
         return !!saved;
     } catch {
         return false;
     }
+}
+
+function resetToDefaults(): void {
+    const defaultState = createDefaultState();
+
+    if (saveTimeout) {
+        clearTimeout(saveTimeout);
+        saveTimeout = null;
+    }
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultState));
+    restoreState(defaultState);
+
+    history = [JSON.parse(JSON.stringify(defaultState))];
+    historyIndex = 0;
+    updateHistoryButtons();
+}
+
+function updateHistoryButtons(): void {
+    if (undoBtn) undoBtn.disabled = historyIndex <= 0;
+    if (redoBtn) redoBtn.disabled = historyIndex >= history.length - 1;
+}
+
+function isMacPlatform(): boolean {
+    const userAgentData = (navigator as Navigator & { userAgentData?: { platform?: string } }).userAgentData;
+    const platform = (userAgentData?.platform || navigator.platform || '').toLowerCase();
+    return platform.includes('mac');
+}
+
+function normalizePastedText(raw: string): string {
+    return raw.replace(/\r\n?|\n/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function insertPlainTextAtSelection(text: string): void {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+    range.deleteContents();
+    const textNode = document.createTextNode(text);
+    range.insertNode(textNode);
+    range.setStartAfter(textNode);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
 }
 
 function escapeHtml(text: string): string {
@@ -321,6 +360,7 @@ function init(): void {
     initInlineButtons();
     initExportButton();
     initUndoRedo();
+    initResetButton();
 
     // Apply colors from theme on initial load
     const themeSelect = document.getElementById('themeSelect') as HTMLSelectElement;
@@ -405,6 +445,17 @@ function initInlineEditing(): void {
             saveState();
         }
     });
+
+    // Strip incoming rich text formatting so app styles remain consistent.
+    card.addEventListener('paste', (e) => {
+        const target = e.target as HTMLElement;
+        if (!target.hasAttribute('contenteditable')) return;
+
+        e.preventDefault();
+        const clipboardText = e.clipboardData?.getData('text/plain') || '';
+        insertPlainTextAtSelection(normalizePastedText(clipboardText));
+        saveState();
+    });
 }
 
 function initInlineButtons(): void {
@@ -437,28 +488,50 @@ function initExportButton(): void {
 }
 
 function initUndoRedo(): void {
+    undoBtn = document.getElementById('undoBtn') as HTMLButtonElement | null;
+    redoBtn = document.getElementById('redoBtn') as HTMLButtonElement | null;
+
+    undoBtn?.addEventListener('click', undo);
+    redoBtn?.addEventListener('click', redo);
+
     // Setup keyboard shortcuts
     document.addEventListener('keydown', (e) => {
-        // Check for Cmd+Z (Mac) or Ctrl+Z (Windows/Linux)
-        const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-        const modKey = isMac ? e.metaKey : e.ctrlKey;
+        const isMac = isMacPlatform();
+        const hasPrimaryModifier = isMac ? e.metaKey : e.ctrlKey;
+        const hasSecondaryModifier = isMac ? e.ctrlKey : e.metaKey;
 
-        if (modKey && e.key === 'z') {
-            if (e.shiftKey) {
-                // Redo: Cmd+Shift+Z (Mac) or Ctrl+Shift+Z (Windows/Linux)
-                e.preventDefault();
-                redo();
-            } else {
-                // Undo: Cmd+Z (Mac) or Ctrl+Z (Windows/Linux)
-                e.preventDefault();
-                undo();
-            }
+        if (!hasPrimaryModifier || hasSecondaryModifier || e.altKey) {
+            return;
         }
-        // Also support Ctrl+Y for redo on Windows/Linux
-        if (!isMac && e.ctrlKey && e.key === 'y') {
+
+        // Undo: Cmd/Ctrl + Z
+        if (e.code === 'KeyZ' && !e.shiftKey) {
+            e.preventDefault();
+            undo();
+            return;
+        }
+
+        // Redo: Cmd/Ctrl + Shift + Z
+        if (e.code === 'KeyZ' && e.shiftKey) {
+            e.preventDefault();
+            redo();
+            return;
+        }
+
+        // Redo alternative: Ctrl + Y (Windows/Linux)
+        if (!isMac && e.code === 'KeyY' && !e.shiftKey) {
             e.preventDefault();
             redo();
         }
+    });
+
+    updateHistoryButtons();
+}
+
+function initResetButton(): void {
+    const resetBtn = document.getElementById('resetBtn') as HTMLButtonElement | null;
+    resetBtn?.addEventListener('click', () => {
+        resetToDefaults();
     });
 }
 
