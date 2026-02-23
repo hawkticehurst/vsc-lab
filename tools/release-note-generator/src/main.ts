@@ -90,8 +90,27 @@ function createDefaultState(): SavedState {
 }
 
 function getVersionForDate(date: Date): string {
-    const monthsSinceBase = (date.getFullYear() - VERSION_BASE_YEAR) * 12 + (date.getMonth() - VERSION_BASE_MONTH_INDEX);
-    const versionPatch = VERSION_BASE_PATCH + monthsSinceBase;
+    const target = new Date(date.getFullYear(), date.getMonth(), 1);
+    const comparisonMonth = new Date(VERSION_BASE_YEAR, VERSION_BASE_MONTH_INDEX, 1);
+    let versionPatch = VERSION_BASE_PATCH;
+
+    // December is a no-release month: it does not advance the version.
+    if (target.getTime() >= comparisonMonth.getTime()) {
+        while (comparisonMonth.getTime() < target.getTime()) {
+            comparisonMonth.setMonth(comparisonMonth.getMonth() + 1);
+            if (comparisonMonth.getMonth() !== 11) {
+                versionPatch++;
+            }
+        }
+    } else {
+        while (comparisonMonth.getTime() > target.getTime()) {
+            if (comparisonMonth.getMonth() !== 11) {
+                versionPatch--;
+            }
+            comparisonMonth.setMonth(comparisonMonth.getMonth() - 1);
+        }
+    }
+
     return `v1.${versionPatch}`;
 }
 
