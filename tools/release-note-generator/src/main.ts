@@ -3,6 +3,9 @@ import { toPng } from 'html-to-image';
 
 const STORAGE_KEY = 'vscode-social-asset-state';
 const MAX_HISTORY_SIZE = 50;
+const VERSION_BASE_YEAR = 2026;
+const VERSION_BASE_MONTH_INDEX = 0; // January (0-based)
+const VERSION_BASE_PATCH = 109;
 
 interface PlatformDimensions {
     width: number;
@@ -66,7 +69,8 @@ const themes: Record<string, ThemeColors> = {
 };
 
 function createDefaultState(): SavedState {
-    const month = new Date().toLocaleString('en-US', { month: 'long' });
+    const now = new Date();
+    const month = now.toLocaleString('en-US', { month: 'long' });
     const defaultFeatures: FeatureData[] = [1, 2, 3].map((n) => ({
         name: `Feature #${n}`,
         desc: 'Concise description of the feature',
@@ -76,13 +80,19 @@ function createDefaultState(): SavedState {
         platform: 'twitter',
         theme: 'dark',
         title: `${month} Release`,
-        version: 'v1.109',
+        version: getVersionForDate(now),
         columns: [
             { title: 'Theme #1', features: defaultFeatures.map((f) => ({ ...f })) },
             { title: 'Theme #2', features: defaultFeatures.map((f) => ({ ...f })) },
             { title: 'Theme #3', features: defaultFeatures.map((f) => ({ ...f })) },
         ],
     };
+}
+
+function getVersionForDate(date: Date): string {
+    const monthsSinceBase = (date.getFullYear() - VERSION_BASE_YEAR) * 12 + (date.getMonth() - VERSION_BASE_MONTH_INDEX);
+    const versionPatch = VERSION_BASE_PATCH + monthsSinceBase;
+    return `v1.${versionPatch}`;
 }
 
 // Elements
