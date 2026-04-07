@@ -366,7 +366,7 @@ body {
 .version-pill {
     display: inline-flex;
     align-items: center;
-    padding: 6px 14px;
+    padding: 6px 18px;
     background: var(--pill-bg);
     color: var(--pill-fg);
     font-family: var(--font-mono);
@@ -462,7 +462,7 @@ body {
 /* Version pill editable - special handling */
 .release-card .version-pill.editable {
     margin: -1px -3px;
-    padding: 7px 17px;
+    padding: 7px 21px;
 }
 
 /* Inline add feature button */
